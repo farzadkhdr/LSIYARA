@@ -1,2 +1,0 @@
-# LSIYARA
-syara bakre dan
