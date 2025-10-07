@@ -184,783 +184,1003 @@
         .status-not-returned {
             background-color: #f8d7da;
         }
+        
+        .login-container {
+            max-width: 400px;
+            margin: 100px auto;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+        
+        .invoice-logo {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .invoice-logo img {
+            max-width: 150px;
+            height: auto;
+        }
     </style>
 </head>
 <body>
-    <!-- Navigation Bar -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark no-print">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="#">
-                <i class="fas fa-car"></i> Car Rental System
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
-                            <i class="fas fa-user-circle"></i> Admin
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="#"><i class="fas fa-cog"></i> Settings</a></li>
-                            <li><a class="dropdown-item" href="#"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
-                        </ul>
-                    </li>
-                </ul>
-            </div>
+    <!-- Login Screen -->
+    <div id="loginScreen" class="login-container">
+        <div class="text-center mb-4">
+            <i class="fas fa-car fa-3x text-primary mb-3"></i>
+            <h2>Car Rental System</h2>
+            <p class="text-muted">Please login to continue</p>
         </div>
-    </nav>
+        <form id="loginForm">
+            <div class="mb-3">
+                <label for="username" class="form-label">Username</label>
+                <input type="text" class="form-control" id="username" required>
+            </div>
+            <div class="mb-3">
+                <label for="password" class="form-label">Password</label>
+                <input type="password" class="form-control" id="password" required>
+            </div>
+            <button type="submit" class="btn btn-primary w-100">Login</button>
+        </form>
+        <div class="text-center mt-3">
+            <small class="text-muted">Default admin password: 000000</small>
+        </div>
+        <div class="text-center mt-4">
+            <small class="text-muted">Created by Farzad Programmer - Not Editable</small>
+        </div>
+    </div>
 
-    <div class="container-fluid">
-        <div class="row">
-            <!-- Sidebar -->
-            <div class="col-md-2 sidebar d-none d-md-block no-print">
-                <div class="logo-container">
-                    <i class="fas fa-car-side fa-2x text-primary"></i>
-                    <span class="system-name">RentalSys</span>
-                </div>
-                <ul class="nav flex-column">
-                    <li class="nav-item">
-                        <a class="nav-link active" href="#dashboard" data-bs-toggle="tab">
-                            <i class="fas fa-tachometer-alt"></i> Dashboard
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#vehicles" data-bs-toggle="tab">
-                            <i class="fas fa-car"></i> Vehicles
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#customers" data-bs-toggle="tab">
-                            <i class="fas fa-users"></i> Customers
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#rentals" data-bs-toggle="tab">
-                            <i class="fas fa-receipt"></i> Rentals
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#returns" data-bs-toggle="tab">
-                            <i class="fas fa-undo"></i> Vehicle Returns
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#debts" data-bs-toggle="tab">
-                            <i class="fas fa-money-bill-wave"></i> Debts & Payments
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#fines" data-bs-toggle="tab">
-                            <i class="fas fa-gavel"></i> Fines & Taxes
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#reports" data-bs-toggle="tab">
-                            <i class="fas fa-chart-bar"></i> Reports
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#settings" data-bs-toggle="tab">
-                            <i class="fas fa-cogs"></i> System Settings
-                        </a>
-                    </li>
-                </ul>
-                <div class="copyright">
-                    Created by Farzad Programmer<br>Not Editable
+    <!-- Main Application -->
+    <div id="mainApp" style="display: none;">
+        <!-- Navigation Bar -->
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark no-print">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="#">
+                    <i class="fas fa-car"></i> Car Rental System
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
+                                <i class="fas fa-user-circle"></i> <span id="currentUser">Admin</span>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#changePasswordModal"><i class="fas fa-key"></i> Change Password</a></li>
+                                <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#userManagementModal"><i class="fas fa-users"></i> User Management</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                            </ul>
+                        </li>
+                    </ul>
                 </div>
             </div>
+        </nav>
 
-            <!-- Main Content -->
-            <div class="col-md-10 ms-sm-auto col-lg-10 px-4">
-                <div class="tab-content mt-4">
-                    <!-- Dashboard Tab -->
-                    <div class="tab-pane fade show active" id="dashboard">
-                        <h2 class="mb-4">Dashboard</h2>
-                        <div class="row" id="dashboardStats">
-                            <!-- Dashboard statistics will be loaded here -->
-                        </div>
-                        
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="card">
-                                    <div class="card-header">
-                                        Recent Rentals
-                                    </div>
-                                    <div class="card-body">
-                                        <div class="table-responsive">
-                                            <table class="table table-hover">
-                                                <thead>
-                                                    <tr>
-                                                        <th>Customer</th>
-                                                        <th>Vehicle</th>
-                                                        <th>Date</th>
-                                                        <th>Amount</th>
-                                                        <th>Status</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody id="recentRentalsTable">
-                                                    <!-- Recent rentals will be loaded here -->
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="card">
-                                    <div class="card-header">
-                                        Vehicle Status
-                                    </div>
-                                    <div class="card-body">
-                                        <canvas id="vehicleStatusChart" width="400" height="200"></canvas>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+        <div class="container-fluid">
+            <div class="row">
+                <!-- Sidebar -->
+                <div class="col-md-2 sidebar d-none d-md-block no-print">
+                    <div class="logo-container">
+                        <i class="fas fa-car-side fa-2x text-primary"></i>
+                        <span class="system-name">RentalSys</span>
                     </div>
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link active" href="#dashboard" data-bs-toggle="tab">
+                                <i class="fas fa-tachometer-alt"></i> Dashboard
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#vehicles" data-bs-toggle="tab">
+                                <i class="fas fa-car"></i> Vehicles
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#customers" data-bs-toggle="tab">
+                                <i class="fas fa-users"></i> Customers
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#rentals" data-bs-toggle="tab">
+                                <i class="fas fa-receipt"></i> Rentals
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#returns" data-bs-toggle="tab">
+                                <i class="fas fa-undo"></i> Vehicle Returns
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#debts" data-bs-toggle="tab">
+                                <i class="fas fa-money-bill-wave"></i> Debts & Payments
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#fines" data-bs-toggle="tab">
+                                <i class="fas fa-gavel"></i> Fines & Taxes
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#reports" data-bs-toggle="tab">
+                                <i class="fas fa-chart-bar"></i> Reports
+                            </a>
+                        </li>
+                        <li class="nav-item admin-only">
+                            <a class="nav-link" href="#settings" data-bs-toggle="tab">
+                                <i class="fas fa-cogs"></i> System Settings
+                            </a>
+                        </li>
+                    </ul>
+                    <div class="copyright">
+                        Created by Farzad Programmer<br>Not Editable
+                    </div>
+                </div>
 
-                    <!-- Vehicles Tab -->
-                    <div class="tab-pane fade" id="vehicles">
-                        <h2 class="mb-4">Vehicle Management</h2>
-                        
-                        <ul class="nav nav-tabs mb-3">
-                            <li class="nav-item">
-                                <a class="nav-link active" data-bs-toggle="tab" href="#addVehicle">Add Vehicle</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" data-bs-toggle="tab" href="#vehicleList">Vehicle List</a>
-                            </li>
-                        </ul>
-                        
-                        <div class="tab-content">
-                            <div class="tab-pane fade show active" id="addVehicle">
-                                <div class="card">
-                                    <div class="card-header">
-                                        Add New Vehicle
-                                    </div>
-                                    <div class="card-body">
-                                        <form id="addVehicleForm">
-                                            <div class="row">
-                                                <div class="col-md-6 mb-3">
-                                                    <label for="vehicleName" class="form-label">Vehicle Name</label>
-                                                    <input type="text" class="form-control" id="vehicleName" required>
-                                                </div>
-                                                <div class="col-md-6 mb-3">
-                                                    <label for="vehicleOdometer" class="form-label">Odometer</label>
-                                                    <input type="number" class="form-control" id="vehicleOdometer" required>
-                                                </div>
-                                            </div>
-                                            <div class="row">
-                                                <div class="col-md-6 mb-3">
-                                                    <label for="vehicleVin" class="form-label">VIN #</label>
-                                                    <input type="text" class="form-control" id="vehicleVin" required>
-                                                </div>
-                                                <div class="col-md-6 mb-3">
-                                                    <label for="vehiclePlate" class="form-label">Plate Number</label>
-                                                    <input type="text" class="form-control" id="vehiclePlate" required>
-                                                </div>
-                                            </div>
-                                            <div class="row">
-                                                <div class="col-md-6 mb-3">
-                                                    <label for="vehicleColor" class="form-label">Color</label>
-                                                    <input type="text" class="form-control" id="vehicleColor" required>
-                                                </div>
-                                                <div class="col-md-6 mb-3">
-                                                    <label for="vehicleModel" class="form-label">Model</label>
-                                                    <input type="text" class="form-control" id="vehicleModel" required>
-                                                </div>
-                                            </div>
-                                            <button type="submit" class="btn btn-primary">Add Vehicle</button>
-                                        </form>
-                                    </div>
-                                </div>
+                <!-- Main Content -->
+                <div class="col-md-10 ms-sm-auto col-lg-10 px-4">
+                    <div class="tab-content mt-4">
+                        <!-- Dashboard Tab -->
+                        <div class="tab-pane fade show active" id="dashboard">
+                            <h2 class="mb-4">Dashboard</h2>
+                            <div class="row" id="dashboardStats">
+                                <!-- Dashboard statistics will be loaded here -->
                             </div>
                             
-                            <div class="tab-pane fade" id="vehicleList">
-                                <div class="card">
-                                    <div class="card-header d-flex justify-content-between align-items-center">
-                                        <span>Vehicle List</span>
-                                        <div class="input-group" style="width: 300px;">
-                                            <input type="text" class="form-control" id="vehicleSearch" placeholder="Search vehicles...">
-                                            <button class="btn btn-outline-secondary" type="button" id="vehicleSearchBtn">
-                                                <i class="fas fa-search"></i>
-                                            </button>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            Recent Rentals
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="table-responsive">
+                                                <table class="table table-hover">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Customer</th>
+                                                            <th>Vehicle</th>
+                                                            <th>Date</th>
+                                                            <th>Amount</th>
+                                                            <th>Status</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody id="recentRentalsTable">
+                                                        <!-- Recent rentals will be loaded here -->
+                                                    </tbody>
+                                                </table>
+                                            </div>
                                         </div>
                                     </div>
-                                    <div class="card-body">
-                                        <div class="table-responsive">
-                                            <table class="table table-hover">
-                                                <thead>
-                                                    <tr>
-                                                        <th>Name</th>
-                                                        <th>Model</th>
-                                                        <th>Color</th>
-                                                        <th>Plate #</th>
-                                                        <th>Odometer</th>
-                                                        <th>Status</th>
-                                                        <th>Actions</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody id="vehicleTableBody">
-                                                    <!-- Vehicle data will be populated here -->
-                                                </tbody>
-                                            </table>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            Vehicle Status
+                                        </div>
+                                        <div class="card-body">
+                                            <canvas id="vehicleStatusChart" width="400" height="200"></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Vehicles Tab -->
+                        <div class="tab-pane fade" id="vehicles">
+                            <h2 class="mb-4">Vehicle Management</h2>
+                            
+                            <ul class="nav nav-tabs mb-3">
+                                <li class="nav-item">
+                                    <a class="nav-link active" data-bs-toggle="tab" href="#addVehicle">Add Vehicle</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" data-bs-toggle="tab" href="#vehicleList">Vehicle List</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" data-bs-toggle="tab" href="#vehicleHistory">Vehicle History</a>
+                                </li>
+                            </ul>
+                            
+                            <div class="tab-content">
+                                <div class="tab-pane fade show active" id="addVehicle">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            Add New Vehicle
+                                        </div>
+                                        <div class="card-body">
+                                            <form id="addVehicleForm">
+                                                <div class="row">
+                                                    <div class="col-md-6 mb-3">
+                                                        <label for="vehicleName" class="form-label">Vehicle Name</label>
+                                                        <input type="text" class="form-control" id="vehicleName" required>
+                                                    </div>
+                                                    <div class="col-md-6 mb-3">
+                                                        <label for="vehicleOdometer" class="form-label">Odometer</label>
+                                                        <input type="number" class="form-control" id="vehicleOdometer" required>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-6 mb-3">
+                                                        <label for="vehicleVin" class="form-label">VIN #</label>
+                                                        <input type="text" class="form-control" id="vehicleVin" required>
+                                                    </div>
+                                                    <div class="col-md-6 mb-3">
+                                                        <label for="vehiclePlate" class="form-label">Plate Number</label>
+                                                        <input type="text" class="form-control" id="vehiclePlate" required>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-6 mb-3">
+                                                        <label for="vehicleColor" class="form-label">Color</label>
+                                                        <input type="text" class="form-control" id="vehicleColor" required>
+                                                    </div>
+                                                    <div class="col-md-6 mb-3">
+                                                        <label for="vehicleModel" class="form-label">Model</label>
+                                                        <input type="text" class="form-control" id="vehicleModel" required>
+                                                    </div>
+                                                </div>
+                                                <button type="submit" class="btn btn-primary">Add Vehicle</button>
+                                            </form>
                                         </div>
                                     </div>
                                 </div>
                                 
-                                <!-- Vehicle Details Section -->
-                                <div class="card vehicle-details" id="vehicleDetailsCard">
-                                    <div class="card-header d-flex justify-content-between align-items-center">
-                                        <span>Vehicle Details</span>
-                                        <button class="btn btn-sm btn-secondary" id="closeVehicleDetails">Close</button>
-                                    </div>
-                                    <div class="card-body" id="vehicleDetailsContent">
-                                        <!-- Vehicle details will be populated here -->
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Customers Tab -->
-                    <div class="tab-pane fade" id="customers">
-                        <h2 class="mb-4">Customer Management</h2>
-                        
-                        <ul class="nav nav-tabs mb-3">
-                            <li class="nav-item">
-                                <a class="nav-link active" data-bs-toggle="tab" href="#addCustomer">Add Customer</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" data-bs-toggle="tab" href="#customerList">Customer List</a>
-                            </li>
-                        </ul>
-                        
-                        <div class="tab-content">
-                            <div class="tab-pane fade show active" id="addCustomer">
-                                <div class="card">
-                                    <div class="card-header">
-                                        Add New Customer
-                                    </div>
-                                    <div class="card-body">
-                                        <form id="addCustomerForm">
-                                            <div class="row">
-                                                <div class="col-md-6 mb-3">
-                                                    <label for="customerFullName" class="form-label">Full Name</label>
-                                                    <input type="text" class="form-control" id="customerFullName" required>
-                                                </div>
-                                                <div class="col-md-6 mb-3">
-                                                    <label for="customerAge" class="form-label">Age</label>
-                                                    <input type="number" class="form-control" id="customerAge" required>
-                                                </div>
+                                <div class="tab-pane fade" id="vehicleList">
+                                    <div class="card">
+                                        <div class="card-header d-flex justify-content-between align-items-center">
+                                            <span>Vehicle List</span>
+                                            <div class="input-group" style="width: 300px;">
+                                                <input type="text" class="form-control" id="vehicleSearch" placeholder="Search vehicles...">
+                                                <button class="btn btn-outline-secondary" type="button" id="vehicleSearchBtn">
+                                                    <i class="fas fa-search"></i>
+                                                </button>
                                             </div>
-                                            <div class="row">
-                                                <div class="col-md-6 mb-3">
-                                                    <label for="customerId" class="form-label">PS/ID</label>
-                                                    <input type="text" class="form-control" id="customerId" required>
-                                                </div>
-                                                <div class="col-md-6 mb-3">
-                                                    <label for="customerNationality" class="form-label">Nationality</label>
-                                                    <input type="text" class="form-control" id="customerNationality" required>
-                                                </div>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="table-responsive">
+                                                <table class="table table-hover">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Name</th>
+                                                            <th>Model</th>
+                                                            <th>Color</th>
+                                                            <th>Plate #</th>
+                                                            <th>Odometer</th>
+                                                            <th>Status</th>
+                                                            <th>Actions</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody id="vehicleTableBody">
+                                                        <!-- Vehicle data will be populated here -->
+                                                    </tbody>
+                                                </table>
                                             </div>
-                                            <div class="row">
-                                                <div class="col-md-6 mb-3">
-                                                    <label for="customerContact" class="form-label">Contact Number</label>
-                                                    <input type="text" class="form-control" id="customerContact" required>
-                                                </div>
-                                                <div class="col-md-6 mb-3">
-                                                    <label for="customerAddress" class="form-label">Address</label>
-                                                    <input type="text" class="form-control" id="customerAddress" required>
-                                                </div>
-                                            </div>
-                                            <div class="mb-3">
-                                                <label for="guaranteeDoc" class="form-label">Guarantee / Document</label>
-                                                <input type="file" class="form-control" id="guaranteeDoc">
-                                            </div>
-                                            <button type="submit" class="btn btn-primary">Add Customer</button>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div class="tab-pane fade" id="customerList">
-                                <div class="card">
-                                    <div class="card-header d-flex justify-content-between align-items-center">
-                                        <span>Customer List</span>
-                                        <div class="input-group" style="width: 300px;">
-                                            <input type="text" class="form-control" id="customerSearch" placeholder="Search customers...">
-                                            <button class="btn btn-outline-secondary" type="button" id="customerSearchBtn">
-                                                <i class="fas fa-search"></i>
-                                            </button>
                                         </div>
                                     </div>
-                                    <div class="card-body">
-                                        <div class="table-responsive">
-                                            <table class="table table-hover">
-                                                <thead>
-                                                    <tr>
-                                                        <th>Full Name</th>
-                                                        <th>Age</th>
-                                                        <th>ID</th>
-                                                        <th>Nationality</th>
-                                                        <th>Contact</th>
-                                                        <th>Total Debt</th>
-                                                        <th>Actions</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody id="customerTableBody">
-                                                    <!-- Customer data will be populated here -->
-                                                </tbody>
-                                            </table>
+                                    
+                                    <!-- Vehicle Details Section -->
+                                    <div class="card vehicle-details" id="vehicleDetailsCard">
+                                        <div class="card-header d-flex justify-content-between align-items-center">
+                                            <span>Vehicle Details</span>
+                                            <button class="btn btn-sm btn-secondary" id="closeVehicleDetails">Close</button>
+                                        </div>
+                                        <div class="card-body" id="vehicleDetailsContent">
+                                            <!-- Vehicle details will be populated here -->
                                         </div>
                                     </div>
                                 </div>
                                 
-                                <!-- Customer Details Section -->
-                                <div class="card customer-details" id="customerDetailsCard">
-                                    <div class="card-header d-flex justify-content-between align-items-center">
-                                        <span>Customer Details</span>
-                                        <button class="btn btn-sm btn-secondary" id="closeCustomerDetails">Close</button>
-                                    </div>
-                                    <div class="card-body" id="customerDetailsContent">
-                                        <!-- Customer details will be populated here -->
+                                <div class="tab-pane fade" id="vehicleHistory">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            Vehicle Rental History
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="table-responsive">
+                                                <table class="table table-hover">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Vehicle</th>
+                                                            <th>Customer</th>
+                                                            <th>Rental Date</th>
+                                                            <th>Return Date</th>
+                                                            <th>Amount</th>
+                                                            <th>Status</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody id="vehicleHistoryTableBody">
+                                                        <!-- Vehicle history will be populated here -->
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
 
-                    <!-- Rentals Tab -->
-                    <div class="tab-pane fade" id="rentals">
-                        <h2 class="mb-4">Rental Management</h2>
-                        
-                        <div class="card">
-                            <div class="card-header">
-                                Create New Rental
-                            </div>
-                            <div class="card-body">
-                                <form id="createRentalForm">
-                                    <div class="row">
-                                        <div class="col-md-6 mb-3">
-                                            <label for="rentalCustomer" class="form-label">Customer</label>
-                                            <input type="text" class="form-control" id="rentalCustomer" placeholder="Search customer...">
-                                            <div class="suggestion-list" id="customerSuggestions"></div>
+                        <!-- Customers Tab -->
+                        <div class="tab-pane fade" id="customers">
+                            <h2 class="mb-4">Customer Management</h2>
+                            
+                            <ul class="nav nav-tabs mb-3">
+                                <li class="nav-item">
+                                    <a class="nav-link active" data-bs-toggle="tab" href="#addCustomer">Add Customer</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" data-bs-toggle="tab" href="#customerList">Customer List</a>
+                                </li>
+                            </ul>
+                            
+                            <div class="tab-content">
+                                <div class="tab-pane fade show active" id="addCustomer">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            Add New Customer
                                         </div>
-                                        <div class="col-md-6 mb-3">
-                                            <label for="rentalVehicle" class="form-label">Vehicle</label>
-                                            <input type="text" class="form-control" id="rentalVehicle" placeholder="Search vehicle...">
-                                            <div class="suggestion-list" id="vehicleSuggestions"></div>
+                                        <div class="card-body">
+                                            <form id="addCustomerForm">
+                                                <div class="row">
+                                                    <div class="col-md-6 mb-3">
+                                                        <label for="customerFullName" class="form-label">Full Name</label>
+                                                        <input type="text" class="form-control" id="customerFullName" required>
+                                                    </div>
+                                                    <div class="col-md-6 mb-3">
+                                                        <label for="customerAge" class="form-label">Age</label>
+                                                        <input type="number" class="form-control" id="customerAge" required>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-6 mb-3">
+                                                        <label for="customerId" class="form-label">PS/ID</label>
+                                                        <input type="text" class="form-control" id="customerId" required>
+                                                    </div>
+                                                    <div class="col-md-6 mb-3">
+                                                        <label for="customerNationality" class="form-label">Nationality</label>
+                                                        <input type="text" class="form-control" id="customerNationality" required>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-6 mb-3">
+                                                        <label for="customerContact" class="form-label">Contact Number</label>
+                                                        <input type="text" class="form-control" id="customerContact" required>
+                                                    </div>
+                                                    <div class="col-md-6 mb-3">
+                                                        <label for="customerAddress" class="form-label">Address</label>
+                                                        <input type="text" class="form-control" id="customerAddress" required>
+                                                    </div>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="guaranteeDoc" class="form-label">Guarantee / Document</label>
+                                                    <input type="file" class="form-control" id="guaranteeDoc">
+                                                </div>
+                                                <button type="submit" class="btn btn-primary">Add Customer</button>
+                                            </form>
                                         </div>
                                     </div>
-                                    <div class="row">
-                                        <div class="col-md-6 mb-3">
-                                            <label for="rentalAmount" class="form-label">Rental Amount</label>
-                                            <input type="number" class="form-control" id="rentalAmount" required>
+                                </div>
+                                
+                                <div class="tab-pane fade" id="customerList">
+                                    <div class="card">
+                                        <div class="card-header d-flex justify-content-between align-items-center">
+                                            <span>Customer List</span>
+                                            <div class="input-group" style="width: 300px;">
+                                                <input type="text" class="form-control" id="customerSearch" placeholder="Search customers...">
+                                                <button class="btn btn-outline-secondary" type="button" id="customerSearchBtn">
+                                                    <i class="fas fa-search"></i>
+                                                </button>
+                                            </div>
                                         </div>
-                                        <div class="col-md-6 mb-3">
-                                            <label for="rentalDays" class="form-label">Rental Days</label>
-                                            <input type="number" class="form-control" id="rentalDays" required>
+                                        <div class="card-body">
+                                            <div class="table-responsive">
+                                                <table class="table table-hover">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Full Name</th>
+                                                            <th>Age</th>
+                                                            <th>ID</th>
+                                                            <th>Nationality</th>
+                                                            <th>Contact</th>
+                                                            <th>Total Debt</th>
+                                                            <th>Actions</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody id="customerTableBody">
+                                                        <!-- Customer data will be populated here -->
+                                                    </tbody>
+                                                </table>
+                                            </div>
                                         </div>
                                     </div>
-                                    <div class="row">
-                                        <div class="col-md-6 mb-3">
-                                            <label for="invoiceCode" class="form-label">Invoice Code</label>
-                                            <input type="text" class="form-control" id="invoiceCode">
+                                    
+                                    <!-- Customer Details Section -->
+                                    <div class="card customer-details" id="customerDetailsCard">
+                                        <div class="card-header d-flex justify-content-between align-items-center">
+                                            <span>Customer Details</span>
+                                            <button class="btn btn-sm btn-secondary" id="closeCustomerDetails">Close</button>
+                                        </div>
+                                        <div class="card-body" id="customerDetailsContent">
+                                            <!-- Customer details will be populated here -->
                                         </div>
                                     </div>
-                                    <button type="submit" class="btn btn-primary">Create Rental</button>
-                                </form>
-                            </div>
-                        </div>
-                        
-                        <div class="card mt-4">
-                            <div class="card-header d-flex justify-content-between align-items-center">
-                                <span>Rental History</span>
-                                <div class="input-group" style="width: 300px;">
-                                    <input type="text" class="form-control" id="rentalSearch" placeholder="Search by invoice code...">
-                                    <button class="btn btn-outline-secondary" type="button" id="rentalSearchBtn">
-                                        <i class="fas fa-search"></i>
-                                    </button>
                                 </div>
                             </div>
-                            <div class="card-body">
-                                <div class="table-responsive">
-                                    <table class="table table-hover">
-                                        <thead>
-                                            <tr>
-                                                <th>Invoice Code</th>
-                                                <th>Customer</th>
-                                                <th>Vehicle</th>
-                                                <th>Date</th>
-                                                <th>Amount</th>
-                                                <th>Status</th>
-                                                <th>Actions</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody id="rentalTableBody">
-                                            <!-- Rental data will be populated here -->
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
                         </div>
-                        
-                        <!-- Invoice for Printing -->
-                        <div id="invoicePrint" class="print-only" style="display: none;">
+
+                        <!-- Rentals Tab -->
+                        <div class="tab-pane fade" id="rentals">
+                            <h2 class="mb-4">Rental Management</h2>
+                            
                             <div class="card">
-                                <div class="card-header text-center">
-                                    <h3>Car Rental Invoice</h3>
+                                <div class="card-header">
+                                    Create New Rental
                                 </div>
                                 <div class="card-body">
-                                    <div class="row mb-3">
-                                        <div class="col-6">
-                                            <strong>Invoice Code:</strong> <span id="printInvoiceCode"></span>
+                                    <form id="createRentalForm">
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label for="rentalCustomer" class="form-label">Customer</label>
+                                                <input type="text" class="form-control" id="rentalCustomer" placeholder="Search customer...">
+                                                <div class="suggestion-list" id="customerSuggestions"></div>
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label for="rentalVehicle" class="form-label">Vehicle</label>
+                                                <input type="text" class="form-control" id="rentalVehicle" placeholder="Search vehicle...">
+                                                <div class="suggestion-list" id="vehicleSuggestions"></div>
+                                            </div>
                                         </div>
-                                        <div class="col-6 text-end">
-                                            <strong>Date:</strong> <span id="printInvoiceDate"></span>
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label for="rentalAmount" class="form-label">Rental Amount</label>
+                                                <input type="number" class="form-control" id="rentalAmount" required>
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label for="rentalDays" class="form-label">Rental Days</label>
+                                                <input type="number" class="form-control" id="rentalDays" required>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label for="invoiceCode" class="form-label">Invoice Code</label>
+                                                <input type="text" class="form-control" id="invoiceCode">
+                                            </div>
+                                        </div>
+                                        <button type="submit" class="btn btn-primary">Create Rental</button>
+                                    </form>
+                                </div>
+                            </div>
+                            
+                            <div class="card mt-4">
+                                <div class="card-header d-flex justify-content-between align-items-center">
+                                    <span>Rental History</span>
+                                    <div class="input-group" style="width: 300px;">
+                                        <input type="text" class="form-control" id="rentalSearch" placeholder="Search by invoice code...">
+                                        <button class="btn btn-outline-secondary" type="button" id="rentalSearchBtn">
+                                            <i class="fas fa-search"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table class="table table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <th>Invoice Code</th>
+                                                    <th>Customer</th>
+                                                    <th>Vehicle</th>
+                                                    <th>Date</th>
+                                                    <th>Amount</th>
+                                                    <th>Status</th>
+                                                    <th>Actions</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="rentalTableBody">
+                                                <!-- Rental data will be populated here -->
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Invoice for Printing -->
+                            <div id="invoicePrint" class="print-only" style="display: none;">
+                                <div class="invoice-logo">
+                                    <i class="fas fa-car-side fa-3x"></i>
+                                    <h3>Car Rental System</h3>
+                                </div>
+                                <div class="card">
+                                    <div class="card-header text-center">
+                                        <h3>Car Rental Invoice</h3>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row mb-3">
+                                            <div class="col-6">
+                                                <strong>Invoice Code:</strong> <span id="printInvoiceCode"></span>
+                                            </div>
+                                            <div class="col-6 text-end">
+                                                <strong>Date:</strong> <span id="printInvoiceDate"></span>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-3">
+                                            <div class="col-6">
+                                                <strong>Customer:</strong> <span id="printCustomerName"></span>
+                                            </div>
+                                            <div class="col-6">
+                                                <strong>Vehicle:</strong> <span id="printVehicleName"></span>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-3">
+                                            <div class="col-12">
+                                                <strong>Rental Amount:</strong> $<span id="printRentalAmount"></span>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-12">
+                                                <hr>
+                                                <h4 class="text-end">Total: $<span id="printTotalAmount"></span></h4>
+                                            </div>
                                         </div>
                                     </div>
-                                    <div class="row mb-3">
-                                        <div class="col-6">
-                                            <strong>Customer:</strong> <span id="printCustomerName"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Vehicle Returns Tab -->
+                        <div class="tab-pane fade" id="returns">
+                            <h2 class="mb-4">Vehicle Returns</h2>
+                            
+                            <div class="card">
+                                <div class="card-header">
+                                    Return Vehicle
+                                </div>
+                                <div class="card-body">
+                                    <form id="returnVehicleForm">
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label for="returnInvoice" class="form-label">Invoice Code</label>
+                                                <input type="text" class="form-control" id="returnInvoice" placeholder="Search invoice...">
+                                                <div class="suggestion-list" id="returnInvoiceSuggestions"></div>
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label for="fineAmount" class="form-label">Fine Amount (if any)</label>
+                                                <input type="number" class="form-control" id="fineAmount" value="0">
+                                            </div>
                                         </div>
-                                        <div class="col-6">
-                                            <strong>Vehicle:</strong> <span id="printVehicleName"></span>
+                                        <button type="submit" class="btn btn-primary">Return Vehicle</button>
+                                    </form>
+                                </div>
+                            </div>
+                            
+                            <div class="card mt-4">
+                                <div class="card-header">
+                                    Return History
+                                </div>
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table class="table table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <th>Invoice Code</th>
+                                                    <th>Customer</th>
+                                                    <th>Vehicle</th>
+                                                    <th>Return Date</th>
+                                                    <th>Fine</th>
+                                                    <th>Total</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="returnTableBody">
+                                                <!-- Return data will be populated here -->
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Debts & Payments Tab -->
+                        <div class="tab-pane fade" id="debts">
+                            <h2 class="mb-4">Debts & Payments</h2>
+                            
+                            <div class="card">
+                                <div class="card-header">
+                                    Search Customer
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label for="debtCustomer" class="form-label">Customer</label>
+                                            <input type="text" class="form-control" id="debtCustomer" placeholder="Search customer...">
+                                            <div class="suggestion-list" id="debtCustomerSuggestions"></div>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label">Current Debt</label>
+                                            <div class="form-control" id="currentDebt">$0</div>
                                         </div>
                                     </div>
-                                    <div class="row mb-3">
+                                    <div class="row mt-3">
                                         <div class="col-12">
-                                            <strong>Rental Amount:</strong> $<span id="printRentalAmount"></span>
+                                            <h6>Customer Summary</h6>
+                                            <div id="customerDebtSummary">
+                                                <!-- Customer debt summary will be populated here -->
+                                            </div>
                                         </div>
                                     </div>
-                                    <div class="row">
-                                        <div class="col-12">
-                                            <hr>
-                                            <h4 class="text-end">Total: $<span id="printTotalAmount"></span></h4>
+                                </div>
+                            </div>
+                            
+                            <div class="card mt-4">
+                                <div class="card-header">
+                                    Add Payment
+                                </div>
+                                <div class="card-body">
+                                    <form id="addPaymentForm">
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label for="paymentAmount" class="form-label">Payment Amount</label>
+                                                <input type="number" class="form-control" id="paymentAmount" required>
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label for="paymentDate" class="form-label">Date</label>
+                                                <input type="date" class="form-control" id="paymentDate" required>
+                                            </div>
+                                        </div>
+                                        <button type="submit" class="btn btn-primary">Add Payment</button>
+                                    </form>
+                                </div>
+                            </div>
+                            
+                            <div class="card mt-4">
+                                <div class="card-header">
+                                    Payment History
+                                </div>
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table class="table table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <th>Date</th>
+                                                    <th>Customer</th>
+                                                    <th>Amount</th>
+                                                    <th>Actions</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="paymentTableBody">
+                                                <!-- Payment data will be populated here -->
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Payment Receipt for Printing -->
+                            <div id="paymentReceiptPrint" class="print-only" style="display: none;">
+                                <div class="invoice-logo">
+                                    <i class="fas fa-car-side fa-3x"></i>
+                                    <h3>Car Rental System</h3>
+                                </div>
+                                <div class="card">
+                                    <div class="card-header text-center">
+                                        <h3>Payment Receipt</h3>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row mb-3">
+                                            <div class="col-6">
+                                                <strong>Receipt No:</strong> <span id="printReceiptNo"></span>
+                                            </div>
+                                            <div class="col-6 text-end">
+                                                <strong>Date:</strong> <span id="printPaymentDate"></span>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-3">
+                                            <div class="col-12">
+                                                <strong>Customer:</strong> <span id="printPaymentCustomer"></span>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-3">
+                                            <div class="col-12">
+                                                <strong>Payment Amount:</strong> $<span id="printPaymentAmount"></span>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-12">
+                                                <hr>
+                                                <h4 class="text-end">Total Paid: $<span id="printPaymentTotal"></span></h4>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
 
-                    <!-- Vehicle Returns Tab -->
-                    <div class="tab-pane fade" id="returns">
-                        <h2 class="mb-4">Vehicle Returns</h2>
-                        
-                        <div class="card">
-                            <div class="card-header">
-                                Return Vehicle
+                        <!-- Fines & Taxes Tab -->
+                        <div class="tab-pane fade" id="fines">
+                            <h2 class="mb-4">Fines & Taxes</h2>
+                            
+                            <div class="card">
+                                <div class="card-header">
+                                    Add Fine/Tax
+                                </div>
+                                <div class="card-body">
+                                    <form id="addFineTaxForm">
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label for="fineTaxType" class="form-label">Type</label>
+                                                <select class="form-select" id="fineTaxType" required>
+                                                    <option value="">Select Type</option>
+                                                    <option value="fine">Fine</option>
+                                                    <option value="tax">Tax</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label for="fineTaxAmount" class="form-label">Amount</label>
+                                                <input type="number" class="form-control" id="fineTaxAmount" required>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label for="fineTaxInvoice" class="form-label">Invoice Code</label>
+                                                <input type="text" class="form-control" id="fineTaxInvoice" placeholder="Search invoice...">
+                                                <div class="suggestion-list" id="invoiceSuggestions"></div>
+                                            </div>
+                                        </div>
+                                        <button type="submit" class="btn btn-primary">Add Fine/Tax</button>
+                                    </form>
+                                </div>
                             </div>
-                            <div class="card-body">
-                                <form id="returnVehicleForm">
-                                    <div class="row">
-                                        <div class="col-md-6 mb-3">
-                                            <label for="returnInvoice" class="form-label">Invoice Code</label>
-                                            <input type="text" class="form-control" id="returnInvoice" placeholder="Search invoice...">
-                                            <div class="suggestion-list" id="returnInvoiceSuggestions"></div>
-                                        </div>
-                                        <div class="col-md-6 mb-3">
-                                            <label for="returnOdometer" class="form-label">Current Odometer</label>
-                                            <input type="number" class="form-control" id="returnOdometer" required>
-                                        </div>
+                            
+                            <div class="card mt-4">
+                                <div class="card-header">
+                                    Fines & Taxes History
+                                </div>
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table class="table table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <th>Date</th>
+                                                    <th>Type</th>
+                                                    <th>Amount</th>
+                                                    <th>Invoice</th>
+                                                    <th>Actions</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="fineTaxTableBody">
+                                                <!-- Fine/Tax data will be populated here -->
+                                            </tbody>
+                                        </table>
                                     </div>
-                                    <div class="row">
-                                        <div class="col-md-6 mb-3">
-                                            <label for="fineAmount" class="form-label">Fine Amount (if any)</label>
-                                            <input type="number" class="form-control" id="fineAmount" value="0">
-                                        </div>
-                                        <div class="col-md-6 mb-3">
-                                            <label for="taxAmount" class="form-label">Tax Amount (if any)</label>
-                                            <input type="number" class="form-control" id="taxAmount" value="0">
-                                        </div>
-                                    </div>
-                                    <button type="submit" class="btn btn-primary">Return Vehicle</button>
-                                </form>
-                            </div>
-                        </div>
-                        
-                        <div class="card mt-4">
-                            <div class="card-header">
-                                Return History
-                            </div>
-                            <div class="card-body">
-                                <div class="table-responsive">
-                                    <table class="table table-hover">
-                                        <thead>
-                                            <tr>
-                                                <th>Invoice Code</th>
-                                                <th>Customer</th>
-                                                <th>Vehicle</th>
-                                                <th>Return Date</th>
-                                                <th>Fine</th>
-                                                <th>Tax</th>
-                                                <th>Total</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody id="returnTableBody">
-                                            <!-- Return data will be populated here -->
-                                        </tbody>
-                                    </table>
                                 </div>
                             </div>
                         </div>
-                    </div>
 
-                    <!-- Debts & Payments Tab -->
-                    <div class="tab-pane fade" id="debts">
-                        <h2 class="mb-4">Debts & Payments</h2>
-                        
-                        <div class="card">
-                            <div class="card-header">
-                                Search Customer
+                        <!-- Reports Tab -->
+                        <div class="tab-pane fade" id="reports">
+                            <h2 class="mb-4">Reports</h2>
+                            
+                            <div class="card">
+                                <div class="card-header">
+                                    Generate Report
+                                </div>
+                                <div class="card-body">
+                                    <form id="generateReportForm">
+                                        <div class="row">
+                                            <div class="col-md-4 mb-3">
+                                                <label for="reportStartDate" class="form-label">Start Date</label>
+                                                <input type="date" class="form-control" id="reportStartDate" required>
+                                            </div>
+                                            <div class="col-md-4 mb-3">
+                                                <label for="reportEndDate" class="form-label">End Date</label>
+                                                <input type="date" class="form-control" id="reportEndDate" required>
+                                            </div>
+                                            <div class="col-md-4 mb-3">
+                                                <label for="reportType" class="form-label">Report Type</label>
+                                                <select class="form-select" id="reportType" required>
+                                                    <option value="rentals">Rentals</option>
+                                                    <option value="payments">Payments</option>
+                                                    <option value="fines">Fines & Taxes</option>
+                                                    <option value="returns">Vehicle Returns</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label for="reportVehicle" class="form-label">Vehicle (Optional)</label>
+                                                <input type="text" class="form-control" id="reportVehicle" placeholder="Vehicle name or plate">
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label for="reportFormat" class="form-label">Output Format</label>
+                                                <select class="form-select" id="reportFormat" required>
+                                                    <option value="csv">CSV</option>
+                                                    <option value="print">Print</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <button type="submit" class="btn btn-primary">Generate Report</button>
+                                    </form>
+                                </div>
                             </div>
-                            <div class="card-body">
-                                <div class="row">
-                                    <div class="col-md-6 mb-3">
-                                        <label for="debtCustomer" class="form-label">Customer</label>
-                                        <input type="text" class="form-control" id="debtCustomer" placeholder="Search customer...">
-                                        <div class="suggestion-list" id="debtCustomerSuggestions"></div>
+                            
+                            <div class="card mt-4" id="reportResultsCard" style="display: none;">
+                                <div class="card-header d-flex justify-content-between align-items-center">
+                                    <span id="reportTitle">Report Results</span>
+                                    <div>
+                                        <button class="btn btn-success" id="exportReportBtn">
+                                            <i class="fas fa-download"></i> Export as CSV
+                                        </button>
+                                        <button class="btn btn-primary" id="printReportBtn">
+                                            <i class="fas fa-print"></i> Print Report
+                                        </button>
                                     </div>
-                                    <div class="col-md-6 mb-3">
-                                        <label class="form-label">Current Debt</label>
-                                        <div class="form-control" id="currentDebt">$0</div>
+                                </div>
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table class="table table-hover" id="reportResultsTable">
+                                            <thead id="reportResultsHead">
+                                                <!-- Table headers will be populated here -->
+                                            </thead>
+                                            <tbody id="reportResultsBody">
+                                                <!-- Report results will be populated here -->
+                                            </tbody>
+                                        </table>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        
-                        <div class="card mt-4">
-                            <div class="card-header">
-                                Add Payment
-                            </div>
-                            <div class="card-body">
-                                <form id="addPaymentForm">
-                                    <div class="row">
-                                        <div class="col-md-6 mb-3">
-                                            <label for="paymentAmount" class="form-label">Payment Amount</label>
-                                            <input type="number" class="form-control" id="paymentAmount" required>
-                                        </div>
-                                        <div class="col-md-6 mb-3">
-                                            <label for="paymentDate" class="form-label">Date & Time</label>
-                                            <input type="datetime-local" class="form-control" id="paymentDate" required>
-                                        </div>
-                                    </div>
-                                    <button type="submit" class="btn btn-primary">Add Payment</button>
-                                </form>
-                            </div>
-                        </div>
-                        
-                        <div class="card mt-4">
-                            <div class="card-header">
-                                Payment History
-                            </div>
-                            <div class="card-body">
-                                <div class="table-responsive">
-                                    <table class="table table-hover">
-                                        <thead>
-                                            <tr>
-                                                <th>Date</th>
-                                                <th>Customer</th>
-                                                <th>Amount</th>
-                                                <th>Actions</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody id="paymentTableBody">
-                                            <!-- Payment data will be populated here -->
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
 
-                    <!-- Fines & Taxes Tab -->
-                    <div class="tab-pane fade" id="fines">
-                        <h2 class="mb-4">Fines & Taxes</h2>
-                        
-                        <div class="card">
-                            <div class="card-header">
-                                Add Fine/Tax
-                            </div>
-                            <div class="card-body">
-                                <form id="addFineTaxForm">
-                                    <div class="row">
-                                        <div class="col-md-6 mb-3">
-                                            <label for="fineTaxType" class="form-label">Type</label>
-                                            <select class="form-select" id="fineTaxType" required>
-                                                <option value="">Select Type</option>
-                                                <option value="fine">Fine</option>
-                                                <option value="tax">Tax</option>
-                                            </select>
+                        <!-- System Settings Tab -->
+                        <div class="tab-pane fade admin-only" id="settings">
+                            <h2 class="mb-4">System Settings</h2>
+                            
+                            <div class="card">
+                                <div class="card-header">
+                                    System Configuration
+                                </div>
+                                <div class="card-body">
+                                    <form id="systemSettingsForm">
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label for="systemName" class="form-label">System Name</label>
+                                                <input type="text" class="form-control" id="systemName" value="Car Rental System" required>
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label for="systemLogo" class="form-label">System Logo</label>
+                                                <input type="file" class="form-control" id="systemLogo">
+                                            </div>
                                         </div>
-                                        <div class="col-md-6 mb-3">
-                                            <label for="fineTaxAmount" class="form-label">Amount</label>
-                                            <input type="number" class="form-control" id="fineTaxAmount" required>
+                                        <div class="row">
+                                            <div class="col-md-12 mb-3">
+                                                <label for="systemMessage" class="form-label">System Message</label>
+                                                <textarea class="form-control" id="systemMessage" rows="3"></textarea>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-6 mb-3">
-                                            <label for="fineTaxInvoice" class="form-label">Invoice Code</label>
-                                            <input type="text" class="form-control" id="fineTaxInvoice" placeholder="Search invoice...">
-                                            <div class="suggestion-list" id="invoiceSuggestions"></div>
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label for="backupFrequency" class="form-label">Backup Frequency</label>
+                                                <select class="form-select" id="backupFrequency" required>
+                                                    <option value="daily">Daily</option>
+                                                    <option value="weekly">Weekly</option>
+                                                    <option value="monthly">Monthly</option>
+                                                </select>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <button type="submit" class="btn btn-primary">Add Fine/Tax</button>
-                                </form>
-                            </div>
-                        </div>
-                        
-                        <div class="card mt-4">
-                            <div class="card-header">
-                                Fines & Taxes History
-                            </div>
-                            <div class="card-body">
-                                <div class="table-responsive">
-                                    <table class="table table-hover">
-                                        <thead>
-                                            <tr>
-                                                <th>Date</th>
-                                                <th>Type</th>
-                                                <th>Amount</th>
-                                                <th>Invoice</th>
-                                                <th>Actions</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody id="fineTaxTableBody">
-                                            <!-- Fine/Tax data will be populated here -->
-                                        </tbody>
-                                    </table>
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <button type="button" class="btn btn-success w-100" id="backupBtn">
+                                                    <i class="fas fa-download"></i> Backup Now
+                                                </button>
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <button type="button" class="btn btn-info w-100" id="restoreBtn">
+                                                    <i class="fas fa-upload"></i> Restore Backup
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <button type="submit" class="btn btn-primary">Save Settings</button>
+                                    </form>
                                 </div>
                             </div>
                         </div>
                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-                    <!-- Reports Tab -->
-                    <div class="tab-pane fade" id="reports">
-                        <h2 class="mb-4">Reports</h2>
-                        
-                        <div class="card">
-                            <div class="card-header">
-                                Generate Report
-                            </div>
-                            <div class="card-body">
-                                <form id="generateReportForm">
-                                    <div class="row">
-                                        <div class="col-md-4 mb-3">
-                                            <label for="reportStartDate" class="form-label">Start Date</label>
-                                            <input type="date" class="form-control" id="reportStartDate" required>
-                                        </div>
-                                        <div class="col-md-4 mb-3">
-                                            <label for="reportEndDate" class="form-label">End Date</label>
-                                            <input type="date" class="form-control" id="reportEndDate" required>
-                                        </div>
-                                        <div class="col-md-4 mb-3">
-                                            <label for="reportType" class="form-label">Report Type</label>
-                                            <select class="form-select" id="reportType" required>
-                                                <option value="rentals">Rentals</option>
-                                                <option value="payments">Payments</option>
-                                                <option value="fines">Fines & Taxes</option>
-                                                <option value="returns">Vehicle Returns</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-6 mb-3">
-                                            <label for="reportVehicle" class="form-label">Vehicle (Optional)</label>
-                                            <input type="text" class="form-control" id="reportVehicle" placeholder="Vehicle name or plate">
-                                        </div>
-                                        <div class="col-md-6 mb-3">
-                                            <label for="reportFormat" class="form-label">Output Format</label>
-                                            <select class="form-select" id="reportFormat" required>
-                                                <option value="csv">CSV</option>
-                                                <option value="print">Print</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <button type="submit" class="btn btn-primary">Generate Report</button>
-                                </form>
-                            </div>
+    <!-- Change Password Modal -->
+    <div class="modal fade" id="changePasswordModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Change Password</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="changePasswordForm">
+                        <div class="mb-3">
+                            <label for="currentPassword" class="form-label">Current Password</label>
+                            <input type="password" class="form-control" id="currentPassword" required>
                         </div>
-                        
-                        <div class="card mt-4" id="reportResultsCard" style="display: none;">
-                            <div class="card-header d-flex justify-content-between align-items-center">
-                                <span id="reportTitle">Report Results</span>
-                                <button class="btn btn-success" id="exportReportBtn">
-                                    <i class="fas fa-download"></i> Export as CSV
-                                </button>
-                            </div>
-                            <div class="card-body">
-                                <div class="table-responsive">
-                                    <table class="table table-hover" id="reportResultsTable">
-                                        <thead id="reportResultsHead">
-                                            <!-- Table headers will be populated here -->
-                                        </thead>
-                                        <tbody id="reportResultsBody">
-                                            <!-- Report results will be populated here -->
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
+                        <div class="mb-3">
+                            <label for="newPassword" class="form-label">New Password</label>
+                            <input type="password" class="form-control" id="newPassword" required>
                         </div>
-                    </div>
+                        <div class="mb-3">
+                            <label for="confirmPassword" class="form-label">Confirm New Password</label>
+                            <input type="password" class="form-control" id="confirmPassword" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Change Password</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 
-                    <!-- System Settings Tab -->
-                    <div class="tab-pane fade" id="settings">
-                        <h2 class="mb-4">System Settings</h2>
-                        
-                        <div class="card">
-                            <div class="card-header">
-                                System Configuration
-                            </div>
-                            <div class="card-body">
-                                <form id="systemSettingsForm">
-                                    <div class="row">
-                                        <div class="col-md-6 mb-3">
-                                            <label for="systemName" class="form-label">System Name</label>
-                                            <input type="text" class="form-control" id="systemName" value="Car Rental System" required>
-                                        </div>
-                                        <div class="col-md-6 mb-3">
-                                            <label for="systemLogo" class="form-label">System Logo</label>
-                                            <input type="file" class="form-control" id="systemLogo">
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-12 mb-3">
-                                            <label for="systemMessage" class="form-label">System Message</label>
-                                            <textarea class="form-control" id="systemMessage" rows="3"></textarea>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-6 mb-3">
-                                            <label for="backupFrequency" class="form-label">Backup Frequency</label>
-                                            <select class="form-select" id="backupFrequency" required>
-                                                <option value="daily">Daily</option>
-                                                <option value="weekly">Weekly</option>
-                                                <option value="monthly">Monthly</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-6 mb-3">
-                                            <button type="button" class="btn btn-success w-100" id="backupBtn">
-                                                <i class="fas fa-download"></i> Backup Now
-                                            </button>
-                                        </div>
-                                        <div class="col-md-6 mb-3">
-                                            <button type="button" class="btn btn-info w-100" id="restoreBtn">
-                                                <i class="fas fa-upload"></i> Restore Backup
-                                            </button>
-                                        </div>
-                                    </div>
-                                    <button type="submit" class="btn btn-primary">Save Settings</button>
-                                </form>
-                            </div>
-                        </div>
+    <!-- User Management Modal -->
+    <div class="modal fade" id="userManagementModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">User Management</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <button class="btn btn-primary" id="addUserBtn">
+                            <i class="fas fa-plus"></i> Add New User
+                        </button>
                     </div>
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Username</th>
+                                    <th>Role</th>
+                                    <th>Created Date</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="userTableBody">
+                                <!-- Users will be populated here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add User Modal -->
+    <div class="modal fade" id="addUserModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add New User</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addUserForm">
+                        <div class="mb-3">
+                            <label for="newUsername" class="form-label">Username</label>
+                            <input type="text" class="form-control" id="newUsername" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="newUserPassword" class="form-label">Password</label>
+                            <input type="password" class="form-control" id="newUserPassword" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="newUserRole" class="form-label">Role</label>
+                            <select class="form-select" id="newUserRole" required>
+                                <option value="user">User</option>
+                                <option value="admin">Admin</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Add User</button>
+                    </form>
                 </div>
             </div>
         </div>
@@ -976,9 +1196,94 @@
         let payments = JSON.parse(localStorage.getItem('payments')) || [];
         let finesTaxes = JSON.parse(localStorage.getItem('finesTaxes')) || [];
         let returns = JSON.parse(localStorage.getItem('returns')) || [];
-        
+        let users = JSON.parse(localStorage.getItem('users')) || [
+            { username: 'admin', password: '000000', role: 'admin', created: new Date().toISOString() }
+        ];
+        let currentUser = null;
+
         // Initialize the application
         document.addEventListener('DOMContentLoaded', function() {
+            // Check if user is logged in
+            checkLoginStatus();
+            
+            // Login form handler
+            document.getElementById('loginForm').addEventListener('submit', handleLogin);
+            
+            // Logout handler
+            document.getElementById('logoutBtn').addEventListener('click', handleLogout);
+            
+            // User management
+            document.getElementById('addUserBtn').addEventListener('click', function() {
+                if (currentUser && currentUser.role === 'admin') {
+                    new bootstrap.Modal(document.getElementById('addUserModal')).show();
+                }
+            });
+            
+            document.getElementById('addUserForm').addEventListener('submit', addNewUser);
+            document.getElementById('changePasswordForm').addEventListener('submit', changePassword);
+        });
+
+        // Check login status
+        function checkLoginStatus() {
+            const savedUser = localStorage.getItem('currentUser');
+            if (savedUser) {
+                currentUser = JSON.parse(savedUser);
+                showMainApp();
+            } else {
+                showLoginScreen();
+            }
+        }
+
+        // Handle login
+        function handleLogin(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            
+            const user = users.find(u => u.username === username && u.password === password);
+            
+            if (user) {
+                currentUser = user;
+                localStorage.setItem('currentUser', JSON.stringify(user));
+                showMainApp();
+            } else {
+                alert('Invalid username or password!');
+            }
+        }
+
+        // Handle logout
+        function handleLogout() {
+            currentUser = null;
+            localStorage.removeItem('currentUser');
+            showLoginScreen();
+        }
+
+        // Show login screen
+        function showLoginScreen() {
+            document.getElementById('loginScreen').style.display = 'block';
+            document.getElementById('mainApp').style.display = 'none';
+            document.getElementById('loginForm').reset();
+        }
+
+        // Show main application
+        function showMainApp() {
+            document.getElementById('loginScreen').style.display = 'none';
+            document.getElementById('mainApp').style.display = 'block';
+            document.getElementById('currentUser').textContent = currentUser.username;
+            
+            // Hide admin-only features for regular users
+            const adminElements = document.querySelectorAll('.admin-only');
+            adminElements.forEach(el => {
+                el.style.display = currentUser.role === 'admin' ? 'block' : 'none';
+            });
+            
+            // Initialize application components
+            initializeApp();
+        }
+
+        // Initialize application components
+        function initializeApp() {
             // Initialize Chart.js for dashboard
             initializeDashboardChart();
             
@@ -990,6 +1295,8 @@
             loadPaymentData();
             loadFineTaxData();
             loadReturnData();
+            loadVehicleHistory();
+            loadUsers();
             
             // Setup event listeners for search inputs
             setupSearchFunctionality();
@@ -1008,6 +1315,7 @@
             document.getElementById('backupBtn').addEventListener('click', backupData);
             document.getElementById('restoreBtn').addEventListener('click', restoreData);
             document.getElementById('exportReportBtn').addEventListener('click', exportReportToCSV);
+            document.getElementById('printReportBtn').addEventListener('click', printReport);
             document.getElementById('closeVehicleDetails').addEventListener('click', closeVehicleDetails);
             document.getElementById('closeCustomerDetails').addEventListener('click', closeCustomerDetails);
             
@@ -1015,8 +1323,127 @@
             document.getElementById('vehicleSearchBtn').addEventListener('click', searchVehicles);
             document.getElementById('customerSearchBtn').addEventListener('click', searchCustomers);
             document.getElementById('rentalSearchBtn').addEventListener('click', searchRentals);
-        });
-        
+        }
+
+        // Load users
+        function loadUsers() {
+            if (currentUser.role !== 'admin') return;
+            
+            const tableBody = document.getElementById('userTableBody');
+            tableBody.innerHTML = '';
+            
+            users.forEach(user => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${user.username}</td>
+                    <td><span class="badge ${user.role === 'admin' ? 'bg-danger' : 'bg-primary'}">${user.role}</span></td>
+                    <td>${new Date(user.created).toLocaleDateString()}</td>
+                    <td>
+                        ${user.username !== 'admin' ? `
+                            <button class="btn btn-sm btn-danger" onclick="deleteUser('${user.username}')">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        ` : ''}
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+
+        // Add new user
+        function addNewUser(e) {
+            e.preventDefault();
+            
+            if (currentUser.role !== 'admin') {
+                alert('Only admin can add users!');
+                return;
+            }
+            
+            const username = document.getElementById('newUsername').value;
+            const password = document.getElementById('newUserPassword').value;
+            const role = document.getElementById('newUserRole').value;
+            
+            if (users.find(u => u.username === username)) {
+                alert('Username already exists!');
+                return;
+            }
+            
+            const newUser = {
+                username: username,
+                password: password,
+                role: role,
+                created: new Date().toISOString()
+            };
+            
+            users.push(newUser);
+            saveUsers();
+            loadUsers();
+            
+            document.getElementById('addUserForm').reset();
+            bootstrap.Modal.getInstance(document.getElementById('addUserModal')).hide();
+            
+            alert('User added successfully!');
+        }
+
+        // Delete user
+        function deleteUser(username) {
+            if (currentUser.role !== 'admin') {
+                alert('Only admin can delete users!');
+                return;
+            }
+            
+            if (username === 'admin') {
+                alert('Cannot delete admin user!');
+                return;
+            }
+            
+            if (confirm(`Are you sure you want to delete user ${username}?`)) {
+                users = users.filter(u => u.username !== username);
+                saveUsers();
+                loadUsers();
+                alert('User deleted successfully!');
+            }
+        }
+
+        // Change password
+        function changePassword(e) {
+            e.preventDefault();
+            
+            const currentPassword = document.getElementById('currentPassword').value;
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            
+            if (currentUser.password !== currentPassword) {
+                alert('Current password is incorrect!');
+                return;
+            }
+            
+            if (newPassword !== confirmPassword) {
+                alert('New passwords do not match!');
+                return;
+            }
+            
+            currentUser.password = newPassword;
+            const userIndex = users.findIndex(u => u.username === currentUser.username);
+            if (userIndex !== -1) {
+                users[userIndex].password = newPassword;
+            }
+            
+            saveUsers();
+            localStorage.setItem('currentUser', JSON.stringify(currentUser));
+            
+            document.getElementById('changePasswordForm').reset();
+            bootstrap.Modal.getInstance(document.getElementById('changePasswordModal')).hide();
+            
+            alert('Password changed successfully!');
+        }
+
+        // Save users to localStorage
+        function saveUsers() {
+            localStorage.setItem('users', JSON.stringify(users));
+        }
+
+        // [Rest of the functions remain the same as previous version]
         // Initialize dashboard chart
         function initializeDashboardChart() {
             const ctx = document.getElementById('vehicleStatusChart').getContext('2d');
@@ -1044,7 +1471,7 @@
                 }
             });
         }
-        
+
         // Load dashboard data
         function loadDashboardData() {
             // Calculate statistics
@@ -1165,7 +1592,7 @@
             // Load recent rentals
             loadRecentRentals();
         }
-        
+
         // Load recent rentals for dashboard
         function loadRecentRentals() {
             const recentRentals = rentals.slice(-5).reverse();
@@ -1187,7 +1614,7 @@
                 tableBody.appendChild(row);
             });
         }
-        
+
         // Save all data to localStorage
         function saveAllData() {
             localStorage.setItem('vehicles', JSON.stringify(vehicles));
@@ -1200,7 +1627,7 @@
             // Update dashboard after saving data
             loadDashboardData();
         }
-        
+
         // Load vehicle data into the table
         function loadVehicleData() {
             const tableBody = document.getElementById('vehicleTableBody');
@@ -1224,7 +1651,30 @@
                 tableBody.appendChild(row);
             });
         }
-        
+
+        // Load vehicle history
+        function loadVehicleHistory() {
+            const tableBody = document.getElementById('vehicleHistoryTableBody');
+            tableBody.innerHTML = '';
+            
+            rentals.forEach(rental => {
+                const customer = customers.find(c => c.id === rental.customerId);
+                const vehicle = vehicles.find(v => v.id === rental.vehicleId);
+                const returnInfo = returns.find(r => r.invoiceCode === rental.invoiceCode);
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${vehicle ? vehicle.name : 'Unknown'}</td>
+                    <td>${customer ? customer.fullName : 'Unknown'}</td>
+                    <td>${rental.date}</td>
+                    <td>${returnInfo ? returnInfo.returnDate : 'Not Returned'}</td>
+                    <td>$${rental.total}</td>
+                    <td><span class="badge ${rental.status === 'returned' ? 'bg-success' : 'bg-warning'}">${rental.status}</span></td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+
         // Load customer data into the table
         function loadCustomerData() {
             const tableBody = document.getElementById('customerTableBody');
@@ -1255,7 +1705,7 @@
                 tableBody.appendChild(row);
             });
         }
-        
+
         // Load rental data into the table
         function loadRentalData() {
             const tableBody = document.getElementById('rentalTableBody');
@@ -1282,7 +1732,7 @@
                 tableBody.appendChild(row);
             });
         }
-        
+
         // Load payment data into the table
         function loadPaymentData() {
             const tableBody = document.getElementById('paymentTableBody');
@@ -1305,7 +1755,7 @@
                 tableBody.appendChild(row);
             });
         }
-        
+
         // Load fine/tax data into the table
         function loadFineTaxData() {
             const tableBody = document.getElementById('fineTaxTableBody');
@@ -1326,7 +1776,7 @@
                 tableBody.appendChild(row);
             });
         }
-        
+
         // Load return data into the table
         function loadReturnData() {
             const tableBody = document.getElementById('returnTableBody');
@@ -1344,13 +1794,12 @@
                     <td>${vehicle ? vehicle.name : 'Unknown'}</td>
                     <td>${returnItem.returnDate}</td>
                     <td>$${returnItem.fine || 0}</td>
-                    <td>$${returnItem.tax || 0}</td>
-                    <td>$${(returnItem.fine || 0) + (returnItem.tax || 0)}</td>
+                    <td>$${(returnItem.fine || 0)}</td>
                 `;
                 tableBody.appendChild(row);
             });
         }
-        
+
         // Add a new vehicle
         function addVehicle(e) {
             e.preventDefault();
@@ -1369,13 +1818,14 @@
             vehicles.push(newVehicle);
             saveAllData();
             loadVehicleData();
+            loadVehicleHistory();
             
             // Reset form
             document.getElementById('addVehicleForm').reset();
             
             alert('Vehicle added successfully!');
         }
-        
+
         // Add a new customer
         function addCustomer(e) {
             e.preventDefault();
@@ -1399,7 +1849,7 @@
             
             alert('Customer added successfully!');
         }
-        
+
         // Create a new rental
         function createRental(e) {
             e.preventDefault();
@@ -1449,21 +1899,20 @@
             saveAllData();
             loadRentalData();
             loadVehicleData();
+            loadVehicleHistory();
             
             // Reset form
             document.getElementById('createRentalForm').reset();
             
             alert('Rental created successfully!');
         }
-        
+
         // Return a vehicle
         function returnVehicle(e) {
             e.preventDefault();
             
             const invoiceCode = document.getElementById('returnInvoice').value;
-            const currentOdometer = parseInt(document.getElementById('returnOdometer').value);
             const fineAmount = parseFloat(document.getElementById('fineAmount').value) || 0;
-            const taxAmount = parseFloat(document.getElementById('taxAmount').value) || 0;
             
             const rental = rentals.find(r => r.invoiceCode === invoiceCode);
             
@@ -1480,11 +1929,10 @@
             // Update rental status
             rental.status = 'returned';
             
-            // Update vehicle status and odometer
+            // Update vehicle status
             const vehicle = vehicles.find(v => v.id === rental.vehicleId);
             if (vehicle) {
                 vehicle.status = 'available';
-                vehicle.odometer = currentOdometer;
             }
             
             // Add to returns history
@@ -1492,14 +1940,12 @@
                 id: returns.length > 0 ? Math.max(...returns.map(r => r.id)) + 1 : 1,
                 invoiceCode: invoiceCode,
                 returnDate: new Date().toISOString().split('T')[0],
-                odometer: currentOdometer,
-                fine: fineAmount,
-                tax: taxAmount
+                fine: fineAmount
             };
             
             returns.push(newReturn);
             
-            // Add fines/taxes if any
+            // Add fines if any
             if (fineAmount > 0) {
                 const newFine = {
                     id: finesTaxes.length > 0 ? Math.max(...finesTaxes.map(f => f.id)) + 1 : 1,
@@ -1511,29 +1957,19 @@
                 finesTaxes.push(newFine);
             }
             
-            if (taxAmount > 0) {
-                const newTax = {
-                    id: finesTaxes.length > 0 ? Math.max(...finesTaxes.map(f => f.id)) + 1 : 1,
-                    type: 'tax',
-                    amount: taxAmount,
-                    invoiceCode: invoiceCode,
-                    date: new Date().toISOString().split('T')[0]
-                };
-                finesTaxes.push(newTax);
-            }
-            
             saveAllData();
             loadRentalData();
             loadVehicleData();
             loadReturnData();
             loadFineTaxData();
+            loadVehicleHistory();
             
             // Reset form
             document.getElementById('returnVehicleForm').reset();
             
             alert('Vehicle returned successfully!');
         }
-        
+
         // Add a new payment
         function addPayment(e) {
             e.preventDefault();
@@ -1547,7 +1983,7 @@
             }
             
             const paymentAmount = parseFloat(document.getElementById('paymentAmount').value);
-            const paymentDate = document.getElementById('paymentDate').value || new Date().toISOString().slice(0, 16);
+            const paymentDate = document.getElementById('paymentDate').value || new Date().toISOString().split('T')[0];
             
             const newPayment = {
                 id: payments.length > 0 ? Math.max(...payments.map(p => p.id)) + 1 : 1,
@@ -1566,7 +2002,7 @@
             
             alert('Payment added successfully!');
         }
-        
+
         // Add a new fine/tax
         function addFineTax(e) {
             e.preventDefault();
@@ -1592,7 +2028,7 @@
             
             alert(`${type === 'fine' ? 'Fine' : 'Tax'} added successfully!`);
         }
-        
+
         // Generate report
         function generateReport(e) {
             e.preventDefault();
@@ -1642,7 +2078,7 @@
                     
                 case 'returns':
                     data = returns.filter(returnItem => returnItem.returnDate >= startDate && returnItem.returnDate <= endDate);
-                    headers = ['Invoice Code', 'Return Date', 'Odometer', 'Fine', 'Tax', 'Total'];
+                    headers = ['Invoice Code', 'Return Date', 'Fine', 'Total'];
                     title = 'Vehicle Returns Report';
                     break;
             }
@@ -1655,7 +2091,7 @@
                 printReport();
             }
         }
-        
+
         // Display report results
         function displayReportResults(data, headers, title) {
             const resultsHead = document.getElementById('reportResultsHead');
@@ -1712,10 +2148,8 @@
                     row.innerHTML = `
                         <td>${item.invoiceCode}</td>
                         <td>${item.returnDate}</td>
-                        <td>${item.odometer}</td>
                         <td>$${item.fine || 0}</td>
-                        <td>$${item.tax || 0}</td>
-                        <td>$${(item.fine || 0) + (item.tax || 0)}</td>
+                        <td>$${(item.fine || 0)}</td>
                     `;
                 }
                 
@@ -1725,7 +2159,7 @@
             // Show results card
             document.getElementById('reportResultsCard').style.display = 'block';
         }
-        
+
         // Save system settings
         function saveSystemSettings(e) {
             e.preventDefault();
@@ -1738,7 +2172,7 @@
             // For this demo, we'll just show an alert
             alert('System settings saved successfully!');
         }
-        
+
         // Backup data
         function backupData() {
             const data = {
@@ -1748,6 +2182,7 @@
                 payments: payments,
                 finesTaxes: finesTaxes,
                 returns: returns,
+                users: users,
                 backupDate: new Date().toISOString()
             };
             
@@ -1765,7 +2200,7 @@
             
             alert('Backup created successfully!');
         }
-        
+
         // Restore data
         function restoreData() {
             const input = document.createElement('input');
@@ -1787,14 +2222,18 @@
                             payments = data.payments || [];
                             finesTaxes = data.finesTaxes || [];
                             returns = data.returns || [];
+                            users = data.users || users;
                             
                             saveAllData();
+                            saveUsers();
                             loadVehicleData();
                             loadCustomerData();
                             loadRentalData();
                             loadPaymentData();
                             loadFineTaxData();
                             loadReturnData();
+                            loadVehicleHistory();
+                            loadUsers();
                             
                             alert('Data restored successfully!');
                         } else {
@@ -1810,7 +2249,7 @@
             
             input.click();
         }
-        
+
         // Export report to CSV
         function exportReportToCSV() {
             const table = document.getElementById('reportResultsTable');
@@ -1838,7 +2277,7 @@
             document.body.removeChild(a);
             URL.revokeObjectURL(url);
         }
-        
+
         // Print report
         function printReport() {
             const printContent = document.getElementById('reportResultsCard').innerHTML;
@@ -1846,6 +2285,10 @@
             
             document.body.innerHTML = `
                 <div class="container">
+                    <div class="invoice-logo">
+                        <i class="fas fa-car-side fa-3x"></i>
+                        <h3>Car Rental System</h3>
+                    </div>
                     <h2 class="text-center my-4" id="printReportTitle">Report</h2>
                     ${printContent}
                 </div>
@@ -1857,7 +2300,7 @@
             // Re-initialize the application
             window.location.reload();
         }
-        
+
         // Print invoice
         function printInvoice(rentalId) {
             const rental = rentals.find(r => r.id === rentalId);
@@ -1883,7 +2326,31 @@
             // Re-initialize the application
             window.location.reload();
         }
-        
+
+        // Print payment receipt
+        function printPayment(paymentId) {
+            const payment = payments.find(p => p.id === paymentId);
+            if (!payment) return;
+            
+            const customer = customers.find(c => c.id === payment.customerId);
+            
+            document.getElementById('printReceiptNo').textContent = `REC${payment.id}`;
+            document.getElementById('printPaymentDate').textContent = payment.date;
+            document.getElementById('printPaymentCustomer').textContent = customer ? customer.fullName : 'Unknown';
+            document.getElementById('printPaymentAmount').textContent = payment.amount;
+            document.getElementById('printPaymentTotal').textContent = payment.amount;
+            
+            const receiptElement = document.getElementById('paymentReceiptPrint');
+            const originalContent = document.body.innerHTML;
+            
+            document.body.innerHTML = receiptElement.innerHTML;
+            window.print();
+            document.body.innerHTML = originalContent;
+            
+            // Re-initialize the application
+            window.location.reload();
+        }
+
         // Show vehicle details
         function showVehicleDetails(vehicleId) {
             const vehicle = vehicles.find(v => v.id === vehicleId);
@@ -1902,12 +2369,12 @@
             
             document.getElementById('vehicleDetailsCard').style.display = 'block';
         }
-        
+
         // Close vehicle details
         function closeVehicleDetails() {
             document.getElementById('vehicleDetailsCard').style.display = 'none';
         }
-        
+
         // Show customer details
         function showCustomerDetails(customerId) {
             const customer = customers.find(c => c.id === customerId);
@@ -1939,12 +2406,12 @@
             
             document.getElementById('customerDetailsCard').style.display = 'block';
         }
-        
+
         // Close customer details
         function closeCustomerDetails() {
             document.getElementById('customerDetailsCard').style.display = 'none';
         }
-        
+
         // Setup search functionality with autocomplete
         function setupSearchFunctionality() {
             // Customer search for rentals
@@ -2047,6 +2514,15 @@
                                 const currentDebt = totalDebt - totalPaid;
                                 
                                 document.getElementById('currentDebt').textContent = `$${currentDebt.toLocaleString()}`;
+                                
+                                // Show customer summary
+                                const summary = document.getElementById('customerDebtSummary');
+                                summary.innerHTML = `
+                                    <p><strong>Total Rentals:</strong> ${customerRentals.length}</p>
+                                    <p><strong>Total Amount:</strong> $${totalDebt.toLocaleString()}</p>
+                                    <p><strong>Total Paid:</strong> $${totalPaid.toLocaleString()}</p>
+                                    <p><strong>Remaining Debt:</strong> $${currentDebt.toLocaleString()}</p>
+                                `;
                             });
                             debtCustomerSuggestions.appendChild(item);
                         });
@@ -2126,7 +2602,7 @@
                 }
             });
         }
-        
+
         // Search vehicles
         function searchVehicles() {
             const searchTerm = document.getElementById('vehicleSearch').value.toLowerCase();
@@ -2157,7 +2633,7 @@
                 tableBody.appendChild(row);
             });
         }
-        
+
         // Search customers
         function searchCustomers() {
             const searchTerm = document.getElementById('customerSearch').value.toLowerCase();
@@ -2195,7 +2671,7 @@
                 tableBody.appendChild(row);
             });
         }
-        
+
         // Search rentals
         function searchRentals() {
             const searchTerm = document.getElementById('rentalSearch').value.toLowerCase();
@@ -2227,25 +2703,26 @@
                 tableBody.appendChild(row);
             });
         }
-        
+
         // Placeholder functions for edit/delete operations
         function editVehicle(id) {
             alert(`Edit vehicle with ID: ${id} - This functionality would open an edit form in a real application.`);
         }
-        
+
         function deleteVehicle(id) {
             if (confirm('Are you sure you want to delete this vehicle?')) {
                 vehicles = vehicles.filter(vehicle => vehicle.id !== id);
                 saveAllData();
                 loadVehicleData();
+                loadVehicleHistory();
                 alert('Vehicle deleted successfully!');
             }
         }
-        
+
         function editCustomer(id) {
             alert(`Edit customer with ID: ${id} - This functionality would open an edit form in a real application.`);
         }
-        
+
         function deleteCustomer(id) {
             if (confirm('Are you sure you want to delete this customer?')) {
                 customers = customers.filter(customer => customer.id !== id);
@@ -2254,11 +2731,11 @@
                 alert('Customer deleted successfully!');
             }
         }
-        
+
         function editRental(id) {
             alert(`Edit rental with ID: ${id} - This functionality would open an edit form in a real application.`);
         }
-        
+
         function deleteRental(id) {
             if (confirm('Are you sure you want to delete this rental?')) {
                 const rental = rentals.find(r => r.id === id);
@@ -2274,14 +2751,15 @@
                 saveAllData();
                 loadRentalData();
                 loadVehicleData();
+                loadVehicleHistory();
                 alert('Rental deleted successfully!');
             }
         }
-        
+
         function editPayment(id) {
             alert(`Edit payment with ID: ${id} - This functionality would open an edit form in a real application.`);
         }
-        
+
         function deletePayment(id) {
             if (confirm('Are you sure you want to delete this payment?')) {
                 payments = payments.filter(payment => payment.id !== id);
@@ -2290,11 +2768,11 @@
                 alert('Payment deleted successfully!');
             }
         }
-        
+
         function editFineTax(id) {
             alert(`Edit fine/tax with ID: ${id} - This functionality would open an edit form in a real application.`);
         }
-        
+
         function deleteFineTax(id) {
             if (confirm('Are you sure you want to delete this fine/tax?')) {
                 finesTaxes = finesTaxes.filter(fineTax => fineTax.id !== id);
@@ -2302,10 +2780,6 @@
                 loadFineTaxData();
                 alert('Fine/Tax deleted successfully!');
             }
-        }
-        
-        function printPayment(id) {
-            alert(`Print payment with ID: ${id} - This functionality would generate a printable payment receipt in a real application.`);
         }
     </script>
 </body>
