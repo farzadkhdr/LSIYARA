@@ -203,6 +203,20 @@
             max-width: 150px;
             height: auto;
         }
+        
+        .custom-logo {
+            max-height: 40px;
+            margin-right: 10px;
+        }
+        
+        .currency-badge {
+            font-size: 0.7rem;
+            margin-left: 5px;
+        }
+        
+        .user-only {
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -238,7 +252,8 @@
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark no-print">
             <div class="container-fluid">
                 <a class="navbar-brand" href="#">
-                    <i class="fas fa-car"></i> Car Rental System
+                    <img id="headerLogo" src="" class="custom-logo" style="display: none;">
+                    <span id="headerSystemName">Car Rental System</span>
                 </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                     <span class="navbar-toggler-icon"></span>
@@ -251,7 +266,7 @@
                             </a>
                             <ul class="dropdown-menu">
                                 <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#changePasswordModal"><i class="fas fa-key"></i> Change Password</a></li>
-                                <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#userManagementModal"><i class="fas fa-users"></i> User Management</a></li>
+                                <li class="admin-only"><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#userManagementModal"><i class="fas fa-users"></i> User Management</a></li>
                                 <li><hr class="dropdown-divider"></li>
                                 <li><a class="dropdown-item" href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
                             </ul>
@@ -266,51 +281,51 @@
                 <!-- Sidebar -->
                 <div class="col-md-2 sidebar d-none d-md-block no-print">
                     <div class="logo-container">
-                        <i class="fas fa-car-side fa-2x text-primary"></i>
-                        <span class="system-name">RentalSys</span>
+                        <img id="sidebarLogo" src="" style="max-height: 30px; margin-right: 10px; display: none;">
+                        <span class="system-name" id="sidebarSystemName">RentalSys</span>
                     </div>
                     <ul class="nav flex-column">
-                        <li class="nav-item">
+                        <li class="nav-item dashboard-item">
                             <a class="nav-link active" href="#dashboard" data-bs-toggle="tab">
                                 <i class="fas fa-tachometer-alt"></i> Dashboard
                             </a>
                         </li>
-                        <li class="nav-item">
+                        <li class="nav-item vehicles-item">
                             <a class="nav-link" href="#vehicles" data-bs-toggle="tab">
                                 <i class="fas fa-car"></i> Vehicles
                             </a>
                         </li>
-                        <li class="nav-item">
+                        <li class="nav-item customers-item">
                             <a class="nav-link" href="#customers" data-bs-toggle="tab">
                                 <i class="fas fa-users"></i> Customers
                             </a>
                         </li>
-                        <li class="nav-item">
+                        <li class="nav-item rentals-item">
                             <a class="nav-link" href="#rentals" data-bs-toggle="tab">
                                 <i class="fas fa-receipt"></i> Rentals
                             </a>
                         </li>
-                        <li class="nav-item">
+                        <li class="nav-item returns-item">
                             <a class="nav-link" href="#returns" data-bs-toggle="tab">
                                 <i class="fas fa-undo"></i> Vehicle Returns
                             </a>
                         </li>
-                        <li class="nav-item">
+                        <li class="nav-item debts-item">
                             <a class="nav-link" href="#debts" data-bs-toggle="tab">
                                 <i class="fas fa-money-bill-wave"></i> Debts & Payments
                             </a>
                         </li>
-                        <li class="nav-item">
+                        <li class="nav-item fines-item">
                             <a class="nav-link" href="#fines" data-bs-toggle="tab">
                                 <i class="fas fa-gavel"></i> Fines & Taxes
                             </a>
                         </li>
-                        <li class="nav-item">
+                        <li class="nav-item reports-item">
                             <a class="nav-link" href="#reports" data-bs-toggle="tab">
                                 <i class="fas fa-chart-bar"></i> Reports
                             </a>
                         </li>
-                        <li class="nav-item admin-only">
+                        <li class="nav-item admin-only settings-item">
                             <a class="nav-link" href="#settings" data-bs-toggle="tab">
                                 <i class="fas fa-cogs"></i> System Settings
                             </a>
@@ -637,7 +652,13 @@
                                         <div class="row">
                                             <div class="col-md-6 mb-3">
                                                 <label for="rentalAmount" class="form-label">Rental Amount</label>
-                                                <input type="number" class="form-control" id="rentalAmount" required>
+                                                <div class="input-group">
+                                                    <input type="number" class="form-control" id="rentalAmount" required>
+                                                    <select class="form-select" id="rentalCurrency" style="max-width: 120px;">
+                                                        <option value="USD">USD</option>
+                                                        <option value="IQD">IQD</option>
+                                                    </select>
+                                                </div>
                                             </div>
                                             <div class="col-md-6 mb-3">
                                                 <label for="rentalDays" class="form-label">Rental Days</label>
@@ -648,6 +669,10 @@
                                             <div class="col-md-6 mb-3">
                                                 <label for="invoiceCode" class="form-label">Invoice Code</label>
                                                 <input type="text" class="form-control" id="invoiceCode">
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label for="exchangeRate" class="form-label">Exchange Rate (USD to IQD)</label>
+                                                <input type="number" class="form-control" id="exchangeRate" value="1410" step="0.01">
                                             </div>
                                         </div>
                                         <button type="submit" class="btn btn-primary">Create Rental</button>
@@ -690,8 +715,8 @@
                             <!-- Invoice for Printing -->
                             <div id="invoicePrint" class="print-only" style="display: none;">
                                 <div class="invoice-logo">
-                                    <i class="fas fa-car-side fa-3x"></i>
-                                    <h3>Car Rental System</h3>
+                                    <img id="printLogo" src="" style="max-width: 150px; display: none;">
+                                    <h3 id="printSystemName">Car Rental System</h3>
                                 </div>
                                 <div class="card">
                                     <div class="card-header text-center">
@@ -716,13 +741,13 @@
                                         </div>
                                         <div class="row mb-3">
                                             <div class="col-12">
-                                                <strong>Rental Amount:</strong> $<span id="printRentalAmount"></span>
+                                                <strong>Rental Amount:</strong> <span id="printRentalAmount"></span>
                                             </div>
                                         </div>
                                         <div class="row">
                                             <div class="col-12">
                                                 <hr>
-                                                <h4 class="text-end">Total: $<span id="printTotalAmount"></span></h4>
+                                                <h4 class="text-end">Total: <span id="printTotalAmount"></span></h4>
                                             </div>
                                         </div>
                                     </div>
@@ -739,20 +764,44 @@
                                     Return Vehicle
                                 </div>
                                 <div class="card-body">
-                                    <form id="returnVehicleForm">
-                                        <div class="row">
-                                            <div class="col-md-6 mb-3">
-                                                <label for="returnInvoice" class="form-label">Invoice Code</label>
-                                                <input type="text" class="form-control" id="returnInvoice" placeholder="Search invoice...">
-                                                <div class="suggestion-list" id="returnInvoiceSuggestions"></div>
-                                            </div>
-                                            <div class="col-md-6 mb-3">
-                                                <label for="fineAmount" class="form-label">Fine Amount (if any)</label>
-                                                <input type="number" class="form-control" id="fineAmount" value="0">
-                                            </div>
+                                    <div class="row mb-3">
+                                        <div class="col-md-6">
+                                            <label for="returnStartDate" class="form-label">Start Date</label>
+                                            <input type="date" class="form-control" id="returnStartDate">
                                         </div>
-                                        <button type="submit" class="btn btn-primary">Return Vehicle</button>
-                                    </form>
+                                        <div class="col-md-6">
+                                            <label for="returnEndDate" class="form-label">End Date</label>
+                                            <input type="date" class="form-control" id="returnEndDate">
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <div class="col-md-6">
+                                            <label for="returnSearch" class="form-label">Search by Customer or Vehicle</label>
+                                            <input type="text" class="form-control" id="returnSearch" placeholder="Search customer or vehicle...">
+                                        </div>
+                                        <div class="col-md-6 d-flex align-items-end">
+                                            <button class="btn btn-primary me-2" id="filterReturnsBtn">Filter</button>
+                                            <button class="btn btn-secondary" id="clearFilterBtn">Clear</button>
+                                        </div>
+                                    </div>
+                                    <div class="table-responsive">
+                                        <table class="table table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <th>Invoice Code</th>
+                                                    <th>Customer</th>
+                                                    <th>Vehicle</th>
+                                                    <th>Rental Date</th>
+                                                    <th>Amount</th>
+                                                    <th>Status</th>
+                                                    <th>Actions</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="pendingReturnsTable">
+                                                <!-- Pending returns will be populated here -->
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
                             </div>
                             
@@ -822,7 +871,13 @@
                                         <div class="row">
                                             <div class="col-md-6 mb-3">
                                                 <label for="paymentAmount" class="form-label">Payment Amount</label>
-                                                <input type="number" class="form-control" id="paymentAmount" required>
+                                                <div class="input-group">
+                                                    <input type="number" class="form-control" id="paymentAmount" required>
+                                                    <select class="form-select" id="paymentCurrency" style="max-width: 120px;">
+                                                        <option value="USD">USD</option>
+                                                        <option value="IQD">IQD</option>
+                                                    </select>
+                                                </div>
                                             </div>
                                             <div class="col-md-6 mb-3">
                                                 <label for="paymentDate" class="form-label">Date</label>
@@ -860,8 +915,8 @@
                             <!-- Payment Receipt for Printing -->
                             <div id="paymentReceiptPrint" class="print-only" style="display: none;">
                                 <div class="invoice-logo">
-                                    <i class="fas fa-car-side fa-3x"></i>
-                                    <h3>Car Rental System</h3>
+                                    <img id="printPaymentLogo" src="" style="max-width: 150px; display: none;">
+                                    <h3 id="printPaymentSystemName">Car Rental System</h3>
                                 </div>
                                 <div class="card">
                                     <div class="card-header text-center">
@@ -883,13 +938,13 @@
                                         </div>
                                         <div class="row mb-3">
                                             <div class="col-12">
-                                                <strong>Payment Amount:</strong> $<span id="printPaymentAmount"></span>
+                                                <strong>Payment Amount:</strong> <span id="printPaymentAmount"></span>
                                             </div>
                                         </div>
                                         <div class="row">
                                             <div class="col-12">
                                                 <hr>
-                                                <h4 class="text-end">Total Paid: $<span id="printPaymentTotal"></span></h4>
+                                                <h4 class="text-end">Total: <span id="printPaymentTotal"></span></h4>
                                             </div>
                                         </div>
                                     </div>
@@ -903,30 +958,47 @@
                             
                             <div class="card">
                                 <div class="card-header">
-                                    Add Fine/Tax
+                                    Add Fine or Tax
                                 </div>
                                 <div class="card-body">
-                                    <form id="addFineTaxForm">
+                                    <form id="addFineForm">
                                         <div class="row">
                                             <div class="col-md-6 mb-3">
-                                                <label for="fineTaxType" class="form-label">Type</label>
-                                                <select class="form-select" id="fineTaxType" required>
-                                                    <option value="">Select Type</option>
-                                                    <option value="fine">Fine</option>
-                                                    <option value="tax">Tax</option>
-                                                </select>
+                                                <label for="fineCustomer" class="form-label">Customer</label>
+                                                <input type="text" class="form-control" id="fineCustomer" placeholder="Search customer...">
+                                                <div class="suggestion-list" id="fineCustomerSuggestions"></div>
                                             </div>
                                             <div class="col-md-6 mb-3">
-                                                <label for="fineTaxAmount" class="form-label">Amount</label>
-                                                <input type="number" class="form-control" id="fineTaxAmount" required>
+                                                <label for="fineType" class="form-label">Type</label>
+                                                <select class="form-select" id="fineType" required>
+                                                    <option value="">Select type...</option>
+                                                    <option value="Traffic Fine">Traffic Fine</option>
+                                                    <option value="Late Return">Late Return</option>
+                                                    <option value="Damage">Damage</option>
+                                                    <option value="Tax">Tax</option>
+                                                    <option value="Other">Other</option>
+                                                </select>
                                             </div>
                                         </div>
                                         <div class="row">
                                             <div class="col-md-6 mb-3">
-                                                <label for="fineTaxInvoice" class="form-label">Invoice Code</label>
-                                                <input type="text" class="form-control" id="fineTaxInvoice" placeholder="Search invoice...">
-                                                <div class="suggestion-list" id="invoiceSuggestions"></div>
+                                                <label for="fineAmount" class="form-label">Amount</label>
+                                                <div class="input-group">
+                                                    <input type="number" class="form-control" id="fineAmount" required>
+                                                    <select class="form-select" id="fineCurrency" style="max-width: 120px;">
+                                                        <option value="USD">USD</option>
+                                                        <option value="IQD">IQD</option>
+                                                    </select>
+                                                </div>
                                             </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label for="fineDate" class="form-label">Date</label>
+                                                <input type="date" class="form-control" id="fineDate" required>
+                                            </div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="fineDescription" class="form-label">Description</label>
+                                            <textarea class="form-control" id="fineDescription" rows="3"></textarea>
                                         </div>
                                         <button type="submit" class="btn btn-primary">Add Fine/Tax</button>
                                     </form>
@@ -943,14 +1015,15 @@
                                             <thead>
                                                 <tr>
                                                     <th>Date</th>
+                                                    <th>Customer</th>
                                                     <th>Type</th>
                                                     <th>Amount</th>
-                                                    <th>Invoice</th>
+                                                    <th>Description</th>
                                                     <th>Actions</th>
                                                 </tr>
                                             </thead>
-                                            <tbody id="fineTaxTableBody">
-                                                <!-- Fine/Tax data will be populated here -->
+                                            <tbody id="fineTableBody">
+                                                <!-- Fine data will be populated here -->
                                             </tbody>
                                         </table>
                                     </div>
@@ -967,73 +1040,44 @@
                                     Generate Report
                                 </div>
                                 <div class="card-body">
-                                    <form id="generateReportForm">
-                                        <div class="row">
-                                            <div class="col-md-4 mb-3">
-                                                <label for="reportStartDate" class="form-label">Start Date</label>
-                                                <input type="date" class="form-control" id="reportStartDate" required>
-                                            </div>
-                                            <div class="col-md-4 mb-3">
-                                                <label for="reportEndDate" class="form-label">End Date</label>
-                                                <input type="date" class="form-control" id="reportEndDate" required>
-                                            </div>
-                                            <div class="col-md-4 mb-3">
-                                                <label for="reportType" class="form-label">Report Type</label>
-                                                <select class="form-select" id="reportType" required>
-                                                    <option value="rentals">Rentals</option>
-                                                    <option value="payments">Payments</option>
-                                                    <option value="fines">Fines & Taxes</option>
-                                                    <option value="returns">Vehicle Returns</option>
-                                                </select>
-                                            </div>
+                                    <div class="row">
+                                        <div class="col-md-4 mb-3">
+                                            <label for="reportType" class="form-label">Report Type</label>
+                                            <select class="form-select" id="reportType">
+                                                <option value="rentals">Rentals Report</option>
+                                                <option value="payments">Payments Report</option>
+                                                <option value="fines">Fines Report</option>
+                                                <option value="vehicles">Vehicles Report</option>
+                                            </select>
                                         </div>
-                                        <div class="row">
-                                            <div class="col-md-6 mb-3">
-                                                <label for="reportVehicle" class="form-label">Vehicle (Optional)</label>
-                                                <input type="text" class="form-control" id="reportVehicle" placeholder="Vehicle name or plate">
-                                            </div>
-                                            <div class="col-md-6 mb-3">
-                                                <label for="reportFormat" class="form-label">Output Format</label>
-                                                <select class="form-select" id="reportFormat" required>
-                                                    <option value="csv">CSV</option>
-                                                    <option value="print">Print</option>
-                                                </select>
-                                            </div>
+                                        <div class="col-md-4 mb-3">
+                                            <label for="reportStartDate" class="form-label">Start Date</label>
+                                            <input type="date" class="form-control" id="reportStartDate">
                                         </div>
-                                        <button type="submit" class="btn btn-primary">Generate Report</button>
-                                    </form>
+                                        <div class="col-md-4 mb-3">
+                                            <label for="reportEndDate" class="form-label">End Date</label>
+                                            <input type="date" class="form-control" id="reportEndDate">
+                                        </div>
+                                    </div>
+                                    <button class="btn btn-primary" id="generateReportBtn">Generate Report</button>
+                                    <button class="btn btn-success ms-2" id="exportReportBtn">Export to Excel</button>
                                 </div>
                             </div>
                             
-                            <div class="card mt-4" id="reportResultsCard" style="display: none;">
-                                <div class="card-header d-flex justify-content-between align-items-center">
-                                    <span id="reportTitle">Report Results</span>
-                                    <div>
-                                        <button class="btn btn-success" id="exportReportBtn">
-                                            <i class="fas fa-download"></i> Export as CSV
-                                        </button>
-                                        <button class="btn btn-primary" id="printReportBtn">
-                                            <i class="fas fa-print"></i> Print Report
-                                        </button>
-                                    </div>
+                            <div class="card mt-4">
+                                <div class="card-header">
+                                    Report Results
                                 </div>
                                 <div class="card-body">
-                                    <div class="table-responsive">
-                                        <table class="table table-hover" id="reportResultsTable">
-                                            <thead id="reportResultsHead">
-                                                <!-- Table headers will be populated here -->
-                                            </thead>
-                                            <tbody id="reportResultsBody">
-                                                <!-- Report results will be populated here -->
-                                            </tbody>
-                                        </table>
+                                    <div id="reportResults">
+                                        <!-- Report results will be displayed here -->
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- System Settings Tab -->
-                        <div class="tab-pane fade admin-only" id="settings">
+                        <!-- Settings Tab -->
+                        <div class="tab-pane fade" id="settings">
                             <h2 class="mb-4">System Settings</h2>
                             
                             <div class="card">
@@ -1045,43 +1089,53 @@
                                         <div class="row">
                                             <div class="col-md-6 mb-3">
                                                 <label for="systemName" class="form-label">System Name</label>
-                                                <input type="text" class="form-control" id="systemName" value="Car Rental System" required>
+                                                <input type="text" class="form-control" id="systemName" value="Car Rental System">
                                             </div>
                                             <div class="col-md-6 mb-3">
-                                                <label for="systemLogo" class="form-label">System Logo</label>
-                                                <input type="file" class="form-control" id="systemLogo">
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-md-12 mb-3">
-                                                <label for="systemMessage" class="form-label">System Message</label>
-                                                <textarea class="form-control" id="systemMessage" rows="3"></textarea>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-md-6 mb-3">
-                                                <label for="backupFrequency" class="form-label">Backup Frequency</label>
-                                                <select class="form-select" id="backupFrequency" required>
-                                                    <option value="daily">Daily</option>
-                                                    <option value="weekly">Weekly</option>
-                                                    <option value="monthly">Monthly</option>
+                                                <label for="defaultCurrency" class="form-label">Default Currency</label>
+                                                <select class="form-select" id="defaultCurrency">
+                                                    <option value="USD">USD</option>
+                                                    <option value="IQD">IQD</option>
                                                 </select>
                                             </div>
                                         </div>
                                         <div class="row">
                                             <div class="col-md-6 mb-3">
-                                                <button type="button" class="btn btn-success w-100" id="backupBtn">
-                                                    <i class="fas fa-download"></i> Backup Now
-                                                </button>
+                                                <label for="exchangeRate" class="form-label">Exchange Rate (USD to IQD)</label>
+                                                <input type="number" class="form-control" id="settingsExchangeRate" value="1410" step="0.01">
                                             </div>
                                             <div class="col-md-6 mb-3">
-                                                <button type="button" class="btn btn-info w-100" id="restoreBtn">
-                                                    <i class="fas fa-upload"></i> Restore Backup
-                                                </button>
+                                                <label for="systemLogo" class="form-label">System Logo</label>
+                                                <input type="file" class="form-control" id="systemLogo" accept="image/*">
                                             </div>
                                         </div>
                                         <button type="submit" class="btn btn-primary">Save Settings</button>
                                     </form>
+                                </div>
+                            </div>
+                            
+                            <div class="card mt-4 admin-only">
+                                <div class="card-header">
+                                    User Management
+                                </div>
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table class="table table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <th>Username</th>
+                                                    <th>Role</th>
+                                                    <th>Permissions</th>
+                                                    <th>Status</th>
+                                                    <th>Actions</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="userTableBody">
+                                                <!-- User data will be populated here -->
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <button class="btn btn-primary mt-3" data-bs-toggle="modal" data-bs-target="#addUserModal">Add User</button>
                                 </div>
                             </div>
                         </div>
@@ -1091,7 +1145,7 @@
         </div>
     </div>
 
-    <!-- Change Password Modal -->
+    <!-- Modals -->
     <div class="modal fade" id="changePasswordModal" tabindex="-1">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -1110,7 +1164,7 @@
                             <input type="password" class="form-control" id="newPassword" required>
                         </div>
                         <div class="mb-3">
-                            <label for="confirmPassword" class="form-label">Confirm New Password</label>
+                            <label for="confirmPassword" class="form-label">Confirm Password</label>
                             <input type="password" class="form-control" id="confirmPassword" required>
                         </div>
                         <button type="submit" class="btn btn-primary">Change Password</button>
@@ -1120,7 +1174,6 @@
         </div>
     </div>
 
-    <!-- User Management Modal -->
     <div class="modal fade" id="userManagementModal" tabindex="-1">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
@@ -1129,23 +1182,19 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <div class="mb-3">
-                        <button class="btn btn-primary" id="addUserBtn">
-                            <i class="fas fa-plus"></i> Add New User
-                        </button>
-                    </div>
                     <div class="table-responsive">
                         <table class="table table-hover">
                             <thead>
                                 <tr>
                                     <th>Username</th>
                                     <th>Role</th>
-                                    <th>Created Date</th>
+                                    <th>Permissions</th>
+                                    <th>Status</th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
-                            <tbody id="userTableBody">
-                                <!-- Users will be populated here -->
+                            <tbody id="userManagementTableBody">
+                                <!-- User management data will be populated here -->
                             </tbody>
                         </table>
                     </div>
@@ -1154,7 +1203,6 @@
         </div>
     </div>
 
-    <!-- Add User Modal -->
     <div class="modal fade" id="addUserModal" tabindex="-1">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -1174,10 +1222,45 @@
                         </div>
                         <div class="mb-3">
                             <label for="newUserRole" class="form-label">Role</label>
-                            <select class="form-select" id="newUserRole" required>
+                            <select class="form-select" id="newUserRole">
                                 <option value="user">User</option>
                                 <option value="admin">Admin</option>
                             </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Permissions</label>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="dashboardPermission" checked>
+                                <label class="form-check-label" for="dashboardPermission">Dashboard</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="vehiclesPermission" checked>
+                                <label class="form-check-label" for="vehiclesPermission">Vehicles</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="customersPermission" checked>
+                                <label class="form-check-label" for="customersPermission">Customers</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="rentalsPermission" checked>
+                                <label class="form-check-label" for="rentalsPermission">Rentals</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="returnsPermission" checked>
+                                <label class="form-check-label" for="returnsPermission">Vehicle Returns</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="debtsPermission" checked>
+                                <label class="form-check-label" for="debtsPermission">Debts & Payments</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="finesPermission" checked>
+                                <label class="form-check-label" for="finesPermission">Fines & Taxes</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="reportsPermission" checked>
+                                <label class="form-check-label" for="reportsPermission">Reports</label>
+                            </div>
                         </div>
                         <button type="submit" class="btn btn-primary">Add User</button>
                     </form>
@@ -1189,283 +1272,316 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
-        // Data storage
-        let vehicles = JSON.parse(localStorage.getItem('vehicles')) || [];
-        let customers = JSON.parse(localStorage.getItem('customers')) || [];
-        let rentals = JSON.parse(localStorage.getItem('rentals')) || [];
-        let payments = JSON.parse(localStorage.getItem('payments')) || [];
-        let finesTaxes = JSON.parse(localStorage.getItem('finesTaxes')) || [];
-        let returns = JSON.parse(localStorage.getItem('returns')) || [];
-        let users = JSON.parse(localStorage.getItem('users')) || [
-            { username: 'admin', password: '000000', role: 'admin', created: new Date().toISOString() }
-        ];
-        let currentUser = null;
+        // Application data and state
+        const appData = {
+            users: [
+                { username: 'admin', password: '000000', role: 'admin', permissions: ['dashboard', 'vehicles', 'customers', 'rentals', 'returns', 'debts', 'fines', 'reports', 'settings'], active: true },
+                { username: 'user1', password: '123456', role: 'user', permissions: ['dashboard', 'vehicles', 'customers', 'rentals', 'returns'], active: true }
+            ],
+            vehicles: [
+                { id: 1, name: 'Toyota Camry', model: '2022', color: 'White', plate: 'ABC123', vin: '1HGCM82633A123456', odometer: 15000, status: 'available' },
+                { id: 2, name: 'Honda Civic', model: '2021', color: 'Black', plate: 'XYZ789', vin: '2HGCM82633A654321', odometer: 22000, status: 'rented' },
+                { id: 3, name: 'Ford Focus', model: '2020', color: 'Blue', plate: 'DEF456', vin: '3HGCM82633A987654', odometer: 18000, status: 'available' }
+            ],
+            customers: [
+                { id: 1, fullName: 'Ahmed Hassan', age: 35, idNumber: '123456789', nationality: 'Iraqi', contact: '07701234567', address: 'Baghdad', guaranteeDoc: null },
+                { id: 2, fullName: 'Sarah Mohammed', age: 28, idNumber: '987654321', nationality: 'Iraqi', contact: '07707654321', address: 'Erbil', guaranteeDoc: null }
+            ],
+            rentals: [
+                { id: 1, invoiceCode: 'INV001', customerId: 2, vehicleId: 2, date: '2023-05-15', amount: 50, currency: 'USD', days: 3, status: 'completed', returnDate: '2023-05-18' },
+                { id: 2, invoiceCode: 'INV002', customerId: 1, vehicleId: 1, date: '2023-05-20', amount: 70, currency: 'USD', days: 5, status: 'active', returnDate: null }
+            ],
+            returns: [
+                { id: 1, rentalId: 1, returnDate: '2023-05-18', fine: 0, total: 150 }
+            ],
+            payments: [
+                { id: 1, customerId: 1, date: '2023-05-22', amount: 100, currency: 'USD' }
+            ],
+            fines: [
+                { id: 1, customerId: 2, type: 'Traffic Fine', amount: 25, currency: 'USD', date: '2023-05-18', description: 'Speeding ticket' }
+            ],
+            settings: {
+                systemName: 'Car Rental System',
+                defaultCurrency: 'USD',
+                exchangeRate: 1410,
+                logo: null
+            },
+            currentUser: null
+        };
 
         // Initialize the application
         document.addEventListener('DOMContentLoaded', function() {
-            // Check if user is logged in
-            checkLoginStatus();
-            
-            // Login form handler
-            document.getElementById('loginForm').addEventListener('submit', handleLogin);
-            
-            // Logout handler
-            document.getElementById('logoutBtn').addEventListener('click', handleLogout);
-            
-            // User management
-            document.getElementById('addUserBtn').addEventListener('click', function() {
-                if (currentUser && currentUser.role === 'admin') {
-                    new bootstrap.Modal(document.getElementById('addUserModal')).show();
-                }
-            });
-            
-            document.getElementById('addUserForm').addEventListener('submit', addNewUser);
-            document.getElementById('changePasswordForm').addEventListener('submit', changePassword);
-        });
-
-        // Check login status
-        function checkLoginStatus() {
+            // Check if user is already logged in
             const savedUser = localStorage.getItem('currentUser');
             if (savedUser) {
-                currentUser = JSON.parse(savedUser);
+                appData.currentUser = JSON.parse(savedUser);
                 showMainApp();
-            } else {
-                showLoginScreen();
             }
-        }
 
-        // Handle login
-        function handleLogin(e) {
-            e.preventDefault();
-            
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
-            
-            const user = users.find(u => u.username === username && u.password === password);
-            
-            if (user) {
-                currentUser = user;
-                localStorage.setItem('currentUser', JSON.stringify(user));
-                showMainApp();
-            } else {
-                alert('Invalid username or password!');
-            }
-        }
+            // Login form submission
+            document.getElementById('loginForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                const username = document.getElementById('username').value;
+                const password = document.getElementById('password').value;
+                
+                const user = appData.users.find(u => u.username === username && u.password === password && u.active);
+                
+                if (user) {
+                    appData.currentUser = user;
+                    localStorage.setItem('currentUser', JSON.stringify(user));
+                    showMainApp();
+                } else {
+                    alert('Invalid username or password');
+                }
+            });
 
-        // Handle logout
-        function handleLogout() {
-            currentUser = null;
-            localStorage.removeItem('currentUser');
-            showLoginScreen();
-        }
+            // Logout button
+            document.getElementById('logoutBtn').addEventListener('click', function() {
+                appData.currentUser = null;
+                localStorage.removeItem('currentUser');
+                document.getElementById('mainApp').style.display = 'none';
+                document.getElementById('loginScreen').style.display = 'block';
+            });
 
-        // Show login screen
-        function showLoginScreen() {
-            document.getElementById('loginScreen').style.display = 'block';
-            document.getElementById('mainApp').style.display = 'none';
-            document.getElementById('loginForm').reset();
-        }
+            // Initialize the main application
+            initializeApp();
+        });
 
-        // Show main application
+        // Show main application after login
         function showMainApp() {
             document.getElementById('loginScreen').style.display = 'none';
             document.getElementById('mainApp').style.display = 'block';
-            document.getElementById('currentUser').textContent = currentUser.username;
+            document.getElementById('currentUser').textContent = appData.currentUser.username;
             
-            // Hide admin-only features for regular users
-            const adminElements = document.querySelectorAll('.admin-only');
-            adminElements.forEach(el => {
-                el.style.display = currentUser.role === 'admin' ? 'block' : 'none';
-            });
+            // Apply user permissions
+            applyUserPermissions();
             
-            // Initialize application components
-            initializeApp();
-        }
-
-        // Initialize application components
-        function initializeApp() {
-            // Initialize Chart.js for dashboard
-            initializeDashboardChart();
+            // Load dashboard
+            loadDashboard();
             
             // Load initial data
-            loadDashboardData();
-            loadVehicleData();
-            loadCustomerData();
-            loadRentalData();
-            loadPaymentData();
-            loadFineTaxData();
-            loadReturnData();
-            loadVehicleHistory();
+            loadVehicles();
+            loadCustomers();
+            loadRentals();
+            loadReturns();
+            loadPayments();
+            loadFines();
             loadUsers();
             
-            // Setup event listeners for search inputs
-            setupSearchFunctionality();
+            // Apply system settings
+            applySystemSettings();
+        }
+
+        // Apply user permissions to UI
+        function applyUserPermissions() {
+            const user = appData.currentUser;
+            const permissions = user.permissions;
             
-            // Form submission handlers
-            document.getElementById('addVehicleForm').addEventListener('submit', addVehicle);
-            document.getElementById('addCustomerForm').addEventListener('submit', addCustomer);
-            document.getElementById('createRentalForm').addEventListener('submit', createRental);
-            document.getElementById('returnVehicleForm').addEventListener('submit', returnVehicle);
-            document.getElementById('addPaymentForm').addEventListener('submit', addPayment);
-            document.getElementById('addFineTaxForm').addEventListener('submit', addFineTax);
-            document.getElementById('generateReportForm').addEventListener('submit', generateReport);
-            document.getElementById('systemSettingsForm').addEventListener('submit', saveSystemSettings);
+            // Hide admin-only elements for non-admin users
+            const adminElements = document.querySelectorAll('.admin-only');
+            adminElements.forEach(el => {
+                if (user.role !== 'admin') {
+                    el.style.display = 'none';
+                }
+            });
             
-            // Button event listeners
-            document.getElementById('backupBtn').addEventListener('click', backupData);
-            document.getElementById('restoreBtn').addEventListener('click', restoreData);
-            document.getElementById('exportReportBtn').addEventListener('click', exportReportToCSV);
-            document.getElementById('printReportBtn').addEventListener('click', printReport);
-            document.getElementById('closeVehicleDetails').addEventListener('click', closeVehicleDetails);
-            document.getElementById('closeCustomerDetails').addEventListener('click', closeCustomerDetails);
+            // Hide elements based on permissions
+            const permissionMap = {
+                'dashboard': '.dashboard-item',
+                'vehicles': '.vehicles-item',
+                'customers': '.customers-item',
+                'rentals': '.rentals-item',
+                'returns': '.returns-item',
+                'debts': '.debts-item',
+                'fines': '.fines-item',
+                'reports': '.reports-item',
+                'settings': '.settings-item'
+            };
             
-            // Search button event listeners
+            for (const [perm, selector] of Object.entries(permissionMap)) {
+                const elements = document.querySelectorAll(selector);
+                elements.forEach(el => {
+                    if (!permissions.includes(perm)) {
+                        el.style.display = 'none';
+                    }
+                });
+            }
+            
+            // If dashboard permission is not available, redirect to first available tab
+            if (!permissions.includes('dashboard') && permissions.length > 0) {
+                const firstPermission = permissions[0];
+                const firstTab = document.querySelector(`.${firstPermission}-item a`);
+                if (firstTab) {
+                    firstTab.click();
+                }
+            }
+        }
+
+        // Apply system settings to UI
+        function applySystemSettings() {
+            const settings = appData.settings;
+            
+            // Update system name
+            document.getElementById('headerSystemName').textContent = settings.systemName;
+            document.getElementById('sidebarSystemName').textContent = settings.systemName;
+            document.getElementById('printSystemName').textContent = settings.systemName;
+            document.getElementById('printPaymentSystemName').textContent = settings.systemName;
+            
+            // Update logo if available
+            if (settings.logo) {
+                document.getElementById('headerLogo').src = settings.logo;
+                document.getElementById('headerLogo').style.display = 'inline';
+                document.getElementById('sidebarLogo').src = settings.logo;
+                document.getElementById('sidebarLogo').style.display = 'inline';
+                document.getElementById('printLogo').src = settings.logo;
+                document.getElementById('printLogo').style.display = 'inline';
+                document.getElementById('printPaymentLogo').src = settings.logo;
+                document.getElementById('printPaymentLogo').style.display = 'inline';
+            }
+            
+            // Update exchange rate
+            document.getElementById('exchangeRate').value = settings.exchangeRate;
+            document.getElementById('settingsExchangeRate').value = settings.exchangeRate;
+        }
+
+        // Initialize the application
+        function initializeApp() {
+            // Load saved data from localStorage if available
+            const savedData = localStorage.getItem('carRentalData');
+            if (savedData) {
+                const parsedData = JSON.parse(savedData);
+                Object.assign(appData, parsedData);
+            }
+            
+            // Set up event listeners for forms
+            setupEventListeners();
+            
+            // Initialize charts
+            initializeCharts();
+        }
+
+        // Set up event listeners for forms
+        function setupEventListeners() {
+            // Add vehicle form
+            document.getElementById('addVehicleForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                addVehicle();
+            });
+            
+            // Add customer form
+            document.getElementById('addCustomerForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                addCustomer();
+            });
+            
+            // Create rental form
+            document.getElementById('createRentalForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                createRental();
+            });
+            
+            // Add payment form
+            document.getElementById('addPaymentForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                addPayment();
+            });
+            
+            // Add fine form
+            document.getElementById('addFineForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                addFine();
+            });
+            
+            // System settings form
+            document.getElementById('systemSettingsForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                saveSystemSettings();
+            });
+            
+            // Add user form
+            document.getElementById('addUserForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                addUser();
+            });
+            
+            // Change password form
+            document.getElementById('changePasswordForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                changePassword();
+            });
+            
+            // Search functionality
             document.getElementById('vehicleSearchBtn').addEventListener('click', searchVehicles);
             document.getElementById('customerSearchBtn').addEventListener('click', searchCustomers);
             document.getElementById('rentalSearchBtn').addEventListener('click', searchRentals);
-        }
-
-        // Load users
-        function loadUsers() {
-            if (currentUser.role !== 'admin') return;
+            document.getElementById('filterReturnsBtn').addEventListener('click', filterReturns);
+            document.getElementById('clearFilterBtn').addEventListener('click', clearReturnFilters);
             
-            const tableBody = document.getElementById('userTableBody');
-            tableBody.innerHTML = '';
+            // Report generation
+            document.getElementById('generateReportBtn').addEventListener('click', generateReport);
+            document.getElementById('exportReportBtn').addEventListener('click', exportReport);
             
-            users.forEach(user => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${user.username}</td>
-                    <td><span class="badge ${user.role === 'admin' ? 'bg-danger' : 'bg-primary'}">${user.role}</span></td>
-                    <td>${new Date(user.created).toLocaleDateString()}</td>
-                    <td>
-                        ${user.username !== 'admin' ? `
-                            <button class="btn btn-sm btn-danger" onclick="deleteUser('${user.username}')">
-                                <i class="fas fa-trash"></i>
-                            </button>
-                        ` : ''}
-                    </td>
-                `;
-                tableBody.appendChild(row);
+            // Close detail sections
+            document.getElementById('closeVehicleDetails').addEventListener('click', function() {
+                document.getElementById('vehicleDetailsCard').style.display = 'none';
+            });
+            
+            document.getElementById('closeCustomerDetails').addEventListener('click', function() {
+                document.getElementById('customerDetailsCard').style.display = 'none';
+            });
+            
+            // Customer search for rentals
+            document.getElementById('rentalCustomer').addEventListener('input', function() {
+                searchCustomersForRental(this.value);
+            });
+            
+            // Vehicle search for rentals
+            document.getElementById('rentalVehicle').addEventListener('input', function() {
+                searchVehiclesForRental(this.value);
+            });
+            
+            // Customer search for debts
+            document.getElementById('debtCustomer').addEventListener('input', function() {
+                searchCustomersForDebt(this.value);
+            });
+            
+            // Customer search for fines
+            document.getElementById('fineCustomer').addEventListener('input', function() {
+                searchCustomersForFine(this.value);
+            });
+            
+            // System logo upload
+            document.getElementById('systemLogo').addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        appData.settings.logo = e.target.result;
+                        applySystemSettings();
+                    };
+                    reader.readAsDataURL(file);
+                }
             });
         }
 
-        // Add new user
-        function addNewUser(e) {
-            e.preventDefault();
-            
-            if (currentUser.role !== 'admin') {
-                alert('Only admin can add users!');
-                return;
-            }
-            
-            const username = document.getElementById('newUsername').value;
-            const password = document.getElementById('newUserPassword').value;
-            const role = document.getElementById('newUserRole').value;
-            
-            if (users.find(u => u.username === username)) {
-                alert('Username already exists!');
-                return;
-            }
-            
-            const newUser = {
-                username: username,
-                password: password,
-                role: role,
-                created: new Date().toISOString()
-            };
-            
-            users.push(newUser);
-            saveUsers();
-            loadUsers();
-            
-            document.getElementById('addUserForm').reset();
-            bootstrap.Modal.getInstance(document.getElementById('addUserModal')).hide();
-            
-            alert('User added successfully!');
-        }
-
-        // Delete user
-        function deleteUser(username) {
-            if (currentUser.role !== 'admin') {
-                alert('Only admin can delete users!');
-                return;
-            }
-            
-            if (username === 'admin') {
-                alert('Cannot delete admin user!');
-                return;
-            }
-            
-            if (confirm(`Are you sure you want to delete user ${username}?`)) {
-                users = users.filter(u => u.username !== username);
-                saveUsers();
-                loadUsers();
-                alert('User deleted successfully!');
-            }
-        }
-
-        // Change password
-        function changePassword(e) {
-            e.preventDefault();
-            
-            const currentPassword = document.getElementById('currentPassword').value;
-            const newPassword = document.getElementById('newPassword').value;
-            const confirmPassword = document.getElementById('confirmPassword').value;
-            
-            if (currentUser.password !== currentPassword) {
-                alert('Current password is incorrect!');
-                return;
-            }
-            
-            if (newPassword !== confirmPassword) {
-                alert('New passwords do not match!');
-                return;
-            }
-            
-            currentUser.password = newPassword;
-            const userIndex = users.findIndex(u => u.username === currentUser.username);
-            if (userIndex !== -1) {
-                users[userIndex].password = newPassword;
-            }
-            
-            saveUsers();
-            localStorage.setItem('currentUser', JSON.stringify(currentUser));
-            
-            document.getElementById('changePasswordForm').reset();
-            bootstrap.Modal.getInstance(document.getElementById('changePasswordModal')).hide();
-            
-            alert('Password changed successfully!');
-        }
-
-        // Save users to localStorage
-        function saveUsers() {
-            localStorage.setItem('users', JSON.stringify(users));
-        }
-
-        // [Rest of the functions remain the same as previous version]
-        // Initialize dashboard chart
-        function initializeDashboardChart() {
+        // Initialize charts
+        function initializeCharts() {
             const ctx = document.getElementById('vehicleStatusChart').getContext('2d');
-            return new Chart(ctx, {
+            const vehicleStatusChart = new Chart(ctx, {
                 type: 'doughnut',
                 data: {
                     labels: ['Available', 'Rented', 'Maintenance'],
                     datasets: [{
-                        data: [0, 0, 0],
-                        backgroundColor: [
-                            '#27ae60',
-                            '#f39c12',
-                            '#e74c3c'
-                        ],
-                        borderWidth: 1
+                        data: [10, 5, 2],
+                        backgroundColor: ['#28a745', '#007bff', '#ffc107']
                     }]
                 },
                 options: {
                     responsive: true,
+                    maintainAspectRatio: false,
                     plugins: {
                         legend: {
-                            position: 'bottom',
+                            position: 'bottom'
                         }
                     }
                 }
@@ -1473,108 +1589,75 @@
         }
 
         // Load dashboard data
-        function loadDashboardData() {
-            // Calculate statistics
-            const totalPayments = payments.reduce((sum, payment) => sum + payment.amount, 0);
-            const totalFinesTaxes = finesTaxes.reduce((sum, item) => sum + item.amount, 0);
-            const availableVehicles = vehicles.filter(v => v.status === 'available').length;
-            const rentedVehicles = vehicles.filter(v => v.status === 'rented').length;
-            const totalCustomers = customers.length;
-            const totalVehicles = vehicles.length;
+        function loadDashboard() {
+            const stats = document.getElementById('dashboardStats');
+            const recentRentals = document.getElementById('recentRentalsTable');
             
-            // Update dashboard cards
-            document.getElementById('dashboardStats').innerHTML = `
-                <div class="col-xl-3 col-md-6 mb-4">
-                    <div class="card dashboard-card border-left-primary shadow h-100 py-2">
+            // Calculate statistics
+            const totalVehicles = appData.vehicles.length;
+            const availableVehicles = appData.vehicles.filter(v => v.status === 'available').length;
+            const rentedVehicles = appData.vehicles.filter(v => v.status === 'rented').length;
+            const totalCustomers = appData.customers.length;
+            const activeRentals = appData.rentals.filter(r => r.status === 'active').length;
+            const totalRevenue = appData.rentals.reduce((sum, rental) => sum + rental.amount, 0);
+            
+            // Update dashboard stats
+            stats.innerHTML = `
+                <div class="col-md-3 mb-4">
+                    <div class="card dashboard-card bg-primary text-white">
                         <div class="card-body">
-                            <div class="row no-gutters align-items-center">
-                                <div class="col mr-2">
-                                    <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                        Total Payments</div>
-                                    <div class="h5 mb-0 font-weight-bold text-gray-800">$${totalPayments.toLocaleString()}</div>
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h4>${totalVehicles}</h4>
+                                    <p>Total Vehicles</p>
                                 </div>
-                                <div class="col-auto">
-                                    <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
+                                <div class="align-self-center">
+                                    <i class="fas fa-car fa-2x"></i>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="col-xl-3 col-md-6 mb-4">
-                    <div class="card dashboard-card border-left-success shadow h-100 py-2">
+                <div class="col-md-3 mb-4">
+                    <div class="card dashboard-card bg-success text-white">
                         <div class="card-body">
-                            <div class="row no-gutters align-items-center">
-                                <div class="col mr-2">
-                                    <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                                        Fines & Taxes</div>
-                                    <div class="h5 mb-0 font-weight-bold text-gray-800">$${totalFinesTaxes.toLocaleString()}</div>
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h4>${availableVehicles}</h4>
+                                    <p>Available Vehicles</p>
                                 </div>
-                                <div class="col-auto">
-                                    <i class="fas fa-gavel fa-2x text-gray-300"></i>
+                                <div class="align-self-center">
+                                    <i class="fas fa-check-circle fa-2x"></i>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="col-xl-3 col-md-6 mb-4">
-                    <div class="card dashboard-card border-left-info shadow h-100 py-2">
+                <div class="col-md-3 mb-4">
+                    <div class="card dashboard-card bg-warning text-white">
                         <div class="card-body">
-                            <div class="row no-gutters align-items-center">
-                                <div class="col mr-2">
-                                    <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
-                                        Available Vehicles</div>
-                                    <div class="h5 mb-0 font-weight-bold text-gray-800">${availableVehicles}</div>
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h4>${rentedVehicles}</h4>
+                                    <p>Rented Vehicles</p>
                                 </div>
-                                <div class="col-auto">
-                                    <i class="fas fa-car fa-2x text-gray-300"></i>
+                                <div class="align-self-center">
+                                    <i class="fas fa-road fa-2x"></i>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="col-xl-3 col-md-6 mb-4">
-                    <div class="card dashboard-card border-left-warning shadow h-100 py-2">
+                <div class="col-md-3 mb-4">
+                    <div class="card dashboard-card bg-info text-white">
                         <div class="card-body">
-                            <div class="row no-gutters align-items-center">
-                                <div class="col mr-2">
-                                    <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
-                                        Rented Vehicles</div>
-                                    <div class="h5 mb-0 font-weight-bold text-gray-800">${rentedVehicles}</div>
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h4>${totalCustomers}</h4>
+                                    <p>Total Customers</p>
                                 </div>
-                                <div class="col-auto">
-                                    <i class="fas fa-car-side fa-2x text-gray-300"></i>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-xl-3 col-md-6 mb-4">
-                    <div class="card dashboard-card border-left-primary shadow h-100 py-2">
-                        <div class="card-body">
-                            <div class="row no-gutters align-items-center">
-                                <div class="col mr-2">
-                                    <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                        Total Customers</div>
-                                    <div class="h5 mb-0 font-weight-bold text-gray-800">${totalCustomers}</div>
-                                </div>
-                                <div class="col-auto">
-                                    <i class="fas fa-users fa-2x text-gray-300"></i>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-xl-3 col-md-6 mb-4">
-                    <div class="card dashboard-card border-left-success shadow h-100 py-2">
-                        <div class="card-body">
-                            <div class="row no-gutters align-items-center">
-                                <div class="col mr-2">
-                                    <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                                        Total Vehicles</div>
-                                    <div class="h5 mb-0 font-weight-bold text-gray-800">${totalVehicles}</div>
-                                </div>
-                                <div class="col-auto">
-                                    <i class="fas fa-car fa-2x text-gray-300"></i>
+                                <div class="align-self-center">
+                                    <i class="fas fa-users fa-2x"></i>
                                 </div>
                             </div>
                         </div>
@@ -1582,283 +1665,358 @@
                 </div>
             `;
             
-            // Update chart
-            const chart = Chart.getChart('vehicleStatusChart');
-            if (chart) {
-                chart.data.datasets[0].data = [availableVehicles, rentedVehicles, vehicles.length - availableVehicles - rentedVehicles];
-                chart.update();
-            }
-            
-            // Load recent rentals
-            loadRecentRentals();
-        }
-
-        // Load recent rentals for dashboard
-        function loadRecentRentals() {
-            const recentRentals = rentals.slice(-5).reverse();
-            const tableBody = document.getElementById('recentRentalsTable');
-            tableBody.innerHTML = '';
-            
-            recentRentals.forEach(rental => {
-                const customer = customers.find(c => c.id === rental.customerId);
-                const vehicle = vehicles.find(v => v.id === rental.vehicleId);
+            // Update recent rentals table
+            const recentRentalsData = appData.rentals.slice(-5).reverse();
+            recentRentals.innerHTML = recentRentalsData.map(rental => {
+                const customer = appData.customers.find(c => c.id === rental.customerId);
+                const vehicle = appData.vehicles.find(v => v.id === rental.vehicleId);
+                const statusClass = rental.status === 'active' ? 'status-not-returned' : 'status-returned';
+                const statusText = rental.status === 'active' ? 'Active' : 'Completed';
                 
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${customer ? customer.fullName : 'Unknown'}</td>
-                    <td>${vehicle ? vehicle.name : 'Unknown'}</td>
-                    <td>${rental.date}</td>
-                    <td>$${rental.total}</td>
-                    <td><span class="badge ${rental.status === 'returned' ? 'bg-success' : 'bg-warning'}">${rental.status}</span></td>
+                return `
+                    <tr class="${statusClass}">
+                        <td>${customer ? customer.fullName : 'Unknown'}</td>
+                        <td>${vehicle ? vehicle.name : 'Unknown'}</td>
+                        <td>${rental.date}</td>
+                        <td>${formatCurrency(rental.amount, rental.currency)}</td>
+                        <td>${statusText}</td>
+                    </tr>
                 `;
-                tableBody.appendChild(row);
-            });
+            }).join('');
         }
 
-        // Save all data to localStorage
-        function saveAllData() {
-            localStorage.setItem('vehicles', JSON.stringify(vehicles));
-            localStorage.setItem('customers', JSON.stringify(customers));
-            localStorage.setItem('rentals', JSON.stringify(rentals));
-            localStorage.setItem('payments', JSON.stringify(payments));
-            localStorage.setItem('finesTaxes', JSON.stringify(finesTaxes));
-            localStorage.setItem('returns', JSON.stringify(returns));
-            
-            // Update dashboard after saving data
-            loadDashboardData();
-        }
-
-        // Load vehicle data into the table
-        function loadVehicleData() {
+        // Load vehicles data
+        function loadVehicles() {
             const tableBody = document.getElementById('vehicleTableBody');
-            tableBody.innerHTML = '';
+            const historyTableBody = document.getElementById('vehicleHistoryTableBody');
             
-            vehicles.forEach(vehicle => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${vehicle.name}</td>
-                    <td>${vehicle.model}</td>
-                    <td>${vehicle.color}</td>
-                    <td>${vehicle.plate}</td>
-                    <td>${vehicle.odometer.toLocaleString()}</td>
-                    <td><span class="badge ${vehicle.status === 'available' ? 'bg-success' : vehicle.status === 'rented' ? 'bg-warning' : 'bg-danger'}">${vehicle.status}</span></td>
-                    <td>
-                        <button class="btn btn-sm btn-primary" onclick="editVehicle(${vehicle.id})"><i class="fas fa-edit"></i></button>
-                        <button class="btn btn-sm btn-danger" onclick="deleteVehicle(${vehicle.id})"><i class="fas fa-trash"></i></button>
-                        <button class="btn btn-sm btn-info" onclick="showVehicleDetails(${vehicle.id})"><i class="fas fa-eye"></i></button>
-                    </td>
-                `;
-                tableBody.appendChild(row);
-            });
-        }
-
-        // Load vehicle history
-        function loadVehicleHistory() {
-            const tableBody = document.getElementById('vehicleHistoryTableBody');
-            tableBody.innerHTML = '';
-            
-            rentals.forEach(rental => {
-                const customer = customers.find(c => c.id === rental.customerId);
-                const vehicle = vehicles.find(v => v.id === rental.vehicleId);
-                const returnInfo = returns.find(r => r.invoiceCode === rental.invoiceCode);
+            // Update vehicle list table
+            tableBody.innerHTML = appData.vehicles.map(vehicle => {
+                const statusClass = vehicle.status === 'available' ? 'status-returned' : 'status-not-returned';
+                const statusText = vehicle.status === 'available' ? 'Available' : 'Rented';
                 
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${vehicle ? vehicle.name : 'Unknown'}</td>
-                    <td>${customer ? customer.fullName : 'Unknown'}</td>
-                    <td>${rental.date}</td>
-                    <td>${returnInfo ? returnInfo.returnDate : 'Not Returned'}</td>
-                    <td>$${rental.total}</td>
-                    <td><span class="badge ${rental.status === 'returned' ? 'bg-success' : 'bg-warning'}">${rental.status}</span></td>
+                return `
+                    <tr class="${statusClass}">
+                        <td>${vehicle.name}</td>
+                        <td>${vehicle.model}</td>
+                        <td>${vehicle.color}</td>
+                        <td>${vehicle.plate}</td>
+                        <td>${vehicle.odometer.toLocaleString()} km</td>
+                        <td>${statusText}</td>
+                        <td>
+                            <button class="btn btn-sm btn-info" onclick="showVehicleDetails(${vehicle.id})">Details</button>
+                            ${appData.currentUser.role === 'admin' ? `
+                                <button class="btn btn-sm btn-warning" onclick="editVehicle(${vehicle.id})">Edit</button>
+                                <button class="btn btn-sm btn-danger" onclick="deleteVehicle(${vehicle.id})">Delete</button>
+                            ` : ''}
+                        </td>
+                    </tr>
                 `;
-                tableBody.appendChild(row);
-            });
+            }).join('');
+            
+            // Update vehicle history table
+            const vehicleRentals = appData.rentals.filter(rental => 
+                appData.vehicles.some(vehicle => vehicle.id === rental.vehicleId)
+            );
+            
+            historyTableBody.innerHTML = vehicleRentals.map(rental => {
+                const customer = appData.customers.find(c => c.id === rental.customerId);
+                const vehicle = appData.vehicles.find(v => v.id === rental.vehicleId);
+                const statusClass = rental.status === 'active' ? 'status-not-returned' : 'status-returned';
+                const statusText = rental.status === 'active' ? 'Active' : 'Completed';
+                
+                return `
+                    <tr class="${statusClass}">
+                        <td>${vehicle ? vehicle.name : 'Unknown'}</td>
+                        <td>${customer ? customer.fullName : 'Unknown'}</td>
+                        <td>${rental.date}</td>
+                        <td>${rental.returnDate || 'Not returned'}</td>
+                        <td>${formatCurrency(rental.amount, rental.currency)}</td>
+                        <td>${statusText}</td>
+                    </tr>
+                `;
+            }).join('');
         }
 
-        // Load customer data into the table
-        function loadCustomerData() {
+        // Load customers data
+        function loadCustomers() {
             const tableBody = document.getElementById('customerTableBody');
-            tableBody.innerHTML = '';
             
-            customers.forEach(customer => {
+            tableBody.innerHTML = appData.customers.map(customer => {
                 // Calculate total debt for customer
-                const customerRentals = rentals.filter(r => r.customerId === customer.id);
-                const totalDebt = customerRentals.reduce((sum, rental) => sum + rental.total, 0);
-                const customerPayments = payments.filter(p => p.customerId === customer.id);
-                const totalPaid = customerPayments.reduce((sum, payment) => sum + payment.amount, 0);
-                const currentDebt = totalDebt - totalPaid;
+                const customerRentals = appData.rentals.filter(r => r.customerId === customer.id && r.status === 'active');
+                const customerFines = appData.fines.filter(f => f.customerId === customer.id);
+                const customerPayments = appData.payments.filter(p => p.customerId === customer.id);
                 
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${customer.fullName}</td>
-                    <td>${customer.age}</td>
-                    <td>${customer.idNumber}</td>
-                    <td>${customer.nationality}</td>
-                    <td>${customer.contact}</td>
-                    <td>$${currentDebt.toLocaleString()}</td>
-                    <td>
-                        <button class="btn btn-sm btn-primary" onclick="editCustomer(${customer.id})"><i class="fas fa-edit"></i></button>
-                        <button class="btn btn-sm btn-danger" onclick="deleteCustomer(${customer.id})"><i class="fas fa-trash"></i></button>
-                        <button class="btn btn-sm btn-info" onclick="showCustomerDetails(${customer.id})"><i class="fas fa-eye"></i></button>
-                    </td>
+                let totalDebt = 0;
+                
+                // Add rental amounts
+                customerRentals.forEach(rental => {
+                    totalDebt += rental.amount * rental.days;
+                });
+                
+                // Add fines
+                customerFines.forEach(fine => {
+                    totalDebt += fine.amount;
+                });
+                
+                // Subtract payments
+                customerPayments.forEach(payment => {
+                    totalDebt -= payment.amount;
+                });
+                
+                return `
+                    <tr>
+                        <td>${customer.fullName}</td>
+                        <td>${customer.age}</td>
+                        <td>${customer.idNumber}</td>
+                        <td>${customer.nationality}</td>
+                        <td>${customer.contact}</td>
+                        <td>${formatCurrency(totalDebt, 'USD')}</td>
+                        <td>
+                            <button class="btn btn-sm btn-info" onclick="showCustomerDetails(${customer.id})">Details</button>
+                            ${appData.currentUser.role === 'admin' ? `
+                                <button class="btn btn-sm btn-warning" onclick="editCustomer(${customer.id})">Edit</button>
+                                <button class="btn btn-sm btn-danger" onclick="deleteCustomer(${customer.id})">Delete</button>
+                            ` : ''}
+                        </td>
+                    </tr>
                 `;
-                tableBody.appendChild(row);
-            });
+            }).join('');
         }
 
-        // Load rental data into the table
-        function loadRentalData() {
+        // Load rentals data
+        function loadRentals() {
             const tableBody = document.getElementById('rentalTableBody');
-            tableBody.innerHTML = '';
             
-            rentals.forEach(rental => {
-                const customer = customers.find(c => c.id === rental.customerId);
-                const vehicle = vehicles.find(v => v.id === rental.vehicleId);
+            tableBody.innerHTML = appData.rentals.map(rental => {
+                const customer = appData.customers.find(c => c.id === rental.customerId);
+                const vehicle = appData.vehicles.find(v => v.id === rental.vehicleId);
+                const statusClass = rental.status === 'active' ? 'status-not-returned' : 'status-returned';
+                const statusText = rental.status === 'active' ? 'Active' : 'Completed';
                 
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${rental.invoiceCode}</td>
-                    <td>${customer ? customer.fullName : 'Unknown'}</td>
-                    <td>${vehicle ? vehicle.name : 'Unknown'}</td>
-                    <td>${rental.date}</td>
-                    <td>$${rental.total}</td>
-                    <td><span class="badge ${rental.status === 'returned' ? 'bg-success' : 'bg-warning'}">${rental.status}</span></td>
-                    <td>
-                        <button class="btn btn-sm btn-primary" onclick="editRental(${rental.id})"><i class="fas fa-edit"></i></button>
-                        <button class="btn btn-sm btn-danger" onclick="deleteRental(${rental.id})"><i class="fas fa-trash"></i></button>
-                        <button class="btn btn-sm btn-success" onclick="printInvoice(${rental.id})"><i class="fas fa-print"></i></button>
-                    </td>
+                return `
+                    <tr class="${statusClass}">
+                        <td>${rental.invoiceCode}</td>
+                        <td>${customer ? customer.fullName : 'Unknown'}</td>
+                        <td>${vehicle ? vehicle.name : 'Unknown'}</td>
+                        <td>${rental.date}</td>
+                        <td>${formatCurrency(rental.amount, rental.currency)}</td>
+                        <td>${statusText}</td>
+                        <td>
+                            <button class="btn btn-sm btn-info" onclick="printInvoice(${rental.id})">Print</button>
+                            ${appData.currentUser.role === 'admin' ? `
+                                <button class="btn btn-sm btn-warning" onclick="editRental(${rental.id})">Edit</button>
+                                <button class="btn btn-sm btn-danger" onclick="deleteRental(${rental.id})">Delete</button>
+                            ` : ''}
+                        </td>
+                    </tr>
                 `;
-                tableBody.appendChild(row);
-            });
+            }).join('');
         }
 
-        // Load payment data into the table
-        function loadPaymentData() {
+        // Load returns data
+        function loadReturns() {
+            const pendingReturnsTable = document.getElementById('pendingReturnsTable');
+            const returnTableBody = document.getElementById('returnTableBody');
+            
+            // Filter active rentals (pending returns)
+            const pendingReturns = appData.rentals.filter(rental => rental.status === 'active');
+            
+            pendingReturnsTable.innerHTML = pendingReturns.map(rental => {
+                const customer = appData.customers.find(c => c.id === rental.customerId);
+                const vehicle = appData.vehicles.find(v => v.id === rental.vehicleId);
+                
+                return `
+                    <tr class="status-not-returned">
+                        <td>${rental.invoiceCode}</td>
+                        <td>${customer ? customer.fullName : 'Unknown'}</td>
+                        <td>${vehicle ? vehicle.name : 'Unknown'}</td>
+                        <td>${rental.date}</td>
+                        <td>${formatCurrency(rental.amount, rental.currency)}</td>
+                        <td>Active</td>
+                        <td>
+                            <button class="btn btn-sm btn-success" onclick="returnVehicle(${rental.id})">Return</button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+            
+            // Load return history
+            const returnsHistory = appData.returns.map(returnRecord => {
+                const rental = appData.rentals.find(r => r.id === returnRecord.rentalId);
+                const customer = rental ? appData.customers.find(c => c.id === rental.customerId) : null;
+                const vehicle = rental ? appData.vehicles.find(v => v.id === rental.vehicleId) : null;
+                
+                return {
+                    ...returnRecord,
+                    customer: customer ? customer.fullName : 'Unknown',
+                    vehicle: vehicle ? vehicle.name : 'Unknown',
+                    invoiceCode: rental ? rental.invoiceCode : 'Unknown'
+                };
+            });
+            
+            returnTableBody.innerHTML = returnsHistory.map(returnRecord => `
+                <tr class="status-returned">
+                    <td>${returnRecord.invoiceCode}</td>
+                    <td>${returnRecord.customer}</td>
+                    <td>${returnRecord.vehicle}</td>
+                    <td>${returnRecord.returnDate}</td>
+                    <td>${formatCurrency(returnRecord.fine, 'USD')}</td>
+                    <td>${formatCurrency(returnRecord.total, 'USD')}</td>
+                </tr>
+            `).join('');
+        }
+
+        // Load payments data
+        function loadPayments() {
             const tableBody = document.getElementById('paymentTableBody');
-            tableBody.innerHTML = '';
             
-            payments.forEach(payment => {
-                const customer = customers.find(c => c.id === payment.customerId);
-                
-                const row = document.createElement('tr');
-                row.innerHTML = `
+            const paymentData = appData.payments.map(payment => {
+                const customer = appData.customers.find(c => c.id === payment.customerId);
+                return {
+                    ...payment,
+                    customerName: customer ? customer.fullName : 'Unknown'
+                };
+            });
+            
+            tableBody.innerHTML = paymentData.map(payment => `
+                <tr>
                     <td>${payment.date}</td>
-                    <td>${customer ? customer.fullName : 'Unknown'}</td>
-                    <td>$${payment.amount}</td>
+                    <td>${payment.customerName}</td>
+                    <td>${formatCurrency(payment.amount, payment.currency)}</td>
                     <td>
-                        <button class="btn btn-sm btn-primary" onclick="editPayment(${payment.id})"><i class="fas fa-edit"></i></button>
-                        <button class="btn btn-sm btn-danger" onclick="deletePayment(${payment.id})"><i class="fas fa-trash"></i></button>
-                        <button class="btn btn-sm btn-success" onclick="printPayment(${payment.id})"><i class="fas fa-print"></i></button>
+                        <button class="btn btn-sm btn-info" onclick="printPaymentReceipt(${payment.id})">Print</button>
+                        ${appData.currentUser.role === 'admin' ? `
+                            <button class="btn btn-sm btn-danger" onclick="deletePayment(${payment.id})">Delete</button>
+                        ` : ''}
                     </td>
-                `;
-                tableBody.appendChild(row);
-            });
+                </tr>
+            `).join('');
         }
 
-        // Load fine/tax data into the table
-        function loadFineTaxData() {
-            const tableBody = document.getElementById('fineTaxTableBody');
-            tableBody.innerHTML = '';
+        // Load fines data
+        function loadFines() {
+            const tableBody = document.getElementById('fineTableBody');
             
-            finesTaxes.forEach(fineTax => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${fineTax.date}</td>
-                    <td><span class="badge ${fineTax.type === 'fine' ? 'bg-danger' : 'bg-warning'}">${fineTax.type}</span></td>
-                    <td>$${fineTax.amount}</td>
-                    <td>${fineTax.invoiceCode}</td>
-                    <td>
-                        <button class="btn btn-sm btn-primary" onclick="editFineTax(${fineTax.id})"><i class="fas fa-edit"></i></button>
-                        <button class="btn btn-sm btn-danger" onclick="deleteFineTax(${fineTax.id})"><i class="fas fa-trash"></i></button>
-                    </td>
-                `;
-                tableBody.appendChild(row);
+            const fineData = appData.fines.map(fine => {
+                const customer = appData.customers.find(c => c.id === fine.customerId);
+                return {
+                    ...fine,
+                    customerName: customer ? customer.fullName : 'Unknown'
+                };
             });
+            
+            tableBody.innerHTML = fineData.map(fine => `
+                <tr>
+                    <td>${fine.date}</td>
+                    <td>${fine.customerName}</td>
+                    <td>${fine.type}</td>
+                    <td>${formatCurrency(fine.amount, fine.currency)}</td>
+                    <td>${fine.description}</td>
+                    <td>
+                        ${appData.currentUser.role === 'admin' ? `
+                            <button class="btn btn-sm btn-warning" onclick="editFine(${fine.id})">Edit</button>
+                            <button class="btn btn-sm btn-danger" onclick="deleteFine(${fine.id})">Delete</button>
+                        ` : ''}
+                    </td>
+                </tr>
+            `).join('');
         }
 
-        // Load return data into the table
-        function loadReturnData() {
-            const tableBody = document.getElementById('returnTableBody');
-            tableBody.innerHTML = '';
+        // Load users data
+        function loadUsers() {
+            const tableBody = document.getElementById('userTableBody');
+            const managementTableBody = document.getElementById('userManagementTableBody');
             
-            returns.forEach(returnItem => {
-                const rental = rentals.find(r => r.invoiceCode === returnItem.invoiceCode);
-                const customer = rental ? customers.find(c => c.id === rental.customerId) : null;
-                const vehicle = rental ? vehicles.find(v => v.id === rental.vehicleId) : null;
-                
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${returnItem.invoiceCode}</td>
-                    <td>${customer ? customer.fullName : 'Unknown'}</td>
-                    <td>${vehicle ? vehicle.name : 'Unknown'}</td>
-                    <td>${returnItem.returnDate}</td>
-                    <td>$${returnItem.fine || 0}</td>
-                    <td>$${(returnItem.fine || 0)}</td>
-                `;
-                tableBody.appendChild(row);
-            });
+            const userRows = appData.users.map(user => `
+                <tr>
+                    <td>${user.username}</td>
+                    <td>${user.role}</td>
+                    <td>${user.permissions.join(', ')}</td>
+                    <td>${user.active ? 'Active' : 'Inactive'}</td>
+                    <td>
+                        ${appData.currentUser.username !== user.username ? `
+                            <button class="btn btn-sm btn-warning" onclick="editUser('${user.username}')">Edit</button>
+                            <button class="btn btn-sm btn-danger" onclick="toggleUserStatus('${user.username}')">
+                                ${user.active ? 'Deactivate' : 'Activate'}
+                            </button>
+                        ` : ''}
+                    </td>
+                </tr>
+            `).join('');
+            
+            if (tableBody) tableBody.innerHTML = userRows;
+            if (managementTableBody) managementTableBody.innerHTML = userRows;
         }
 
         // Add a new vehicle
-        function addVehicle(e) {
-            e.preventDefault();
+        function addVehicle() {
+            const name = document.getElementById('vehicleName').value;
+            const odometer = parseInt(document.getElementById('vehicleOdometer').value);
+            const vin = document.getElementById('vehicleVin').value;
+            const plate = document.getElementById('vehiclePlate').value;
+            const color = document.getElementById('vehicleColor').value;
+            const model = document.getElementById('vehicleModel').value;
             
             const newVehicle = {
-                id: vehicles.length > 0 ? Math.max(...vehicles.map(v => v.id)) + 1 : 1,
-                name: document.getElementById('vehicleName').value,
-                model: document.getElementById('vehicleModel').value,
-                color: document.getElementById('vehicleColor').value,
-                plate: document.getElementById('vehiclePlate').value,
-                vin: document.getElementById('vehicleVin').value,
-                odometer: parseInt(document.getElementById('vehicleOdometer').value),
+                id: appData.vehicles.length > 0 ? Math.max(...appData.vehicles.map(v => v.id)) + 1 : 1,
+                name,
+                model,
+                color,
+                plate,
+                vin,
+                odometer,
                 status: 'available'
             };
             
-            vehicles.push(newVehicle);
-            saveAllData();
-            loadVehicleData();
-            loadVehicleHistory();
-            
-            // Reset form
+            appData.vehicles.push(newVehicle);
+            saveData();
+            loadVehicles();
             document.getElementById('addVehicleForm').reset();
-            
             alert('Vehicle added successfully!');
         }
 
         // Add a new customer
-        function addCustomer(e) {
-            e.preventDefault();
+        function addCustomer() {
+            const fullName = document.getElementById('customerFullName').value;
+            const age = parseInt(document.getElementById('customerAge').value);
+            const idNumber = document.getElementById('customerId').value;
+            const nationality = document.getElementById('customerNationality').value;
+            const contact = document.getElementById('customerContact').value;
+            const address = document.getElementById('customerAddress').value;
+            const guaranteeDoc = document.getElementById('guaranteeDoc').files[0];
             
             const newCustomer = {
-                id: customers.length > 0 ? Math.max(...customers.map(c => c.id)) + 1 : 1,
-                fullName: document.getElementById('customerFullName').value,
-                age: parseInt(document.getElementById('customerAge').value),
-                idNumber: document.getElementById('customerId').value,
-                nationality: document.getElementById('customerNationality').value,
-                contact: document.getElementById('customerContact').value,
-                address: document.getElementById('customerAddress').value
+                id: appData.customers.length > 0 ? Math.max(...appData.customers.map(c => c.id)) + 1 : 1,
+                fullName,
+                age,
+                idNumber,
+                nationality,
+                contact,
+                address,
+                guaranteeDoc: guaranteeDoc ? guaranteeDoc.name : null
             };
             
-            customers.push(newCustomer);
-            saveAllData();
-            loadCustomerData();
-            
-            // Reset form
+            appData.customers.push(newCustomer);
+            saveData();
+            loadCustomers();
             document.getElementById('addCustomerForm').reset();
-            
             alert('Customer added successfully!');
         }
 
         // Create a new rental
-        function createRental(e) {
-            e.preventDefault();
+        function createRental() {
+            const customerInput = document.getElementById('rentalCustomer').value;
+            const vehicleInput = document.getElementById('rentalVehicle').value;
+            const amount = parseFloat(document.getElementById('rentalAmount').value);
+            const currency = document.getElementById('rentalCurrency').value;
+            const days = parseInt(document.getElementById('rentalDays').value);
+            const invoiceCode = document.getElementById('invoiceCode').value;
             
-            const customerName = document.getElementById('rentalCustomer').value;
-            const vehicleName = document.getElementById('rentalVehicle').value;
-            
-            const customer = customers.find(c => c.fullName === customerName);
-            const vehicle = vehicles.find(v => v.name === vehicleName);
+            // Find customer and vehicle by name
+            const customer = appData.customers.find(c => c.fullName === customerInput);
+            const vehicle = appData.vehicles.find(v => v.name === vehicleInput);
             
             if (!customer) {
                 alert('Customer not found!');
@@ -1875,910 +2033,993 @@
                 return;
             }
             
-            const rentalAmount = parseFloat(document.getElementById('rentalAmount').value);
-            const rentalDays = parseInt(document.getElementById('rentalDays').value);
-            const invoiceCode = document.getElementById('invoiceCode').value || `INV${Date.now()}`;
-            
             const newRental = {
-                id: rentals.length > 0 ? Math.max(...rentals.map(r => r.id)) + 1 : 1,
-                invoiceCode: invoiceCode,
+                id: appData.rentals.length > 0 ? Math.max(...appData.rentals.map(r => r.id)) + 1 : 1,
+                invoiceCode: invoiceCode || `INV${Date.now()}`,
                 customerId: customer.id,
                 vehicleId: vehicle.id,
                 date: new Date().toISOString().split('T')[0],
-                amount: rentalAmount,
-                days: rentalDays,
-                total: rentalAmount,
-                status: 'active'
+                amount,
+                currency,
+                days,
+                status: 'active',
+                returnDate: null
             };
-            
-            rentals.push(newRental);
             
             // Update vehicle status
             vehicle.status = 'rented';
             
-            saveAllData();
-            loadRentalData();
-            loadVehicleData();
-            loadVehicleHistory();
-            
-            // Reset form
+            appData.rentals.push(newRental);
+            saveData();
+            loadRentals();
+            loadVehicles();
+            loadDashboard();
             document.getElementById('createRentalForm').reset();
-            
             alert('Rental created successfully!');
         }
 
-        // Return a vehicle
-        function returnVehicle(e) {
-            e.preventDefault();
+        // Add a payment
+        function addPayment() {
+            const customerInput = document.getElementById('debtCustomer').value;
+            const amount = parseFloat(document.getElementById('paymentAmount').value);
+            const currency = document.getElementById('paymentCurrency').value;
+            const date = document.getElementById('paymentDate').value;
             
-            const invoiceCode = document.getElementById('returnInvoice').value;
-            const fineAmount = parseFloat(document.getElementById('fineAmount').value) || 0;
-            
-            const rental = rentals.find(r => r.invoiceCode === invoiceCode);
-            
-            if (!rental) {
-                alert('Rental not found with this invoice code!');
-                return;
-            }
-            
-            if (rental.status === 'returned') {
-                alert('This vehicle has already been returned!');
-                return;
-            }
-            
-            // Update rental status
-            rental.status = 'returned';
-            
-            // Update vehicle status
-            const vehicle = vehicles.find(v => v.id === rental.vehicleId);
-            if (vehicle) {
-                vehicle.status = 'available';
-            }
-            
-            // Add to returns history
-            const newReturn = {
-                id: returns.length > 0 ? Math.max(...returns.map(r => r.id)) + 1 : 1,
-                invoiceCode: invoiceCode,
-                returnDate: new Date().toISOString().split('T')[0],
-                fine: fineAmount
-            };
-            
-            returns.push(newReturn);
-            
-            // Add fines if any
-            if (fineAmount > 0) {
-                const newFine = {
-                    id: finesTaxes.length > 0 ? Math.max(...finesTaxes.map(f => f.id)) + 1 : 1,
-                    type: 'fine',
-                    amount: fineAmount,
-                    invoiceCode: invoiceCode,
-                    date: new Date().toISOString().split('T')[0]
-                };
-                finesTaxes.push(newFine);
-            }
-            
-            saveAllData();
-            loadRentalData();
-            loadVehicleData();
-            loadReturnData();
-            loadFineTaxData();
-            loadVehicleHistory();
-            
-            // Reset form
-            document.getElementById('returnVehicleForm').reset();
-            
-            alert('Vehicle returned successfully!');
-        }
-
-        // Add a new payment
-        function addPayment(e) {
-            e.preventDefault();
-            
-            const customerName = document.getElementById('debtCustomer').value;
-            const customer = customers.find(c => c.fullName === customerName);
+            // Find customer by name
+            const customer = appData.customers.find(c => c.fullName === customerInput);
             
             if (!customer) {
                 alert('Customer not found!');
                 return;
             }
             
-            const paymentAmount = parseFloat(document.getElementById('paymentAmount').value);
-            const paymentDate = document.getElementById('paymentDate').value || new Date().toISOString().split('T')[0];
-            
             const newPayment = {
-                id: payments.length > 0 ? Math.max(...payments.map(p => p.id)) + 1 : 1,
+                id: appData.payments.length > 0 ? Math.max(...appData.payments.map(p => p.id)) + 1 : 1,
                 customerId: customer.id,
-                amount: paymentAmount,
-                date: paymentDate
+                date,
+                amount,
+                currency
             };
             
-            payments.push(newPayment);
-            saveAllData();
-            loadPaymentData();
-            loadCustomerData();
-            
-            // Reset form
+            appData.payments.push(newPayment);
+            saveData();
+            loadPayments();
+            updateCustomerDebt(customer.id);
             document.getElementById('addPaymentForm').reset();
-            
             alert('Payment added successfully!');
         }
 
-        // Add a new fine/tax
-        function addFineTax(e) {
-            e.preventDefault();
+        // Add a fine or tax
+        function addFine() {
+            const customerInput = document.getElementById('fineCustomer').value;
+            const type = document.getElementById('fineType').value;
+            const amount = parseFloat(document.getElementById('fineAmount').value);
+            const currency = document.getElementById('fineCurrency').value;
+            const date = document.getElementById('fineDate').value;
+            const description = document.getElementById('fineDescription').value;
             
-            const type = document.getElementById('fineTaxType').value;
-            const amount = parseFloat(document.getElementById('fineTaxAmount').value);
-            const invoiceCode = document.getElementById('fineTaxInvoice').value;
+            // Find customer by name
+            const customer = appData.customers.find(c => c.fullName === customerInput);
             
-            const newFineTax = {
-                id: finesTaxes.length > 0 ? Math.max(...finesTaxes.map(f => f.id)) + 1 : 1,
-                type: type,
-                amount: amount,
-                invoiceCode: invoiceCode,
-                date: new Date().toISOString().split('T')[0]
-            };
-            
-            finesTaxes.push(newFineTax);
-            saveAllData();
-            loadFineTaxData();
-            
-            // Reset form
-            document.getElementById('addFineTaxForm').reset();
-            
-            alert(`${type === 'fine' ? 'Fine' : 'Tax'} added successfully!`);
-        }
-
-        // Generate report
-        function generateReport(e) {
-            e.preventDefault();
-            
-            const startDate = document.getElementById('reportStartDate').value;
-            const endDate = document.getElementById('reportEndDate').value;
-            const reportType = document.getElementById('reportType').value;
-            const vehicleFilter = document.getElementById('reportVehicle').value;
-            const format = document.getElementById('reportFormat').value;
-            
-            if (!startDate || !endDate) {
-                alert('Please select both start and end dates.');
+            if (!customer) {
+                alert('Customer not found!');
                 return;
             }
             
-            let data = [];
-            let headers = [];
-            let title = '';
+            const newFine = {
+                id: appData.fines.length > 0 ? Math.max(...appData.fines.map(f => f.id)) + 1 : 1,
+                customerId: customer.id,
+                type,
+                amount,
+                currency,
+                date,
+                description
+            };
             
-            switch (reportType) {
-                case 'rentals':
-                    data = rentals.filter(rental => rental.date >= startDate && rental.date <= endDate);
-                    if (vehicleFilter) {
-                        data = data.filter(rental => {
-                            const vehicle = vehicles.find(v => v.id === rental.vehicleId);
-                            return vehicle && (
-                                vehicle.name.toLowerCase().includes(vehicleFilter.toLowerCase()) ||
-                                vehicle.plate.toLowerCase().includes(vehicleFilter.toLowerCase())
-                            );
-                        });
-                    }
-                    headers = ['Invoice Code', 'Customer', 'Vehicle', 'Date', 'Amount', 'Status'];
-                    title = 'Rentals Report';
-                    break;
-                    
-                case 'payments':
-                    data = payments.filter(payment => payment.date >= startDate && payment.date <= endDate);
-                    headers = ['Date', 'Customer', 'Amount'];
-                    title = 'Payments Report';
-                    break;
-                    
-                case 'fines':
-                    data = finesTaxes.filter(item => item.date >= startDate && item.date <= endDate);
-                    headers = ['Date', 'Type', 'Amount', 'Invoice Code'];
-                    title = 'Fines & Taxes Report';
-                    break;
-                    
-                case 'returns':
-                    data = returns.filter(returnItem => returnItem.returnDate >= startDate && returnItem.returnDate <= endDate);
-                    headers = ['Invoice Code', 'Return Date', 'Fine', 'Total'];
-                    title = 'Vehicle Returns Report';
-                    break;
-            }
-            
-            // Display results
-            displayReportResults(data, headers, title);
-            
-            // If format is print, print the report
-            if (format === 'print') {
-                printReport();
-            }
+            appData.fines.push(newFine);
+            saveData();
+            loadFines();
+            updateCustomerDebt(customer.id);
+            document.getElementById('addFineForm').reset();
+            alert('Fine/Tax added successfully!');
         }
 
-        // Display report results
-        function displayReportResults(data, headers, title) {
-            const resultsHead = document.getElementById('reportResultsHead');
-            const resultsBody = document.getElementById('reportResultsBody');
-            const reportTitle = document.getElementById('reportTitle');
+        // Return a vehicle
+        function returnVehicle(rentalId) {
+            const rental = appData.rentals.find(r => r.id === rentalId);
+            if (!rental) return;
             
-            // Set title
-            reportTitle.textContent = title;
+            const vehicle = appData.vehicles.find(v => v.id === rental.vehicleId);
+            if (!vehicle) return;
             
-            // Create headers
-            resultsHead.innerHTML = '';
-            const headerRow = document.createElement('tr');
-            headers.forEach(header => {
-                const th = document.createElement('th');
-                th.textContent = header;
-                headerRow.appendChild(th);
-            });
-            resultsHead.appendChild(headerRow);
+            // Calculate fine if any (for example, late return)
+            const returnDate = new Date().toISOString().split('T')[0];
+            const rentalDate = new Date(rental.date);
+            const expectedReturn = new Date(rentalDate);
+            expectedReturn.setDate(rentalDate.getDate() + rental.days);
             
-            // Create data rows
-            resultsBody.innerHTML = '';
-            data.forEach(item => {
-                const row = document.createElement('tr');
-                
-                // Based on report type, create appropriate cells
-                if (title === 'Rentals Report') {
-                    const customer = customers.find(c => c.id === item.customerId);
-                    const vehicle = vehicles.find(v => v.id === item.vehicleId);
-                    
-                    row.innerHTML = `
-                        <td>${item.invoiceCode}</td>
-                        <td>${customer ? customer.fullName : 'Unknown'}</td>
-                        <td>${vehicle ? vehicle.name : 'Unknown'}</td>
-                        <td>${item.date}</td>
-                        <td>$${item.total}</td>
-                        <td>${item.status}</td>
-                    `;
-                } else if (title === 'Payments Report') {
-                    const customer = customers.find(c => c.id === item.customerId);
-                    
-                    row.innerHTML = `
-                        <td>${item.date}</td>
-                        <td>${customer ? customer.fullName : 'Unknown'}</td>
-                        <td>$${item.amount}</td>
-                    `;
-                } else if (title === 'Fines & Taxes Report') {
-                    row.innerHTML = `
-                        <td>${item.date}</td>
-                        <td>${item.type}</td>
-                        <td>$${item.amount}</td>
-                        <td>${item.invoiceCode}</td>
-                    `;
-                } else if (title === 'Vehicle Returns Report') {
-                    row.innerHTML = `
-                        <td>${item.invoiceCode}</td>
-                        <td>${item.returnDate}</td>
-                        <td>$${item.fine || 0}</td>
-                        <td>$${(item.fine || 0)}</td>
-                    `;
-                }
-                
-                resultsBody.appendChild(row);
-            });
+            const actualReturn = new Date(returnDate);
+            const daysLate = Math.max(0, Math.floor((actualReturn - expectedReturn) / (1000 * 60 * 60 * 24)));
             
-            // Show results card
-            document.getElementById('reportResultsCard').style.display = 'block';
+            const fine = daysLate > 0 ? daysLate * 10 : 0; // $10 per day late
+            
+            // Update rental status
+            rental.status = 'completed';
+            rental.returnDate = returnDate;
+            
+            // Update vehicle status
+            vehicle.status = 'available';
+            
+            // Add return record
+            const total = (rental.amount * rental.days) + fine;
+            
+            const newReturn = {
+                id: appData.returns.length > 0 ? Math.max(...appData.returns.map(r => r.id)) + 1 : 1,
+                rentalId,
+                returnDate,
+                fine,
+                total
+            };
+            
+            appData.returns.push(newReturn);
+            saveData();
+            loadReturns();
+            loadRentals();
+            loadVehicles();
+            loadDashboard();
+            alert('Vehicle returned successfully!');
         }
 
         // Save system settings
-        function saveSystemSettings(e) {
-            e.preventDefault();
-            
+        function saveSystemSettings() {
             const systemName = document.getElementById('systemName').value;
-            const systemMessage = document.getElementById('systemMessage').value;
-            const backupFrequency = document.getElementById('backupFrequency').value;
+            const defaultCurrency = document.getElementById('defaultCurrency').value;
+            const exchangeRate = parseFloat(document.getElementById('settingsExchangeRate').value);
             
-            // In a real application, you would save these to a server
-            // For this demo, we'll just show an alert
-            alert('System settings saved successfully!');
+            appData.settings.systemName = systemName;
+            appData.settings.defaultCurrency = defaultCurrency;
+            appData.settings.exchangeRate = exchangeRate;
+            
+            saveData();
+            applySystemSettings();
+            alert('Settings saved successfully!');
         }
 
-        // Backup data
-        function backupData() {
-            const data = {
-                vehicles: vehicles,
-                customers: customers,
-                rentals: rentals,
-                payments: payments,
-                finesTaxes: finesTaxes,
-                returns: returns,
-                users: users,
-                backupDate: new Date().toISOString()
+        // Add a new user
+        function addUser() {
+            const username = document.getElementById('newUsername').value;
+            const password = document.getElementById('newUserPassword').value;
+            const role = document.getElementById('newUserRole').value;
+            
+            // Get permissions from checkboxes
+            const permissions = [];
+            if (document.getElementById('dashboardPermission').checked) permissions.push('dashboard');
+            if (document.getElementById('vehiclesPermission').checked) permissions.push('vehicles');
+            if (document.getElementById('customersPermission').checked) permissions.push('customers');
+            if (document.getElementById('rentalsPermission').checked) permissions.push('rentals');
+            if (document.getElementById('returnsPermission').checked) permissions.push('returns');
+            if (document.getElementById('debtsPermission').checked) permissions.push('debts');
+            if (document.getElementById('finesPermission').checked) permissions.push('fines');
+            if (document.getElementById('reportsPermission').checked) permissions.push('reports');
+            
+            const newUser = {
+                username,
+                password,
+                role,
+                permissions,
+                active: true
             };
             
-            const dataStr = JSON.stringify(data, null, 2);
-            const dataBlob = new Blob([dataStr], {type: 'application/json'});
-            
-            const url = URL.createObjectURL(dataBlob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `car-rental-backup-${new Date().toISOString().split('T')[0]}.json`;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-            
-            alert('Backup created successfully!');
+            appData.users.push(newUser);
+            saveData();
+            loadUsers();
+            document.getElementById('addUserForm').reset();
+            document.getElementById('addUserModal').querySelector('.btn-close').click();
+            alert('User added successfully!');
         }
 
-        // Restore data
-        function restoreData() {
-            const input = document.createElement('input');
-            input.type = 'file';
-            input.accept = '.json';
+        // Change password
+        function changePassword() {
+            const currentPassword = document.getElementById('currentPassword').value;
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
             
-            input.onchange = e => {
-                const file = e.target.files[0];
-                const reader = new FileReader();
-                
-                reader.onload = function(event) {
-                    try {
-                        const data = JSON.parse(event.target.result);
-                        
-                        if (data.vehicles && data.customers && data.rentals) {
-                            vehicles = data.vehicles;
-                            customers = data.customers;
-                            rentals = data.rentals;
-                            payments = data.payments || [];
-                            finesTaxes = data.finesTaxes || [];
-                            returns = data.returns || [];
-                            users = data.users || users;
-                            
-                            saveAllData();
-                            saveUsers();
-                            loadVehicleData();
-                            loadCustomerData();
-                            loadRentalData();
-                            loadPaymentData();
-                            loadFineTaxData();
-                            loadReturnData();
-                            loadVehicleHistory();
-                            loadUsers();
-                            
-                            alert('Data restored successfully!');
-                        } else {
-                            alert('Invalid backup file format.');
-                        }
-                    } catch (error) {
-                        alert('Error reading backup file: ' + error.message);
-                    }
-                };
-                
-                reader.readAsText(file);
-            };
-            
-            input.click();
-        }
-
-        // Export report to CSV
-        function exportReportToCSV() {
-            const table = document.getElementById('reportResultsTable');
-            let csv = [];
-            const rows = table.querySelectorAll('tr');
-            
-            for (let i = 0; i < rows.length; i++) {
-                const row = [], cols = rows[i].querySelectorAll('td, th');
-                
-                for (let j = 0; j < cols.length; j++) {
-                    row.push(cols[j].innerText);
-                }
-                
-                csv.push(row.join(','));
+            if (newPassword !== confirmPassword) {
+                alert('New passwords do not match!');
+                return;
             }
             
-            const csvStr = csv.join('\n');
-            const blob = new Blob([csvStr], {type: 'text/csv'});
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `rental-report-${new Date().toISOString().split('T')[0]}.csv`;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
+            const user = appData.users.find(u => u.username === appData.currentUser.username);
+            if (user.password !== currentPassword) {
+                alert('Current password is incorrect!');
+                return;
+            }
+            
+            user.password = newPassword;
+            saveData();
+            document.getElementById('changePasswordForm').reset();
+            document.getElementById('changePasswordModal').querySelector('.btn-close').click();
+            alert('Password changed successfully!');
         }
 
-        // Print report
-        function printReport() {
-            const printContent = document.getElementById('reportResultsCard').innerHTML;
-            const originalContent = document.body.innerHTML;
+        // Search functionality
+        function searchVehicles() {
+            const query = document.getElementById('vehicleSearch').value.toLowerCase();
+            const filteredVehicles = appData.vehicles.filter(vehicle => 
+                vehicle.name.toLowerCase().includes(query) ||
+                vehicle.model.toLowerCase().includes(query) ||
+                vehicle.plate.toLowerCase().includes(query)
+            );
             
-            document.body.innerHTML = `
-                <div class="container">
-                    <div class="invoice-logo">
-                        <i class="fas fa-car-side fa-3x"></i>
-                        <h3>Car Rental System</h3>
+            const tableBody = document.getElementById('vehicleTableBody');
+            tableBody.innerHTML = filteredVehicles.map(vehicle => {
+                const statusClass = vehicle.status === 'available' ? 'status-returned' : 'status-not-returned';
+                const statusText = vehicle.status === 'available' ? 'Available' : 'Rented';
+                
+                return `
+                    <tr class="${statusClass}">
+                        <td>${vehicle.name}</td>
+                        <td>${vehicle.model}</td>
+                        <td>${vehicle.color}</td>
+                        <td>${vehicle.plate}</td>
+                        <td>${vehicle.odometer.toLocaleString()} km</td>
+                        <td>${statusText}</td>
+                        <td>
+                            <button class="btn btn-sm btn-info" onclick="showVehicleDetails(${vehicle.id})">Details</button>
+                            ${appData.currentUser.role === 'admin' ? `
+                                <button class="btn btn-sm btn-warning" onclick="editVehicle(${vehicle.id})">Edit</button>
+                                <button class="btn btn-sm btn-danger" onclick="deleteVehicle(${vehicle.id})">Delete</button>
+                            ` : ''}
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function searchCustomers() {
+            const query = document.getElementById('customerSearch').value.toLowerCase();
+            const filteredCustomers = appData.customers.filter(customer => 
+                customer.fullName.toLowerCase().includes(query) ||
+                customer.idNumber.toLowerCase().includes(query) ||
+                customer.contact.toLowerCase().includes(query)
+            );
+            
+            const tableBody = document.getElementById('customerTableBody');
+            tableBody.innerHTML = filteredCustomers.map(customer => {
+                // Calculate total debt for customer
+                const customerRentals = appData.rentals.filter(r => r.customerId === customer.id && r.status === 'active');
+                const customerFines = appData.fines.filter(f => f.customerId === customer.id);
+                const customerPayments = appData.payments.filter(p => p.customerId === customer.id);
+                
+                let totalDebt = 0;
+                
+                // Add rental amounts
+                customerRentals.forEach(rental => {
+                    totalDebt += rental.amount * rental.days;
+                });
+                
+                // Add fines
+                customerFines.forEach(fine => {
+                    totalDebt += fine.amount;
+                });
+                
+                // Subtract payments
+                customerPayments.forEach(payment => {
+                    totalDebt -= payment.amount;
+                });
+                
+                return `
+                    <tr>
+                        <td>${customer.fullName}</td>
+                        <td>${customer.age}</td>
+                        <td>${customer.idNumber}</td>
+                        <td>${customer.nationality}</td>
+                        <td>${customer.contact}</td>
+                        <td>${formatCurrency(totalDebt, 'USD')}</td>
+                        <td>
+                            <button class="btn btn-sm btn-info" onclick="showCustomerDetails(${customer.id})">Details</button>
+                            ${appData.currentUser.role === 'admin' ? `
+                                <button class="btn btn-sm btn-warning" onclick="editCustomer(${customer.id})">Edit</button>
+                                <button class="btn btn-sm btn-danger" onclick="deleteCustomer(${customer.id})">Delete</button>
+                            ` : ''}
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function searchRentals() {
+            const query = document.getElementById('rentalSearch').value.toLowerCase();
+            const filteredRentals = appData.rentals.filter(rental => 
+                rental.invoiceCode.toLowerCase().includes(query)
+            );
+            
+            const tableBody = document.getElementById('rentalTableBody');
+            tableBody.innerHTML = filteredRentals.map(rental => {
+                const customer = appData.customers.find(c => c.id === rental.customerId);
+                const vehicle = appData.vehicles.find(v => v.id === rental.vehicleId);
+                const statusClass = rental.status === 'active' ? 'status-not-returned' : 'status-returned';
+                const statusText = rental.status === 'active' ? 'Active' : 'Completed';
+                
+                return `
+                    <tr class="${statusClass}">
+                        <td>${rental.invoiceCode}</td>
+                        <td>${customer ? customer.fullName : 'Unknown'}</td>
+                        <td>${vehicle ? vehicle.name : 'Unknown'}</td>
+                        <td>${rental.date}</td>
+                        <td>${formatCurrency(rental.amount, rental.currency)}</td>
+                        <td>${statusText}</td>
+                        <td>
+                            <button class="btn btn-sm btn-info" onclick="printInvoice(${rental.id})">Print</button>
+                            ${appData.currentUser.role === 'admin' ? `
+                                <button class="btn btn-sm btn-warning" onclick="editRental(${rental.id})">Edit</button>
+                                <button class="btn btn-sm btn-danger" onclick="deleteRental(${rental.id})">Delete</button>
+                            ` : ''}
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function filterReturns() {
+            const startDate = document.getElementById('returnStartDate').value;
+            const endDate = document.getElementById('returnEndDate').value;
+            const searchQuery = document.getElementById('returnSearch').value.toLowerCase();
+            
+            let filteredRentals = appData.rentals.filter(rental => rental.status === 'active');
+            
+            // Filter by date range
+            if (startDate) {
+                filteredRentals = filteredRentals.filter(rental => rental.date >= startDate);
+            }
+            
+            if (endDate) {
+                filteredRentals = filteredRentals.filter(rental => rental.date <= endDate);
+            }
+            
+            // Filter by search query
+            if (searchQuery) {
+                filteredRentals = filteredRentals.filter(rental => {
+                    const customer = appData.customers.find(c => c.id === rental.customerId);
+                    const vehicle = appData.vehicles.find(v => v.id === rental.vehicleId);
+                    
+                    return (
+                        (customer && customer.fullName.toLowerCase().includes(searchQuery)) ||
+                        (vehicle && vehicle.name.toLowerCase().includes(searchQuery)) ||
+                        rental.invoiceCode.toLowerCase().includes(searchQuery)
+                    );
+                });
+            }
+            
+            const pendingReturnsTable = document.getElementById('pendingReturnsTable');
+            pendingReturnsTable.innerHTML = filteredRentals.map(rental => {
+                const customer = appData.customers.find(c => c.id === rental.customerId);
+                const vehicle = appData.vehicles.find(v => v.id === rental.vehicleId);
+                
+                return `
+                    <tr class="status-not-returned">
+                        <td>${rental.invoiceCode}</td>
+                        <td>${customer ? customer.fullName : 'Unknown'}</td>
+                        <td>${vehicle ? vehicle.name : 'Unknown'}</td>
+                        <td>${rental.date}</td>
+                        <td>${formatCurrency(rental.amount, rental.currency)}</td>
+                        <td>Active</td>
+                        <td>
+                            <button class="btn btn-sm btn-success" onclick="returnVehicle(${rental.id})">Return</button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function clearReturnFilters() {
+            document.getElementById('returnStartDate').value = '';
+            document.getElementById('returnEndDate').value = '';
+            document.getElementById('returnSearch').value = '';
+            loadReturns();
+        }
+
+        // Customer search for rental form
+        function searchCustomersForRental(query) {
+            const suggestions = document.getElementById('customerSuggestions');
+            
+            if (query.length < 2) {
+                suggestions.style.display = 'none';
+                return;
+            }
+            
+            const filteredCustomers = appData.customers.filter(customer => 
+                customer.fullName.toLowerCase().includes(query.toLowerCase())
+            );
+            
+            if (filteredCustomers.length === 0) {
+                suggestions.style.display = 'none';
+                return;
+            }
+            
+            suggestions.innerHTML = filteredCustomers.map(customer => `
+                <div class="suggestion-item" onclick="selectCustomer('${customer.fullName}')">
+                    ${customer.fullName}
+                </div>
+            `).join('');
+            
+            suggestions.style.display = 'block';
+        }
+
+        // Vehicle search for rental form
+        function searchVehiclesForRental(query) {
+            const suggestions = document.getElementById('vehicleSuggestions');
+            
+            if (query.length < 2) {
+                suggestions.style.display = 'none';
+                return;
+            }
+            
+            const filteredVehicles = appData.vehicles.filter(vehicle => 
+                vehicle.name.toLowerCase().includes(query.toLowerCase()) && vehicle.status === 'available'
+            );
+            
+            if (filteredVehicles.length === 0) {
+                suggestions.style.display = 'none';
+                return;
+            }
+            
+            suggestions.innerHTML = filteredVehicles.map(vehicle => `
+                <div class="suggestion-item" onclick="selectVehicle('${vehicle.name}')">
+                    ${vehicle.name} - ${vehicle.model} (${vehicle.plate})
+                </div>
+            `).join('');
+            
+            suggestions.style.display = 'block';
+        }
+
+        // Customer search for debt form
+        function searchCustomersForDebt(query) {
+            const suggestions = document.getElementById('debtCustomerSuggestions');
+            
+            if (query.length < 2) {
+                suggestions.style.display = 'none';
+                return;
+            }
+            
+            const filteredCustomers = appData.customers.filter(customer => 
+                customer.fullName.toLowerCase().includes(query.toLowerCase())
+            );
+            
+            if (filteredCustomers.length === 0) {
+                suggestions.style.display = 'none';
+                return;
+            }
+            
+            suggestions.innerHTML = filteredCustomers.map(customer => `
+                <div class="suggestion-item" onclick="selectDebtCustomer('${customer.fullName}')">
+                    ${customer.fullName}
+                </div>
+            `).join('');
+            
+            suggestions.style.display = 'block';
+        }
+
+        // Customer search for fine form
+        function searchCustomersForFine(query) {
+            const suggestions = document.getElementById('fineCustomerSuggestions');
+            
+            if (query.length < 2) {
+                suggestions.style.display = 'none';
+                return;
+            }
+            
+            const filteredCustomers = appData.customers.filter(customer => 
+                customer.fullName.toLowerCase().includes(query.toLowerCase())
+            );
+            
+            if (filteredCustomers.length === 0) {
+                suggestions.style.display = 'none';
+                return;
+            }
+            
+            suggestions.innerHTML = filteredCustomers.map(customer => `
+                <div class="suggestion-item" onclick="selectFineCustomer('${customer.fullName}')">
+                    ${customer.fullName}
+                </div>
+            `).join('');
+            
+            suggestions.style.display = 'block';
+        }
+
+        // Select customer for rental
+        function selectCustomer(fullName) {
+            document.getElementById('rentalCustomer').value = fullName;
+            document.getElementById('customerSuggestions').style.display = 'none';
+        }
+
+        // Select vehicle for rental
+        function selectVehicle(name) {
+            document.getElementById('rentalVehicle').value = name;
+            document.getElementById('vehicleSuggestions').style.display = 'none';
+        }
+
+        // Select customer for debt
+        function selectDebtCustomer(fullName) {
+            document.getElementById('debtCustomer').value = fullName;
+            document.getElementById('debtCustomerSuggestions').style.display = 'none';
+            updateCustomerDebtSummary(fullName);
+        }
+
+        // Select customer for fine
+        function selectFineCustomer(fullName) {
+            document.getElementById('fineCustomer').value = fullName;
+            document.getElementById('fineCustomerSuggestions').style.display = 'none';
+        }
+
+        // Update customer debt summary
+        function updateCustomerDebtSummary(customerName) {
+            const customer = appData.customers.find(c => c.fullName === customerName);
+            if (!customer) return;
+            
+            // Calculate customer debt
+            const customerRentals = appData.rentals.filter(r => r.customerId === customer.id && r.status === 'active');
+            const customerFines = appData.fines.filter(f => f.customerId === customer.id);
+            const customerPayments = appData.payments.filter(p => p.customerId === customer.id);
+            
+            let totalDebt = 0;
+            let rentalDebt = 0;
+            let fineDebt = 0;
+            let paymentTotal = 0;
+            
+            // Calculate rental debt
+            customerRentals.forEach(rental => {
+                rentalDebt += rental.amount * rental.days;
+            });
+            
+            // Calculate fine debt
+            customerFines.forEach(fine => {
+                fineDebt += fine.amount;
+            });
+            
+            // Calculate payment total
+            customerPayments.forEach(payment => {
+                paymentTotal += payment.amount;
+            });
+            
+            totalDebt = rentalDebt + fineDebt - paymentTotal;
+            
+            // Update current debt display
+            document.getElementById('currentDebt').textContent = formatCurrency(totalDebt, 'USD');
+            
+            // Update customer debt summary
+            const summaryDiv = document.getElementById('customerDebtSummary');
+            summaryDiv.innerHTML = `
+                <div class="row">
+                    <div class="col-md-4">
+                        <strong>Rental Debt:</strong> ${formatCurrency(rentalDebt, 'USD')}
                     </div>
-                    <h2 class="text-center my-4" id="printReportTitle">Report</h2>
-                    ${printContent}
+                    <div class="col-md-4">
+                        <strong>Fines/Taxes:</strong> ${formatCurrency(fineDebt, 'USD')}
+                    </div>
+                    <div class="col-md-4">
+                        <strong>Payments:</strong> ${formatCurrency(paymentTotal, 'USD')}
+                    </div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col-12">
+                        <strong>Total Debt:</strong> ${formatCurrency(totalDebt, 'USD')}
+                    </div>
+                </div>
+            `;
+        }
+
+        // Update customer debt (for payments and fines)
+        function updateCustomerDebt(customerId) {
+            const customer = appData.customers.find(c => c.id === customerId);
+            if (!customer) return;
+            
+            const currentDebtCustomer = document.getElementById('debtCustomer').value;
+            if (currentDebtCustomer === customer.fullName) {
+                updateCustomerDebtSummary(customer.fullName);
+            }
+        }
+
+        // Generate report
+        function generateReport() {
+            const reportType = document.getElementById('reportType').value;
+            const startDate = document.getElementById('reportStartDate').value;
+            const endDate = document.getElementById('reportEndDate').value;
+            
+            let reportData = [];
+            let reportTitle = '';
+            
+            switch (reportType) {
+                case 'rentals':
+                    reportTitle = 'Rentals Report';
+                    reportData = appData.rentals.filter(rental => {
+                        if (startDate && rental.date < startDate) return false;
+                        if (endDate && rental.date > endDate) return false;
+                        return true;
+                    }).map(rental => {
+                        const customer = appData.customers.find(c => c.id === rental.customerId);
+                        const vehicle = appData.vehicles.find(v => v.id === rental.vehicleId);
+                        return {
+                            'Invoice Code': rental.invoiceCode,
+                            'Customer': customer ? customer.fullName : 'Unknown',
+                            'Vehicle': vehicle ? vehicle.name : 'Unknown',
+                            'Date': rental.date,
+                            'Amount': formatCurrency(rental.amount, rental.currency),
+                            'Days': rental.days,
+                            'Status': rental.status
+                        };
+                    });
+                    break;
+                    
+                case 'payments':
+                    reportTitle = 'Payments Report';
+                    reportData = appData.payments.filter(payment => {
+                        if (startDate && payment.date < startDate) return false;
+                        if (endDate && payment.date > endDate) return false;
+                        return true;
+                    }).map(payment => {
+                        const customer = appData.customers.find(c => c.id === payment.customerId);
+                        return {
+                            'Date': payment.date,
+                            'Customer': customer ? customer.fullName : 'Unknown',
+                            'Amount': formatCurrency(payment.amount, payment.currency)
+                        };
+                    });
+                    break;
+                    
+                case 'fines':
+                    reportTitle = 'Fines & Taxes Report';
+                    reportData = appData.fines.filter(fine => {
+                        if (startDate && fine.date < startDate) return false;
+                        if (endDate && fine.date > endDate) return false;
+                        return true;
+                    }).map(fine => {
+                        const customer = appData.customers.find(c => c.id === fine.customerId);
+                        return {
+                            'Date': fine.date,
+                            'Customer': customer ? customer.fullName : 'Unknown',
+                            'Type': fine.type,
+                            'Amount': formatCurrency(fine.amount, fine.currency),
+                            'Description': fine.description
+                        };
+                    });
+                    break;
+                    
+                case 'vehicles':
+                    reportTitle = 'Vehicles Report';
+                    reportData = appData.vehicles.map(vehicle => {
+                        const rentalCount = appData.rentals.filter(r => r.vehicleId === vehicle.id).length;
+                        return {
+                            'Name': vehicle.name,
+                            'Model': vehicle.model,
+                            'Color': vehicle.color,
+                            'Plate': vehicle.plate,
+                            'Odometer': vehicle.odometer,
+                            'Status': vehicle.status,
+                            'Rental Count': rentalCount
+                        };
+                    });
+                    break;
+            }
+            
+            // Display report results
+            const reportResults = document.getElementById('reportResults');
+            
+            if (reportData.length === 0) {
+                reportResults.innerHTML = '<p>No data found for the selected criteria.</p>';
+                return;
+            }
+            
+            // Create table
+            let tableHTML = `
+                <h4>${reportTitle}</h4>
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+            `;
+            
+            // Add table headers
+            const headers = Object.keys(reportData[0]);
+            headers.forEach(header => {
+                tableHTML += `<th>${header}</th>`;
+            });
+            
+            tableHTML += `
+                            </tr>
+                        </thead>
+                        <tbody>
+            `;
+            
+            // Add table rows
+            reportData.forEach(row => {
+                tableHTML += '<tr>';
+                headers.forEach(header => {
+                    tableHTML += `<td>${row[header]}</td>`;
+                });
+                tableHTML += '</tr>';
+            });
+            
+            tableHTML += `
+                        </tbody>
+                    </table>
                 </div>
             `;
             
-            window.print();
-            document.body.innerHTML = originalContent;
-            
-            // Re-initialize the application
-            window.location.reload();
+            reportResults.innerHTML = tableHTML;
+        }
+
+        // Export report to Excel
+        function exportReport() {
+            // In a real application, this would generate an Excel file
+            // For this demo, we'll just show an alert
+            alert('Export functionality would be implemented here. In a real application, this would generate an Excel file with the report data.');
         }
 
         // Print invoice
         function printInvoice(rentalId) {
-            const rental = rentals.find(r => r.id === rentalId);
+            const rental = appData.rentals.find(r => r.id === rentalId);
             if (!rental) return;
             
-            const customer = customers.find(c => c.id === rental.customerId);
-            const vehicle = vehicles.find(v => v.id === rental.vehicleId);
+            const customer = appData.customers.find(c => c.id === rental.customerId);
+            const vehicle = appData.vehicles.find(v => v.id === rental.vehicleId);
             
+            // Update print content
             document.getElementById('printInvoiceCode').textContent = rental.invoiceCode;
             document.getElementById('printInvoiceDate').textContent = rental.date;
             document.getElementById('printCustomerName').textContent = customer ? customer.fullName : 'Unknown';
             document.getElementById('printVehicleName').textContent = vehicle ? vehicle.name : 'Unknown';
-            document.getElementById('printRentalAmount').textContent = rental.amount;
-            document.getElementById('printTotalAmount').textContent = rental.total;
+            document.getElementById('printRentalAmount').textContent = formatCurrency(rental.amount, rental.currency);
+            document.getElementById('printTotalAmount').textContent = formatCurrency(rental.amount * rental.days, rental.currency);
             
-            const invoiceElement = document.getElementById('invoicePrint');
+            // Show print dialog
+            const printContent = document.getElementById('invoicePrint').innerHTML;
             const originalContent = document.body.innerHTML;
             
-            document.body.innerHTML = invoiceElement.innerHTML;
+            document.body.innerHTML = printContent;
             window.print();
             document.body.innerHTML = originalContent;
             
             // Re-initialize the application
-            window.location.reload();
+            showMainApp();
         }
 
         // Print payment receipt
-        function printPayment(paymentId) {
-            const payment = payments.find(p => p.id === paymentId);
+        function printPaymentReceipt(paymentId) {
+            const payment = appData.payments.find(p => p.id === paymentId);
             if (!payment) return;
             
-            const customer = customers.find(c => c.id === payment.customerId);
+            const customer = appData.customers.find(c => c.id === payment.customerId);
             
+            // Update print content
             document.getElementById('printReceiptNo').textContent = `REC${payment.id}`;
             document.getElementById('printPaymentDate').textContent = payment.date;
             document.getElementById('printPaymentCustomer').textContent = customer ? customer.fullName : 'Unknown';
-            document.getElementById('printPaymentAmount').textContent = payment.amount;
-            document.getElementById('printPaymentTotal').textContent = payment.amount;
+            document.getElementById('printPaymentAmount').textContent = formatCurrency(payment.amount, payment.currency);
+            document.getElementById('printPaymentTotal').textContent = formatCurrency(payment.amount, payment.currency);
             
-            const receiptElement = document.getElementById('paymentReceiptPrint');
+            // Show print dialog
+            const printContent = document.getElementById('paymentReceiptPrint').innerHTML;
             const originalContent = document.body.innerHTML;
             
-            document.body.innerHTML = receiptElement.innerHTML;
+            document.body.innerHTML = printContent;
             window.print();
             document.body.innerHTML = originalContent;
             
             // Re-initialize the application
-            window.location.reload();
+            showMainApp();
         }
 
         // Show vehicle details
         function showVehicleDetails(vehicleId) {
-            const vehicle = vehicles.find(v => v.id === vehicleId);
+            const vehicle = appData.vehicles.find(v => v.id === vehicleId);
             if (!vehicle) return;
             
             const detailsContent = document.getElementById('vehicleDetailsContent');
             detailsContent.innerHTML = `
-                <h5>${vehicle.name}</h5>
-                <p><strong>Model:</strong> ${vehicle.model}</p>
-                <p><strong>Color:</strong> ${vehicle.color}</p>
-                <p><strong>Plate Number:</strong> ${vehicle.plate}</p>
-                <p><strong>VIN #:</strong> ${vehicle.vin}</p>
-                <p><strong>Odometer:</strong> ${vehicle.odometer.toLocaleString()}</p>
-                <p><strong>Status:</strong> <span class="badge ${vehicle.status === 'available' ? 'bg-success' : vehicle.status === 'rented' ? 'bg-warning' : 'bg-danger'}">${vehicle.status}</span></p>
+                <div class="row">
+                    <div class="col-md-6">
+                        <h5>Vehicle Information</h5>
+                        <p><strong>Name:</strong> ${vehicle.name}</p>
+                        <p><strong>Model:</strong> ${vehicle.model}</p>
+                        <p><strong>Color:</strong> ${vehicle.color}</p>
+                        <p><strong>Plate Number:</strong> ${vehicle.plate}</p>
+                        <p><strong>VIN:</strong> ${vehicle.vin}</p>
+                        <p><strong>Odometer:</strong> ${vehicle.odometer.toLocaleString()} km</p>
+                        <p><strong>Status:</strong> ${vehicle.status}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <h5>Rental History</h5>
+                        <div class="table-responsive">
+                            <table class="table table-sm">
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Customer</th>
+                                        <th>Amount</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${appData.rentals.filter(r => r.vehicleId === vehicleId).map(rental => {
+                                        const customer = appData.customers.find(c => c.id === rental.customerId);
+                                        return `
+                                            <tr>
+                                                <td>${rental.date}</td>
+                                                <td>${customer ? customer.fullName : 'Unknown'}</td>
+                                                <td>${formatCurrency(rental.amount, rental.currency)}</td>
+                                            </tr>
+                                        `;
+                                    }).join('')}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
             `;
             
             document.getElementById('vehicleDetailsCard').style.display = 'block';
         }
 
-        // Close vehicle details
-        function closeVehicleDetails() {
-            document.getElementById('vehicleDetailsCard').style.display = 'none';
-        }
-
         // Show customer details
         function showCustomerDetails(customerId) {
-            const customer = customers.find(c => c.id === customerId);
+            const customer = appData.customers.find(c => c.id === customerId);
             if (!customer) return;
             
             // Calculate customer statistics
-            const customerRentals = rentals.filter(r => r.customerId === customer.id);
-            const totalRentals = customerRentals.length;
-            const totalSpent = customerRentals.reduce((sum, rental) => sum + rental.total, 0);
-            const customerPayments = payments.filter(p => p.customerId === customer.id);
-            const totalPaid = customerPayments.reduce((sum, payment) => sum + payment.amount, 0);
-            const currentDebt = totalSpent - totalPaid;
+            const customerRentals = appData.rentals.filter(r => r.customerId === customerId);
+            const customerFines = appData.fines.filter(f => f.customerId === customerId);
+            const customerPayments = appData.payments.filter(p => p.customerId === customerId);
+            
+            let totalRentals = customerRentals.length;
+            let totalSpent = customerRentals.reduce((sum, rental) => sum + (rental.amount * rental.days), 0);
+            let totalFines = customerFines.reduce((sum, fine) => sum + fine.amount, 0);
+            let totalPayments = customerPayments.reduce((sum, payment) => sum + payment.amount, 0);
+            let currentDebt = totalSpent + totalFines - totalPayments;
             
             const detailsContent = document.getElementById('customerDetailsContent');
             detailsContent.innerHTML = `
-                <h5>${customer.fullName}</h5>
-                <p><strong>Age:</strong> ${customer.age}</p>
-                <p><strong>ID/PS:</strong> ${customer.idNumber}</p>
-                <p><strong>Nationality:</strong> ${customer.nationality}</p>
-                <p><strong>Contact:</strong> ${customer.contact}</p>
-                <p><strong>Address:</strong> ${customer.address}</p>
-                <hr>
-                <h6>Financial Summary</h6>
-                <p><strong>Total Rentals:</strong> ${totalRentals}</p>
-                <p><strong>Total Spent:</strong> $${totalSpent.toLocaleString()}</p>
-                <p><strong>Total Paid:</strong> $${totalPaid.toLocaleString()}</p>
-                <p><strong>Current Debt:</strong> $${currentDebt.toLocaleString()}</p>
+                <div class="row">
+                    <div class="col-md-6">
+                        <h5>Customer Information</h5>
+                        <p><strong>Full Name:</strong> ${customer.fullName}</p>
+                        <p><strong>Age:</strong> ${customer.age}</p>
+                        <p><strong>ID Number:</strong> ${customer.idNumber}</p>
+                        <p><strong>Nationality:</strong> ${customer.nationality}</p>
+                        <p><strong>Contact:</strong> ${customer.contact}</p>
+                        <p><strong>Address:</strong> ${customer.address}</p>
+                        ${customer.guaranteeDoc ? `<p><strong>Guarantee Document:</strong> ${customer.guaranteeDoc}</p>` : ''}
+                    </div>
+                    <div class="col-md-6">
+                        <h5>Customer Statistics</h5>
+                        <p><strong>Total Rentals:</strong> ${totalRentals}</p>
+                        <p><strong>Total Spent:</strong> ${formatCurrency(totalSpent, 'USD')}</p>
+                        <p><strong>Total Fines:</strong> ${formatCurrency(totalFines, 'USD')}</p>
+                        <p><strong>Total Payments:</strong> ${formatCurrency(totalPayments, 'USD')}</p>
+                        <p><strong>Current Debt:</strong> ${formatCurrency(currentDebt, 'USD')}</p>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-12">
+                        <h5>Rental History</h5>
+                        <div class="table-responsive">
+                            <table class="table table-sm">
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Vehicle</th>
+                                        <th>Amount</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${customerRentals.map(rental => {
+                                        const vehicle = appData.vehicles.find(v => v.id === rental.vehicleId);
+                                        return `
+                                            <tr>
+                                                <td>${rental.date}</td>
+                                                <td>${vehicle ? vehicle.name : 'Unknown'}</td>
+                                                <td>${formatCurrency(rental.amount, rental.currency)}</td>
+                                                <td>${rental.status}</td>
+                                            </tr>
+                                        `;
+                                    }).join('')}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
             `;
             
             document.getElementById('customerDetailsCard').style.display = 'block';
         }
 
-        // Close customer details
-        function closeCustomerDetails() {
-            document.getElementById('customerDetailsCard').style.display = 'none';
+        // Format currency
+        function formatCurrency(amount, currency) {
+            if (currency === 'IQD') {
+                return `${amount.toLocaleString()} IQD`;
+            } else {
+                return `$${amount.toLocaleString()}`;
+            }
         }
 
-        // Setup search functionality with autocomplete
-        function setupSearchFunctionality() {
-            // Customer search for rentals
-            const rentalCustomerInput = document.getElementById('rentalCustomer');
-            const customerSuggestions = document.getElementById('customerSuggestions');
-            
-            rentalCustomerInput.addEventListener('input', function() {
-                const searchTerm = this.value.toLowerCase();
-                customerSuggestions.innerHTML = '';
-                
-                if (searchTerm.length > 0) {
-                    const filteredCustomers = customers.filter(customer => 
-                        customer.fullName.toLowerCase().includes(searchTerm)
-                    );
-                    
-                    if (filteredCustomers.length > 0) {
-                        customerSuggestions.style.display = 'block';
-                        
-                        filteredCustomers.forEach(customer => {
-                            const item = document.createElement('div');
-                            item.className = 'suggestion-item';
-                            item.textContent = customer.fullName;
-                            item.addEventListener('click', function() {
-                                rentalCustomerInput.value = customer.fullName;
-                                customerSuggestions.style.display = 'none';
-                            });
-                            customerSuggestions.appendChild(item);
-                        });
-                    } else {
-                        customerSuggestions.style.display = 'none';
-                    }
-                } else {
-                    customerSuggestions.style.display = 'none';
-                }
-            });
-            
-            // Vehicle search for rentals
-            const rentalVehicleInput = document.getElementById('rentalVehicle');
-            const vehicleSuggestions = document.getElementById('vehicleSuggestions');
-            
-            rentalVehicleInput.addEventListener('input', function() {
-                const searchTerm = this.value.toLowerCase();
-                vehicleSuggestions.innerHTML = '';
-                
-                if (searchTerm.length > 0) {
-                    const filteredVehicles = vehicles.filter(vehicle => 
-                        vehicle.name.toLowerCase().includes(searchTerm) && vehicle.status === 'available'
-                    );
-                    
-                    if (filteredVehicles.length > 0) {
-                        vehicleSuggestions.style.display = 'block';
-                        
-                        filteredVehicles.forEach(vehicle => {
-                            const item = document.createElement('div');
-                            item.className = 'suggestion-item';
-                            item.textContent = vehicle.name;
-                            item.addEventListener('click', function() {
-                                rentalVehicleInput.value = vehicle.name;
-                                vehicleSuggestions.style.display = 'none';
-                            });
-                            vehicleSuggestions.appendChild(item);
-                        });
-                    } else {
-                        vehicleSuggestions.style.display = 'none';
-                    }
-                } else {
-                    vehicleSuggestions.style.display = 'none';
-                }
-            });
-            
-            // Customer search for debts
-            const debtCustomerInput = document.getElementById('debtCustomer');
-            const debtCustomerSuggestions = document.getElementById('debtCustomerSuggestions');
-            
-            debtCustomerInput.addEventListener('input', function() {
-                const searchTerm = this.value.toLowerCase();
-                debtCustomerSuggestions.innerHTML = '';
-                
-                if (searchTerm.length > 0) {
-                    const filteredCustomers = customers.filter(customer => 
-                        customer.fullName.toLowerCase().includes(searchTerm)
-                    );
-                    
-                    if (filteredCustomers.length > 0) {
-                        debtCustomerSuggestions.style.display = 'block';
-                        
-                        filteredCustomers.forEach(customer => {
-                            const item = document.createElement('div');
-                            item.className = 'suggestion-item';
-                            item.textContent = customer.fullName;
-                            item.addEventListener('click', function() {
-                                debtCustomerInput.value = customer.fullName;
-                                debtCustomerSuggestions.style.display = 'none';
-                                
-                                // Calculate and display current debt
-                                const customerRentals = rentals.filter(r => r.customerId === customer.id);
-                                const totalDebt = customerRentals.reduce((sum, rental) => sum + rental.total, 0);
-                                const customerPayments = payments.filter(p => p.customerId === customer.id);
-                                const totalPaid = customerPayments.reduce((sum, payment) => sum + payment.amount, 0);
-                                const currentDebt = totalDebt - totalPaid;
-                                
-                                document.getElementById('currentDebt').textContent = `$${currentDebt.toLocaleString()}`;
-                                
-                                // Show customer summary
-                                const summary = document.getElementById('customerDebtSummary');
-                                summary.innerHTML = `
-                                    <p><strong>Total Rentals:</strong> ${customerRentals.length}</p>
-                                    <p><strong>Total Amount:</strong> $${totalDebt.toLocaleString()}</p>
-                                    <p><strong>Total Paid:</strong> $${totalPaid.toLocaleString()}</p>
-                                    <p><strong>Remaining Debt:</strong> $${currentDebt.toLocaleString()}</p>
-                                `;
-                            });
-                            debtCustomerSuggestions.appendChild(item);
-                        });
-                    } else {
-                        debtCustomerSuggestions.style.display = 'none';
-                    }
-                } else {
-                    debtCustomerSuggestions.style.display = 'none';
-                }
-            });
-            
-            // Invoice search for returns
-            const returnInvoiceInput = document.getElementById('returnInvoice');
-            const returnInvoiceSuggestions = document.getElementById('returnInvoiceSuggestions');
-            
-            returnInvoiceInput.addEventListener('input', function() {
-                const searchTerm = this.value.toLowerCase();
-                returnInvoiceSuggestions.innerHTML = '';
-                
-                if (searchTerm.length > 0) {
-                    const filteredInvoices = rentals.filter(rental => 
-                        rental.invoiceCode.toLowerCase().includes(searchTerm) && rental.status === 'active'
-                    );
-                    
-                    if (filteredInvoices.length > 0) {
-                        returnInvoiceSuggestions.style.display = 'block';
-                        
-                        filteredInvoices.forEach(rental => {
-                            const item = document.createElement('div');
-                            item.className = 'suggestion-item';
-                            item.textContent = rental.invoiceCode;
-                            item.addEventListener('click', function() {
-                                returnInvoiceInput.value = rental.invoiceCode;
-                                returnInvoiceSuggestions.style.display = 'none';
-                            });
-                            returnInvoiceSuggestions.appendChild(item);
-                        });
-                    } else {
-                        returnInvoiceSuggestions.style.display = 'none';
-                    }
-                } else {
-                    returnInvoiceSuggestions.style.display = 'none';
-                }
-            });
-            
-            // Invoice search for fines/taxes
-            const fineTaxInvoiceInput = document.getElementById('fineTaxInvoice');
-            const invoiceSuggestions = document.getElementById('invoiceSuggestions');
-            
-            fineTaxInvoiceInput.addEventListener('input', function() {
-                const searchTerm = this.value.toLowerCase();
-                invoiceSuggestions.innerHTML = '';
-                
-                if (searchTerm.length > 0) {
-                    const filteredInvoices = rentals.filter(rental => 
-                        rental.invoiceCode.toLowerCase().includes(searchTerm)
-                    );
-                    
-                    if (filteredInvoices.length > 0) {
-                        invoiceSuggestions.style.display = 'block';
-                        
-                        filteredInvoices.forEach(rental => {
-                            const item = document.createElement('div');
-                            item.className = 'suggestion-item';
-                            item.textContent = rental.invoiceCode;
-                            item.addEventListener('click', function() {
-                                fineTaxInvoiceInput.value = rental.invoiceCode;
-                                invoiceSuggestions.style.display = 'none';
-                            });
-                            invoiceSuggestions.appendChild(item);
-                        });
-                    } else {
-                        invoiceSuggestions.style.display = 'none';
-                    }
-                } else {
-                    invoiceSuggestions.style.display = 'none';
-                }
-            });
+        // Save data to localStorage
+        function saveData() {
+            localStorage.setItem('carRentalData', JSON.stringify(appData));
         }
 
-        // Search vehicles
-        function searchVehicles() {
-            const searchTerm = document.getElementById('vehicleSearch').value.toLowerCase();
-            const tableBody = document.getElementById('vehicleTableBody');
-            tableBody.innerHTML = '';
-            
-            const filteredVehicles = vehicles.filter(vehicle => 
-                vehicle.name.toLowerCase().includes(searchTerm) ||
-                vehicle.model.toLowerCase().includes(searchTerm) ||
-                vehicle.plate.toLowerCase().includes(searchTerm)
-            );
-            
-            filteredVehicles.forEach(vehicle => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${vehicle.name}</td>
-                    <td>${vehicle.model}</td>
-                    <td>${vehicle.color}</td>
-                    <td>${vehicle.plate}</td>
-                    <td>${vehicle.odometer.toLocaleString()}</td>
-                    <td><span class="badge ${vehicle.status === 'available' ? 'bg-success' : vehicle.status === 'rented' ? 'bg-warning' : 'bg-danger'}">${vehicle.status}</span></td>
-                    <td>
-                        <button class="btn btn-sm btn-primary" onclick="editVehicle(${vehicle.id})"><i class="fas fa-edit"></i></button>
-                        <button class="btn btn-sm btn-danger" onclick="deleteVehicle(${vehicle.id})"><i class="fas fa-trash"></i></button>
-                        <button class="btn btn-sm btn-info" onclick="showVehicleDetails(${vehicle.id})"><i class="fas fa-eye"></i></button>
-                    </td>
-                `;
-                tableBody.appendChild(row);
-            });
-        }
-
-        // Search customers
-        function searchCustomers() {
-            const searchTerm = document.getElementById('customerSearch').value.toLowerCase();
-            const tableBody = document.getElementById('customerTableBody');
-            tableBody.innerHTML = '';
-            
-            const filteredCustomers = customers.filter(customer => 
-                customer.fullName.toLowerCase().includes(searchTerm) ||
-                customer.idNumber.toLowerCase().includes(searchTerm) ||
-                customer.contact.toLowerCase().includes(searchTerm)
-            );
-            
-            filteredCustomers.forEach(customer => {
-                // Calculate total debt for customer
-                const customerRentals = rentals.filter(r => r.customerId === customer.id);
-                const totalDebt = customerRentals.reduce((sum, rental) => sum + rental.total, 0);
-                const customerPayments = payments.filter(p => p.customerId === customer.id);
-                const totalPaid = customerPayments.reduce((sum, payment) => sum + payment.amount, 0);
-                const currentDebt = totalDebt - totalPaid;
-                
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${customer.fullName}</td>
-                    <td>${customer.age}</td>
-                    <td>${customer.idNumber}</td>
-                    <td>${customer.nationality}</td>
-                    <td>${customer.contact}</td>
-                    <td>$${currentDebt.toLocaleString()}</td>
-                    <td>
-                        <button class="btn btn-sm btn-primary" onclick="editCustomer(${customer.id})"><i class="fas fa-edit"></i></button>
-                        <button class="btn btn-sm btn-danger" onclick="deleteCustomer(${customer.id})"><i class="fas fa-trash"></i></button>
-                        <button class="btn btn-sm btn-info" onclick="showCustomerDetails(${customer.id})"><i class="fas fa-eye"></i></button>
-                    </td>
-                `;
-                tableBody.appendChild(row);
-            });
-        }
-
-        // Search rentals
-        function searchRentals() {
-            const searchTerm = document.getElementById('rentalSearch').value.toLowerCase();
-            const tableBody = document.getElementById('rentalTableBody');
-            tableBody.innerHTML = '';
-            
-            const filteredRentals = rentals.filter(rental => 
-                rental.invoiceCode.toLowerCase().includes(searchTerm)
-            );
-            
-            filteredRentals.forEach(rental => {
-                const customer = customers.find(c => c.id === rental.customerId);
-                const vehicle = vehicles.find(v => v.id === rental.vehicleId);
-                
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${rental.invoiceCode}</td>
-                    <td>${customer ? customer.fullName : 'Unknown'}</td>
-                    <td>${vehicle ? vehicle.name : 'Unknown'}</td>
-                    <td>${rental.date}</td>
-                    <td>$${rental.total}</td>
-                    <td><span class="badge ${rental.status === 'returned' ? 'bg-success' : 'bg-warning'}">${rental.status}</span></td>
-                    <td>
-                        <button class="btn btn-sm btn-primary" onclick="editRental(${rental.id})"><i class="fas fa-edit"></i></button>
-                        <button class="btn btn-sm btn-danger" onclick="deleteRental(${rental.id})"><i class="fas fa-trash"></i></button>
-                        <button class="btn btn-sm btn-success" onclick="printInvoice(${rental.id})"><i class="fas fa-print"></i></button>
-                    </td>
-                `;
-                tableBody.appendChild(row);
-            });
-        }
-
-        // Placeholder functions for edit/delete operations
+        // Admin functions for editing and deleting (stubs for demonstration)
         function editVehicle(id) {
-            alert(`Edit vehicle with ID: ${id} - This functionality would open an edit form in a real application.`);
+            alert(`Edit vehicle with ID: ${id} - This would open an edit form in a real application.`);
         }
 
         function deleteVehicle(id) {
             if (confirm('Are you sure you want to delete this vehicle?')) {
-                vehicles = vehicles.filter(vehicle => vehicle.id !== id);
-                saveAllData();
-                loadVehicleData();
-                loadVehicleHistory();
+                appData.vehicles = appData.vehicles.filter(v => v.id !== id);
+                saveData();
+                loadVehicles();
                 alert('Vehicle deleted successfully!');
             }
         }
 
         function editCustomer(id) {
-            alert(`Edit customer with ID: ${id} - This functionality would open an edit form in a real application.`);
+            alert(`Edit customer with ID: ${id} - This would open an edit form in a real application.`);
         }
 
         function deleteCustomer(id) {
             if (confirm('Are you sure you want to delete this customer?')) {
-                customers = customers.filter(customer => customer.id !== id);
-                saveAllData();
-                loadCustomerData();
+                appData.customers = appData.customers.filter(c => c.id !== id);
+                saveData();
+                loadCustomers();
                 alert('Customer deleted successfully!');
             }
         }
 
         function editRental(id) {
-            alert(`Edit rental with ID: ${id} - This functionality would open an edit form in a real application.`);
+            alert(`Edit rental with ID: ${id} - This would open an edit form in a real application.`);
         }
 
         function deleteRental(id) {
             if (confirm('Are you sure you want to delete this rental?')) {
-                const rental = rentals.find(r => r.id === id);
-                if (rental) {
-                    // Make the vehicle available again
-                    const vehicle = vehicles.find(v => v.id === rental.vehicleId);
-                    if (vehicle) {
-                        vehicle.status = 'available';
-                    }
-                }
-                
-                rentals = rentals.filter(rental => rental.id !== id);
-                saveAllData();
-                loadRentalData();
-                loadVehicleData();
-                loadVehicleHistory();
+                appData.rentals = appData.rentals.filter(r => r.id !== id);
+                saveData();
+                loadRentals();
                 alert('Rental deleted successfully!');
             }
         }
 
-        function editPayment(id) {
-            alert(`Edit payment with ID: ${id} - This functionality would open an edit form in a real application.`);
-        }
-
         function deletePayment(id) {
             if (confirm('Are you sure you want to delete this payment?')) {
-                payments = payments.filter(payment => payment.id !== id);
-                saveAllData();
-                loadPaymentData();
+                appData.payments = appData.payments.filter(p => p.id !== id);
+                saveData();
+                loadPayments();
                 alert('Payment deleted successfully!');
             }
         }
 
-        function editFineTax(id) {
-            alert(`Edit fine/tax with ID: ${id} - This functionality would open an edit form in a real application.`);
+        function editFine(id) {
+            alert(`Edit fine with ID: ${id} - This would open an edit form in a real application.`);
         }
 
-        function deleteFineTax(id) {
-            if (confirm('Are you sure you want to delete this fine/tax?')) {
-                finesTaxes = finesTaxes.filter(fineTax => fineTax.id !== id);
-                saveAllData();
-                loadFineTaxData();
-                alert('Fine/Tax deleted successfully!');
+        function deleteFine(id) {
+            if (confirm('Are you sure you want to delete this fine?')) {
+                appData.fines = appData.fines.filter(f => f.id !== id);
+                saveData();
+                loadFines();
+                alert('Fine deleted successfully!');
+            }
+        }
+
+        function editUser(username) {
+            alert(`Edit user: ${username} - This would open an edit form in a real application.`);
+        }
+
+        function toggleUserStatus(username) {
+            const user = appData.users.find(u => u.username === username);
+            if (user) {
+                user.active = !user.active;
+                saveData();
+                loadUsers();
+                alert(`User ${user.active ? 'activated' : 'deactivated'} successfully!`);
             }
         }
     </script>
