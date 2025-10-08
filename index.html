@@ -200,12 +200,12 @@
         }
         
         .invoice-logo img {
-            max-width: 150px;
+            max-width: 200px;
             height: auto;
         }
         
         .custom-logo {
-            max-height: 40px;
+            max-height: 50px;
             margin-right: 10px;
         }
         
@@ -216,6 +216,18 @@
         
         .user-only {
             display: none;
+        }
+        
+        .system-logo-large {
+            max-width: 200px;
+            max-height: 80px;
+            margin-bottom: 15px;
+        }
+        
+        .signature-area {
+            margin-top: 50px;
+            border-top: 1px solid #000;
+            padding-top: 10px;
         }
     </style>
 </head>
@@ -281,7 +293,7 @@
                 <!-- Sidebar -->
                 <div class="col-md-2 sidebar d-none d-md-block no-print">
                     <div class="logo-container">
-                        <img id="sidebarLogo" src="" style="max-height: 30px; margin-right: 10px; display: none;">
+                        <img id="sidebarLogo" src="" class="system-logo-large" style="display: none;">
                         <span class="system-name" id="sidebarSystemName">RentalSys</span>
                     </div>
                     <ul class="nav flex-column">
@@ -308,6 +320,11 @@
                         <li class="nav-item returns-item">
                             <a class="nav-link" href="#returns" data-bs-toggle="tab">
                                 <i class="fas fa-undo"></i> Vehicle Returns
+                            </a>
+                        </li>
+                        <li class="nav-item maintenance-item">
+                            <a class="nav-link" href="#maintenance" data-bs-toggle="tab">
+                                <i class="fas fa-tools"></i> Vehicle Maintenance
                             </a>
                         </li>
                         <li class="nav-item debts-item">
@@ -439,6 +456,18 @@
                                                         <input type="text" class="form-control" id="vehicleModel" required>
                                                     </div>
                                                 </div>
+                                                <div class="row">
+                                                    <div class="col-md-6 mb-3">
+                                                        <label for="vehicleRentalPrice" class="form-label">Rental Price (per day)</label>
+                                                        <div class="input-group">
+                                                            <input type="number" class="form-control" id="vehicleRentalPrice" required>
+                                                            <select class="form-select" id="vehicleRentalCurrency" style="max-width: 120px;">
+                                                                <option value="USD">USD</option>
+                                                                <option value="IQD">IQD</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                                 <button type="submit" class="btn btn-primary">Add Vehicle</button>
                                             </form>
                                         </div>
@@ -466,6 +495,7 @@
                                                             <th>Color</th>
                                                             <th>Plate #</th>
                                                             <th>Odometer</th>
+                                                            <th>Rental Price</th>
                                                             <th>Status</th>
                                                             <th>Actions</th>
                                                         </tr>
@@ -651,7 +681,7 @@
                                         </div>
                                         <div class="row">
                                             <div class="col-md-6 mb-3">
-                                                <label for="rentalAmount" class="form-label">Rental Amount</label>
+                                                <label for="rentalAmount" class="form-label">Rental Amount (per day)</label>
                                                 <div class="input-group">
                                                     <input type="number" class="form-control" id="rentalAmount" required>
                                                     <select class="form-select" id="rentalCurrency" style="max-width: 120px;">
@@ -715,7 +745,7 @@
                             <!-- Invoice for Printing -->
                             <div id="invoicePrint" class="print-only" style="display: none;">
                                 <div class="invoice-logo">
-                                    <img id="printLogo" src="" style="max-width: 150px; display: none;">
+                                    <img id="printLogo" src="" style="max-width: 200px; display: none;">
                                     <h3 id="printSystemName">Car Rental System</h3>
                                 </div>
                                 <div class="card">
@@ -740,14 +770,43 @@
                                             </div>
                                         </div>
                                         <div class="row mb-3">
+                                            <div class="col-6">
+                                                <strong>Customer ID:</strong> <span id="printCustomerId"></span>
+                                            </div>
+                                            <div class="col-6">
+                                                <strong>Customer Address:</strong> <span id="printCustomerAddress"></span>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-3">
                                             <div class="col-12">
-                                                <strong>Rental Amount:</strong> <span id="printRentalAmount"></span>
+                                                <strong>Rental Amount (per day):</strong> <span id="printRentalAmount"></span>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-3">
+                                            <div class="col-12">
+                                                <strong>Rental Days:</strong> <span id="printRentalDays"></span>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-3">
+                                            <div class="col-12">
+                                                <strong>Rental History:</strong>
+                                                <div id="printRentalHistory"></div>
                                             </div>
                                         </div>
                                         <div class="row">
                                             <div class="col-12">
                                                 <hr>
                                                 <h4 class="text-end">Total: <span id="printTotalAmount"></span></h4>
+                                            </div>
+                                        </div>
+                                        <div class="row signature-area">
+                                            <div class="col-6">
+                                                <strong>Customer Signature:</strong>
+                                                <div style="height: 50px; border-bottom: 1px solid #000;"></div>
+                                            </div>
+                                            <div class="col-6 text-end">
+                                                <strong>Company Signature:</strong>
+                                                <div style="height: 50px; border-bottom: 1px solid #000;"></div>
                                             </div>
                                         </div>
                                     </div>
@@ -824,6 +883,86 @@
                                             </thead>
                                             <tbody id="returnTableBody">
                                                 <!-- Return data will be populated here -->
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Vehicle Maintenance Tab -->
+                        <div class="tab-pane fade" id="maintenance">
+                            <h2 class="mb-4">Vehicle Maintenance</h2>
+                            
+                            <div class="card">
+                                <div class="card-header">
+                                    Add Maintenance Record
+                                </div>
+                                <div class="card-body">
+                                    <form id="addMaintenanceForm">
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label for="maintenanceVehicle" class="form-label">Vehicle</label>
+                                                <input type="text" class="form-control" id="maintenanceVehicle" placeholder="Search vehicle...">
+                                                <div class="suggestion-list" id="maintenanceVehicleSuggestions"></div>
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label for="maintenanceType" class="form-label">Maintenance Type</label>
+                                                <select class="form-select" id="maintenanceType" required>
+                                                    <option value="">Select type...</option>
+                                                    <option value="Oil Change">Oil Change</option>
+                                                    <option value="Tire Replacement">Tire Replacement</option>
+                                                    <option value="Brake Service">Brake Service</option>
+                                                    <option value="Engine Repair">Engine Repair</option>
+                                                    <option value="General Service">General Service</option>
+                                                    <option value="Other">Other</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label for="maintenanceCost" class="form-label">Cost</label>
+                                                <div class="input-group">
+                                                    <input type="number" class="form-control" id="maintenanceCost" required>
+                                                    <select class="form-select" id="maintenanceCurrency" style="max-width: 120px;">
+                                                        <option value="USD">USD</option>
+                                                        <option value="IQD">IQD</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label for="maintenanceDate" class="form-label">Date</label>
+                                                <input type="date" class="form-control" id="maintenanceDate" required>
+                                            </div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="maintenanceDescription" class="form-label">Description</label>
+                                            <textarea class="form-control" id="maintenanceDescription" rows="3"></textarea>
+                                        </div>
+                                        <button type="submit" class="btn btn-primary">Add Maintenance</button>
+                                    </form>
+                                </div>
+                            </div>
+                            
+                            <div class="card mt-4">
+                                <div class="card-header">
+                                    Maintenance History
+                                </div>
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table class="table table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <th>Date</th>
+                                                    <th>Vehicle</th>
+                                                    <th>Type</th>
+                                                    <th>Cost</th>
+                                                    <th>Description</th>
+                                                    <th>Actions</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="maintenanceTableBody">
+                                                <!-- Maintenance data will be populated here -->
                                             </tbody>
                                         </table>
                                     </div>
@@ -915,7 +1054,7 @@
                             <!-- Payment Receipt for Printing -->
                             <div id="paymentReceiptPrint" class="print-only" style="display: none;">
                                 <div class="invoice-logo">
-                                    <img id="printPaymentLogo" src="" style="max-width: 150px; display: none;">
+                                    <img id="printPaymentLogo" src="" style="max-width: 200px; display: none;">
                                     <h3 id="printPaymentSystemName">Car Rental System</h3>
                                 </div>
                                 <div class="card">
@@ -944,7 +1083,7 @@
                                         <div class="row">
                                             <div class="col-12">
                                                 <hr>
-                                                <h4 class="text-end">Total: <span id="printPaymentTotal"></span></h4>
+                                                <h4 class="text-end">Total Paid: <span id="printPaymentTotal"></span></h4>
                                             </div>
                                         </div>
                                     </div>
@@ -1048,6 +1187,7 @@
                                                 <option value="payments">Payments Report</option>
                                                 <option value="fines">Fines Report</option>
                                                 <option value="vehicles">Vehicles Report</option>
+                                                <option value="maintenance">Maintenance Report</option>
                                             </select>
                                         </div>
                                         <div class="col-md-4 mb-3">
@@ -1107,6 +1247,24 @@
                                             <div class="col-md-6 mb-3">
                                                 <label for="systemLogo" class="form-label">System Logo</label>
                                                 <input type="file" class="form-control" id="systemLogo" accept="image/*">
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-12 mb-3">
+                                                <label for="systemMessage" class="form-label">System Message</label>
+                                                <textarea class="form-control" id="systemMessage" rows="3" placeholder="Enter system message to display to users"></textarea>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <button type="button" class="btn btn-success w-100" id="backupBtn">
+                                                    <i class="fas fa-download"></i> Backup Data
+                                                </button>
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <button type="button" class="btn btn-info w-100" id="restoreBtn">
+                                                    <i class="fas fa-upload"></i> Restore Data
+                                                </button>
                                             </div>
                                         </div>
                                         <button type="submit" class="btn btn-primary">Save Settings</button>
@@ -1250,6 +1408,10 @@
                                 <label class="form-check-label" for="returnsPermission">Vehicle Returns</label>
                             </div>
                             <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="maintenancePermission" checked>
+                                <label class="form-check-label" for="maintenancePermission">Vehicle Maintenance</label>
+                            </div>
+                            <div class="form-check">
                                 <input class="form-check-input" type="checkbox" id="debtsPermission" checked>
                                 <label class="form-check-label" for="debtsPermission">Debts & Payments</label>
                             </div>
@@ -1260,6 +1422,10 @@
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" id="reportsPermission" checked>
                                 <label class="form-check-label" for="reportsPermission">Reports</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="editDeletePermission">
+                                <label class="form-check-label" for="editDeletePermission">Edit & Delete Permissions</label>
                             </div>
                         </div>
                         <button type="submit" class="btn btn-primary">Add User</button>
@@ -1275,17 +1441,62 @@
         // Application data and state
         const appData = {
             users: [
-                { username: 'admin', password: '000000', role: 'admin', permissions: ['dashboard', 'vehicles', 'customers', 'rentals', 'returns', 'debts', 'fines', 'reports', 'settings'], active: true },
-                { username: 'user1', password: '123456', role: 'user', permissions: ['dashboard', 'vehicles', 'customers', 'rentals', 'returns'], active: true }
+                { 
+                    username: 'admin', 
+                    password: '000000', 
+                    role: 'admin', 
+                    permissions: ['dashboard', 'vehicles', 'customers', 'rentals', 'returns', 'maintenance', 'debts', 'fines', 'reports', 'settings', 'edit_delete'], 
+                    active: true 
+                },
+                { 
+                    username: 'user1', 
+                    password: '123456', 
+                    role: 'user', 
+                    permissions: ['dashboard', 'vehicles', 'customers', 'rentals', 'returns'], 
+                    active: true 
+                }
             ],
             vehicles: [
-                { id: 1, name: 'Toyota Camry', model: '2022', color: 'White', plate: 'ABC123', vin: '1HGCM82633A123456', odometer: 15000, status: 'available' },
-                { id: 2, name: 'Honda Civic', model: '2021', color: 'Black', plate: 'XYZ789', vin: '2HGCM82633A654321', odometer: 22000, status: 'rented' },
-                { id: 3, name: 'Ford Focus', model: '2020', color: 'Blue', plate: 'DEF456', vin: '3HGCM82633A987654', odometer: 18000, status: 'available' }
+                { 
+                    id: 1, 
+                    name: 'Toyota Camry', 
+                    model: '2022', 
+                    color: 'White', 
+                    plate: 'ABC123', 
+                    vin: '1HGCM82633A123456', 
+                    odometer: 15000, 
+                    status: 'available',
+                    rentalPrice: 50,
+                    rentalCurrency: 'USD'
+                },
+                { 
+                    id: 2, 
+                    name: 'Honda Civic', 
+                    model: '2021', 
+                    color: 'Black', 
+                    plate: 'XYZ789', 
+                    vin: '2HGCM82633A654321', 
+                    odometer: 22000, 
+                    status: 'rented',
+                    rentalPrice: 45,
+                    rentalCurrency: 'USD'
+                },
+                { 
+                    id: 3, 
+                    name: 'Ford Focus', 
+                    model: '2020', 
+                    color: 'Blue', 
+                    plate: 'DEF456', 
+                    vin: '3HGCM82633A987654', 
+                    odometer: 18000, 
+                    status: 'available',
+                    rentalPrice: 70000,
+                    rentalCurrency: 'IQD'
+                }
             ],
             customers: [
-                { id: 1, fullName: 'Ahmed Hassan', age: 35, idNumber: '123456789', nationality: 'Iraqi', contact: '07701234567', address: 'Baghdad', guaranteeDoc: null },
-                { id: 2, fullName: 'Sarah Mohammed', age: 28, idNumber: '987654321', nationality: 'Iraqi', contact: '07707654321', address: 'Erbil', guaranteeDoc: null }
+                { id: 1, fullName: 'Ahmed Hassan', age: 35, idNumber: '123456789', nationality: 'Iraqi', contact: '07701234567', address: 'Baghdad, Karrada', guaranteeDoc: null },
+                { id: 2, fullName: 'Sarah Mohammed', age: 28, idNumber: '987654321', nationality: 'Iraqi', contact: '07707654321', address: 'Erbil, Ainkawa', guaranteeDoc: null }
             ],
             rentals: [
                 { id: 1, invoiceCode: 'INV001', customerId: 2, vehicleId: 2, date: '2023-05-15', amount: 50, currency: 'USD', days: 3, status: 'completed', returnDate: '2023-05-18' },
@@ -1300,11 +1511,16 @@
             fines: [
                 { id: 1, customerId: 2, type: 'Traffic Fine', amount: 25, currency: 'USD', date: '2023-05-18', description: 'Speeding ticket' }
             ],
+            maintenance: [
+                { id: 1, vehicleId: 1, type: 'Oil Change', cost: 30, currency: 'USD', date: '2023-04-10', description: 'Regular oil change and filter replacement' },
+                { id: 2, vehicleId: 2, type: 'Tire Replacement', cost: 200, currency: 'USD', date: '2023-03-15', description: 'Replaced all four tires' }
+            ],
             settings: {
                 systemName: 'Car Rental System',
                 defaultCurrency: 'USD',
                 exchangeRate: 1410,
-                logo: null
+                logo: null,
+                systemMessage: ''
             },
             currentUser: null
         };
@@ -1366,6 +1582,7 @@
             loadReturns();
             loadPayments();
             loadFines();
+            loadMaintenance();
             loadUsers();
             
             // Apply system settings
@@ -1392,6 +1609,7 @@
                 'customers': '.customers-item',
                 'rentals': '.rentals-item',
                 'returns': '.returns-item',
+                'maintenance': '.maintenance-item',
                 'debts': '.debts-item',
                 'fines': '.fines-item',
                 'reports': '.reports-item',
@@ -1442,6 +1660,9 @@
             // Update exchange rate
             document.getElementById('exchangeRate').value = settings.exchangeRate;
             document.getElementById('settingsExchangeRate').value = settings.exchangeRate;
+            
+            // Update system message
+            document.getElementById('systemMessage').value = settings.systemMessage;
         }
 
         // Initialize the application
@@ -1492,6 +1713,12 @@
                 addFine();
             });
             
+            // Add maintenance form
+            document.getElementById('addMaintenanceForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                addMaintenance();
+            });
+            
             // System settings form
             document.getElementById('systemSettingsForm').addEventListener('submit', function(e) {
                 e.preventDefault();
@@ -1521,6 +1748,10 @@
             document.getElementById('generateReportBtn').addEventListener('click', generateReport);
             document.getElementById('exportReportBtn').addEventListener('click', exportReport);
             
+            // Backup and restore
+            document.getElementById('backupBtn').addEventListener('click', backupData);
+            document.getElementById('restoreBtn').addEventListener('click', restoreData);
+            
             // Close detail sections
             document.getElementById('closeVehicleDetails').addEventListener('click', function() {
                 document.getElementById('vehicleDetailsCard').style.display = 'none';
@@ -1548,6 +1779,11 @@
             // Customer search for fines
             document.getElementById('fineCustomer').addEventListener('input', function() {
                 searchCustomersForFine(this.value);
+            });
+            
+            // Vehicle search for maintenance
+            document.getElementById('maintenanceVehicle').addEventListener('input', function() {
+                searchVehiclesForMaintenance(this.value);
             });
             
             // System logo upload
@@ -1597,67 +1833,127 @@
             const totalVehicles = appData.vehicles.length;
             const availableVehicles = appData.vehicles.filter(v => v.status === 'available').length;
             const rentedVehicles = appData.vehicles.filter(v => v.status === 'rented').length;
+            const maintenanceVehicles = appData.vehicles.filter(v => v.status === 'maintenance').length;
             const totalCustomers = appData.customers.length;
             const activeRentals = appData.rentals.filter(r => r.status === 'active').length;
-            const totalRevenue = appData.rentals.reduce((sum, rental) => sum + rental.amount, 0);
+            
+            // Calculate total revenue from rentals
+            const totalRentalRevenue = appData.rentals.reduce((sum, rental) => {
+                return sum + (rental.amount * rental.days);
+            }, 0);
+            
+            // Calculate total fines
+            const totalFinesRevenue = appData.fines.reduce((sum, fine) => sum + fine.amount, 0);
             
             // Update dashboard stats
             stats.innerHTML = `
-                <div class="col-md-3 mb-4">
-                    <div class="card dashboard-card bg-primary text-white">
+                <div class="col-xl-3 col-md-6 mb-4">
+                    <div class="card dashboard-card border-left-primary shadow h-100 py-2">
                         <div class="card-body">
-                            <div class="d-flex justify-content-between">
-                                <div>
-                                    <h4>${totalVehicles}</h4>
-                                    <p>Total Vehicles</p>
+                            <div class="row no-gutters align-items-center">
+                                <div class="col mr-2">
+                                    <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                        Total Rental Revenue</div>
+                                    <div class="h5 mb-0 font-weight-bold text-gray-800">${formatCurrency(totalRentalRevenue, 'USD')}</div>
                                 </div>
-                                <div class="align-self-center">
-                                    <i class="fas fa-car fa-2x"></i>
+                                <div class="col-auto">
+                                    <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="col-md-3 mb-4">
-                    <div class="card dashboard-card bg-success text-white">
+                <div class="col-xl-3 col-md-6 mb-4">
+                    <div class="card dashboard-card border-left-success shadow h-100 py-2">
                         <div class="card-body">
-                            <div class="d-flex justify-content-between">
-                                <div>
-                                    <h4>${availableVehicles}</h4>
-                                    <p>Available Vehicles</p>
+                            <div class="row no-gutters align-items-center">
+                                <div class="col mr-2">
+                                    <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                        Fines & Taxes Revenue</div>
+                                    <div class="h5 mb-0 font-weight-bold text-gray-800">${formatCurrency(totalFinesRevenue, 'USD')}</div>
                                 </div>
-                                <div class="align-self-center">
-                                    <i class="fas fa-check-circle fa-2x"></i>
+                                <div class="col-auto">
+                                    <i class="fas fa-gavel fa-2x text-gray-300"></i>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="col-md-3 mb-4">
-                    <div class="card dashboard-card bg-warning text-white">
+                <div class="col-xl-3 col-md-6 mb-4">
+                    <div class="card dashboard-card border-left-info shadow h-100 py-2">
                         <div class="card-body">
-                            <div class="d-flex justify-content-between">
-                                <div>
-                                    <h4>${rentedVehicles}</h4>
-                                    <p>Rented Vehicles</p>
+                            <div class="row no-gutters align-items-center">
+                                <div class="col mr-2">
+                                    <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                                        Rented Vehicles</div>
+                                    <div class="h5 mb-0 font-weight-bold text-gray-800">${rentedVehicles}</div>
                                 </div>
-                                <div class="align-self-center">
-                                    <i class="fas fa-road fa-2x"></i>
+                                <div class="col-auto">
+                                    <i class="fas fa-car fa-2x text-gray-300"></i>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="col-md-3 mb-4">
-                    <div class="card dashboard-card bg-info text-white">
+                <div class="col-xl-3 col-md-6 mb-4">
+                    <div class="card dashboard-card border-left-warning shadow h-100 py-2">
                         <div class="card-body">
-                            <div class="d-flex justify-content-between">
-                                <div>
-                                    <h4>${totalCustomers}</h4>
-                                    <p>Total Customers</p>
+                            <div class="row no-gutters align-items-center">
+                                <div class="col mr-2">
+                                    <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                                        Available Vehicles</div>
+                                    <div class="h5 mb-0 font-weight-bold text-gray-800">${availableVehicles}</div>
                                 </div>
-                                <div class="align-self-center">
-                                    <i class="fas fa-users fa-2x"></i>
+                                <div class="col-auto">
+                                    <i class="fas fa-car-side fa-2x text-gray-300"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-3 col-md-6 mb-4">
+                    <div class="card dashboard-card border-left-primary shadow h-100 py-2">
+                        <div class="card-body">
+                            <div class="row no-gutters align-items-center">
+                                <div class="col mr-2">
+                                    <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                        Total Customers</div>
+                                    <div class="h5 mb-0 font-weight-bold text-gray-800">${totalCustomers}</div>
+                                </div>
+                                <div class="col-auto">
+                                    <i class="fas fa-users fa-2x text-gray-300"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-3 col-md-6 mb-4">
+                    <div class="card dashboard-card border-left-success shadow h-100 py-2">
+                        <div class="card-body">
+                            <div class="row no-gutters align-items-center">
+                                <div class="col mr-2">
+                                    <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                        Total Vehicles</div>
+                                    <div class="h5 mb-0 font-weight-bold text-gray-800">${totalVehicles}</div>
+                                </div>
+                                <div class="col-auto">
+                                    <i class="fas fa-car fa-2x text-gray-300"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-3 col-md-6 mb-4">
+                    <div class="card dashboard-card border-left-info shadow h-100 py-2">
+                        <div class="card-body">
+                            <div class="row no-gutters align-items-center">
+                                <div class="col mr-2">
+                                    <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                                        Vehicles in Maintenance</div>
+                                    <div class="h5 mb-0 font-weight-bold text-gray-800">${maintenanceVehicles}</div>
+                                </div>
+                                <div class="col-auto">
+                                    <i class="fas fa-tools fa-2x text-gray-300"></i>
                                 </div>
                             </div>
                         </div>
@@ -1692,8 +1988,12 @@
             
             // Update vehicle list table
             tableBody.innerHTML = appData.vehicles.map(vehicle => {
-                const statusClass = vehicle.status === 'available' ? 'status-returned' : 'status-not-returned';
-                const statusText = vehicle.status === 'available' ? 'Available' : 'Rented';
+                const statusClass = vehicle.status === 'available' ? 'status-returned' : 
+                                 vehicle.status === 'rented' ? 'status-not-returned' : 'table-warning';
+                const statusText = vehicle.status === 'available' ? 'Available' : 
+                                 vehicle.status === 'rented' ? 'Rented' : 'Maintenance';
+                
+                const canEditDelete = appData.currentUser.permissions.includes('edit_delete') || appData.currentUser.role === 'admin';
                 
                 return `
                     <tr class="${statusClass}">
@@ -1702,10 +2002,11 @@
                         <td>${vehicle.color}</td>
                         <td>${vehicle.plate}</td>
                         <td>${vehicle.odometer.toLocaleString()} km</td>
+                        <td>${formatCurrency(vehicle.rentalPrice, vehicle.rentalCurrency)}</td>
                         <td>${statusText}</td>
                         <td>
                             <button class="btn btn-sm btn-info" onclick="showVehicleDetails(${vehicle.id})">Details</button>
-                            ${appData.currentUser.role === 'admin' ? `
+                            ${canEditDelete ? `
                                 <button class="btn btn-sm btn-warning" onclick="editVehicle(${vehicle.id})">Edit</button>
                                 <button class="btn btn-sm btn-danger" onclick="deleteVehicle(${vehicle.id})">Delete</button>
                             ` : ''}
@@ -1765,6 +2066,8 @@
                     totalDebt -= payment.amount;
                 });
                 
+                const canEditDelete = appData.currentUser.permissions.includes('edit_delete') || appData.currentUser.role === 'admin';
+                
                 return `
                     <tr>
                         <td>${customer.fullName}</td>
@@ -1775,7 +2078,7 @@
                         <td>${formatCurrency(totalDebt, 'USD')}</td>
                         <td>
                             <button class="btn btn-sm btn-info" onclick="showCustomerDetails(${customer.id})">Details</button>
-                            ${appData.currentUser.role === 'admin' ? `
+                            ${canEditDelete ? `
                                 <button class="btn btn-sm btn-warning" onclick="editCustomer(${customer.id})">Edit</button>
                                 <button class="btn btn-sm btn-danger" onclick="deleteCustomer(${customer.id})">Delete</button>
                             ` : ''}
@@ -1795,6 +2098,8 @@
                 const statusClass = rental.status === 'active' ? 'status-not-returned' : 'status-returned';
                 const statusText = rental.status === 'active' ? 'Active' : 'Completed';
                 
+                const canEditDelete = appData.currentUser.permissions.includes('edit_delete') || appData.currentUser.role === 'admin';
+                
                 return `
                     <tr class="${statusClass}">
                         <td>${rental.invoiceCode}</td>
@@ -1805,7 +2110,7 @@
                         <td>${statusText}</td>
                         <td>
                             <button class="btn btn-sm btn-info" onclick="printInvoice(${rental.id})">Print</button>
-                            ${appData.currentUser.role === 'admin' ? `
+                            ${canEditDelete ? `
                                 <button class="btn btn-sm btn-warning" onclick="editRental(${rental.id})">Edit</button>
                                 <button class="btn btn-sm btn-danger" onclick="deleteRental(${rental.id})">Delete</button>
                             ` : ''}
@@ -1868,6 +2173,37 @@
             `).join('');
         }
 
+        // Load maintenance data
+        function loadMaintenance() {
+            const tableBody = document.getElementById('maintenanceTableBody');
+            
+            const maintenanceData = appData.maintenance.map(maintenance => {
+                const vehicle = appData.vehicles.find(v => v.id === maintenance.vehicleId);
+                return {
+                    ...maintenance,
+                    vehicleName: vehicle ? vehicle.name : 'Unknown'
+                };
+            });
+            
+            const canEditDelete = appData.currentUser.permissions.includes('edit_delete') || appData.currentUser.role === 'admin';
+            
+            tableBody.innerHTML = maintenanceData.map(maintenance => `
+                <tr>
+                    <td>${maintenance.date}</td>
+                    <td>${maintenance.vehicleName}</td>
+                    <td>${maintenance.type}</td>
+                    <td>${formatCurrency(maintenance.cost, maintenance.currency)}</td>
+                    <td>${maintenance.description}</td>
+                    <td>
+                        ${canEditDelete ? `
+                            <button class="btn btn-sm btn-warning" onclick="editMaintenance(${maintenance.id})">Edit</button>
+                            <button class="btn btn-sm btn-danger" onclick="deleteMaintenance(${maintenance.id})">Delete</button>
+                        ` : ''}
+                    </td>
+                </tr>
+            `).join('');
+        }
+
         // Load payments data
         function loadPayments() {
             const tableBody = document.getElementById('paymentTableBody');
@@ -1880,6 +2216,8 @@
                 };
             });
             
+            const canEditDelete = appData.currentUser.permissions.includes('edit_delete') || appData.currentUser.role === 'admin';
+            
             tableBody.innerHTML = paymentData.map(payment => `
                 <tr>
                     <td>${payment.date}</td>
@@ -1887,7 +2225,7 @@
                     <td>${formatCurrency(payment.amount, payment.currency)}</td>
                     <td>
                         <button class="btn btn-sm btn-info" onclick="printPaymentReceipt(${payment.id})">Print</button>
-                        ${appData.currentUser.role === 'admin' ? `
+                        ${canEditDelete ? `
                             <button class="btn btn-sm btn-danger" onclick="deletePayment(${payment.id})">Delete</button>
                         ` : ''}
                     </td>
@@ -1907,6 +2245,8 @@
                 };
             });
             
+            const canEditDelete = appData.currentUser.permissions.includes('edit_delete') || appData.currentUser.role === 'admin';
+            
             tableBody.innerHTML = fineData.map(fine => `
                 <tr>
                     <td>${fine.date}</td>
@@ -1915,7 +2255,7 @@
                     <td>${formatCurrency(fine.amount, fine.currency)}</td>
                     <td>${fine.description}</td>
                     <td>
-                        ${appData.currentUser.role === 'admin' ? `
+                        ${canEditDelete ? `
                             <button class="btn btn-sm btn-warning" onclick="editFine(${fine.id})">Edit</button>
                             <button class="btn btn-sm btn-danger" onclick="deleteFine(${fine.id})">Delete</button>
                         ` : ''}
@@ -1929,22 +2269,27 @@
             const tableBody = document.getElementById('userTableBody');
             const managementTableBody = document.getElementById('userManagementTableBody');
             
-            const userRows = appData.users.map(user => `
-                <tr>
-                    <td>${user.username}</td>
-                    <td>${user.role}</td>
-                    <td>${user.permissions.join(', ')}</td>
-                    <td>${user.active ? 'Active' : 'Inactive'}</td>
-                    <td>
-                        ${appData.currentUser.username !== user.username ? `
-                            <button class="btn btn-sm btn-warning" onclick="editUser('${user.username}')">Edit</button>
-                            <button class="btn btn-sm btn-danger" onclick="toggleUserStatus('${user.username}')">
-                                ${user.active ? 'Deactivate' : 'Activate'}
-                            </button>
-                        ` : ''}
-                    </td>
-                </tr>
-            `).join('');
+            const userRows = appData.users.map(user => {
+                const canEditDelete = appData.currentUser.role === 'admin' && appData.currentUser.username !== user.username;
+                
+                return `
+                    <tr>
+                        <td>${user.username}</td>
+                        <td>${user.role}</td>
+                        <td>${user.permissions.join(', ')}</td>
+                        <td>${user.active ? 'Active' : 'Inactive'}</td>
+                        <td>
+                            ${canEditDelete ? `
+                                <button class="btn btn-sm btn-warning" onclick="editUser('${user.username}')">Edit</button>
+                                <button class="btn btn-sm btn-danger" onclick="toggleUserStatus('${user.username}')">
+                                    ${user.active ? 'Deactivate' : 'Activate'}
+                                </button>
+                                <button class="btn btn-sm btn-info" onclick="deleteUser('${user.username}')">Delete</button>
+                            ` : ''}
+                        </td>
+                    </tr>
+                `;
+            }).join('');
             
             if (tableBody) tableBody.innerHTML = userRows;
             if (managementTableBody) managementTableBody.innerHTML = userRows;
@@ -1958,6 +2303,8 @@
             const plate = document.getElementById('vehiclePlate').value;
             const color = document.getElementById('vehicleColor').value;
             const model = document.getElementById('vehicleModel').value;
+            const rentalPrice = parseFloat(document.getElementById('vehicleRentalPrice').value);
+            const rentalCurrency = document.getElementById('vehicleRentalCurrency').value;
             
             const newVehicle = {
                 id: appData.vehicles.length > 0 ? Math.max(...appData.vehicles.map(v => v.id)) + 1 : 1,
@@ -1967,6 +2314,8 @@
                 plate,
                 vin,
                 odometer,
+                rentalPrice,
+                rentalCurrency,
                 status: 'available'
             };
             
@@ -2124,6 +2473,40 @@
             alert('Fine/Tax added successfully!');
         }
 
+        // Add maintenance record
+        function addMaintenance() {
+            const vehicleInput = document.getElementById('maintenanceVehicle').value;
+            const type = document.getElementById('maintenanceType').value;
+            const cost = parseFloat(document.getElementById('maintenanceCost').value);
+            const currency = document.getElementById('maintenanceCurrency').value;
+            const date = document.getElementById('maintenanceDate').value;
+            const description = document.getElementById('maintenanceDescription').value;
+            
+            // Find vehicle by name
+            const vehicle = appData.vehicles.find(v => v.name === vehicleInput);
+            
+            if (!vehicle) {
+                alert('Vehicle not found!');
+                return;
+            }
+            
+            const newMaintenance = {
+                id: appData.maintenance.length > 0 ? Math.max(...appData.maintenance.map(m => m.id)) + 1 : 1,
+                vehicleId: vehicle.id,
+                type,
+                cost,
+                currency,
+                date,
+                description
+            };
+            
+            appData.maintenance.push(newMaintenance);
+            saveData();
+            loadMaintenance();
+            document.getElementById('addMaintenanceForm').reset();
+            alert('Maintenance record added successfully!');
+        }
+
         // Return a vehicle
         function returnVehicle(rentalId) {
             const rental = appData.rentals.find(r => r.id === rentalId);
@@ -2175,10 +2558,12 @@
             const systemName = document.getElementById('systemName').value;
             const defaultCurrency = document.getElementById('defaultCurrency').value;
             const exchangeRate = parseFloat(document.getElementById('settingsExchangeRate').value);
+            const systemMessage = document.getElementById('systemMessage').value;
             
             appData.settings.systemName = systemName;
             appData.settings.defaultCurrency = defaultCurrency;
             appData.settings.exchangeRate = exchangeRate;
+            appData.settings.systemMessage = systemMessage;
             
             saveData();
             applySystemSettings();
@@ -2198,9 +2583,11 @@
             if (document.getElementById('customersPermission').checked) permissions.push('customers');
             if (document.getElementById('rentalsPermission').checked) permissions.push('rentals');
             if (document.getElementById('returnsPermission').checked) permissions.push('returns');
+            if (document.getElementById('maintenancePermission').checked) permissions.push('maintenance');
             if (document.getElementById('debtsPermission').checked) permissions.push('debts');
             if (document.getElementById('finesPermission').checked) permissions.push('fines');
             if (document.getElementById('reportsPermission').checked) permissions.push('reports');
+            if (document.getElementById('editDeletePermission').checked) permissions.push('edit_delete');
             
             const newUser = {
                 username,
@@ -2242,6 +2629,67 @@
             alert('Password changed successfully!');
         }
 
+        // Backup data
+        function backupData() {
+            const dataStr = JSON.stringify(appData, null, 2);
+            const dataBlob = new Blob([dataStr], {type: 'application/json'});
+            
+            const url = URL.createObjectURL(dataBlob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `car-rental-backup-${new Date().toISOString().split('T')[0]}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            alert('Backup created successfully!');
+        }
+
+        // Restore data
+        function restoreData() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json';
+            
+            input.onchange = e => {
+                const file = e.target.files[0];
+                const reader = new FileReader();
+                
+                reader.onload = function(event) {
+                    try {
+                        const data = JSON.parse(event.target.result);
+                        
+                        if (data.vehicles && data.customers && data.rentals) {
+                            Object.assign(appData, data);
+                            
+                            saveData();
+                            loadVehicles();
+                            loadCustomers();
+                            loadRentals();
+                            loadReturns();
+                            loadPayments();
+                            loadFines();
+                            loadMaintenance();
+                            loadUsers();
+                            loadDashboard();
+                            applySystemSettings();
+                            
+                            alert('Data restored successfully!');
+                        } else {
+                            alert('Invalid backup file format.');
+                        }
+                    } catch (error) {
+                        alert('Error reading backup file: ' + error.message);
+                    }
+                };
+                
+                reader.readAsText(file);
+            };
+            
+            input.click();
+        }
+
         // Search functionality
         function searchVehicles() {
             const query = document.getElementById('vehicleSearch').value.toLowerCase();
@@ -2253,8 +2701,12 @@
             
             const tableBody = document.getElementById('vehicleTableBody');
             tableBody.innerHTML = filteredVehicles.map(vehicle => {
-                const statusClass = vehicle.status === 'available' ? 'status-returned' : 'status-not-returned';
-                const statusText = vehicle.status === 'available' ? 'Available' : 'Rented';
+                const statusClass = vehicle.status === 'available' ? 'status-returned' : 
+                                 vehicle.status === 'rented' ? 'status-not-returned' : 'table-warning';
+                const statusText = vehicle.status === 'available' ? 'Available' : 
+                                 vehicle.status === 'rented' ? 'Rented' : 'Maintenance';
+                
+                const canEditDelete = appData.currentUser.permissions.includes('edit_delete') || appData.currentUser.role === 'admin';
                 
                 return `
                     <tr class="${statusClass}">
@@ -2263,10 +2715,11 @@
                         <td>${vehicle.color}</td>
                         <td>${vehicle.plate}</td>
                         <td>${vehicle.odometer.toLocaleString()} km</td>
+                        <td>${formatCurrency(vehicle.rentalPrice, vehicle.rentalCurrency)}</td>
                         <td>${statusText}</td>
                         <td>
                             <button class="btn btn-sm btn-info" onclick="showVehicleDetails(${vehicle.id})">Details</button>
-                            ${appData.currentUser.role === 'admin' ? `
+                            ${canEditDelete ? `
                                 <button class="btn btn-sm btn-warning" onclick="editVehicle(${vehicle.id})">Edit</button>
                                 <button class="btn btn-sm btn-danger" onclick="deleteVehicle(${vehicle.id})">Delete</button>
                             ` : ''}
@@ -2308,6 +2761,8 @@
                     totalDebt -= payment.amount;
                 });
                 
+                const canEditDelete = appData.currentUser.permissions.includes('edit_delete') || appData.currentUser.role === 'admin';
+                
                 return `
                     <tr>
                         <td>${customer.fullName}</td>
@@ -2318,7 +2773,7 @@
                         <td>${formatCurrency(totalDebt, 'USD')}</td>
                         <td>
                             <button class="btn btn-sm btn-info" onclick="showCustomerDetails(${customer.id})">Details</button>
-                            ${appData.currentUser.role === 'admin' ? `
+                            ${canEditDelete ? `
                                 <button class="btn btn-sm btn-warning" onclick="editCustomer(${customer.id})">Edit</button>
                                 <button class="btn btn-sm btn-danger" onclick="deleteCustomer(${customer.id})">Delete</button>
                             ` : ''}
@@ -2341,6 +2796,8 @@
                 const statusClass = rental.status === 'active' ? 'status-not-returned' : 'status-returned';
                 const statusText = rental.status === 'active' ? 'Active' : 'Completed';
                 
+                const canEditDelete = appData.currentUser.permissions.includes('edit_delete') || appData.currentUser.role === 'admin';
+                
                 return `
                     <tr class="${statusClass}">
                         <td>${rental.invoiceCode}</td>
@@ -2351,7 +2808,7 @@
                         <td>${statusText}</td>
                         <td>
                             <button class="btn btn-sm btn-info" onclick="printInvoice(${rental.id})">Print</button>
-                            ${appData.currentUser.role === 'admin' ? `
+                            ${canEditDelete ? `
                                 <button class="btn btn-sm btn-warning" onclick="editRental(${rental.id})">Edit</button>
                                 <button class="btn btn-sm btn-danger" onclick="deleteRental(${rental.id})">Delete</button>
                             ` : ''}
@@ -2527,6 +2984,33 @@
             suggestions.style.display = 'block';
         }
 
+        // Vehicle search for maintenance form
+        function searchVehiclesForMaintenance(query) {
+            const suggestions = document.getElementById('maintenanceVehicleSuggestions');
+            
+            if (query.length < 2) {
+                suggestions.style.display = 'none';
+                return;
+            }
+            
+            const filteredVehicles = appData.vehicles.filter(vehicle => 
+                vehicle.name.toLowerCase().includes(query.toLowerCase())
+            );
+            
+            if (filteredVehicles.length === 0) {
+                suggestions.style.display = 'none';
+                return;
+            }
+            
+            suggestions.innerHTML = filteredVehicles.map(vehicle => `
+                <div class="suggestion-item" onclick="selectMaintenanceVehicle('${vehicle.name}')">
+                    ${vehicle.name} - ${vehicle.model} (${vehicle.plate})
+                </div>
+            `).join('');
+            
+            suggestions.style.display = 'block';
+        }
+
         // Select customer for rental
         function selectCustomer(fullName) {
             document.getElementById('rentalCustomer').value = fullName;
@@ -2550,6 +3034,12 @@
         function selectFineCustomer(fullName) {
             document.getElementById('fineCustomer').value = fullName;
             document.getElementById('fineCustomerSuggestions').style.display = 'none';
+        }
+
+        // Select vehicle for maintenance
+        function selectMaintenanceVehicle(name) {
+            document.getElementById('maintenanceVehicle').value = name;
+            document.getElementById('maintenanceVehicleSuggestions').style.display = 'none';
         }
 
         // Update customer debt summary
@@ -2695,8 +3185,27 @@
                             'Color': vehicle.color,
                             'Plate': vehicle.plate,
                             'Odometer': vehicle.odometer,
+                            'Rental Price': formatCurrency(vehicle.rentalPrice, vehicle.rentalCurrency),
                             'Status': vehicle.status,
                             'Rental Count': rentalCount
+                        };
+                    });
+                    break;
+                    
+                case 'maintenance':
+                    reportTitle = 'Maintenance Report';
+                    reportData = appData.maintenance.filter(maintenance => {
+                        if (startDate && maintenance.date < startDate) return false;
+                        if (endDate && maintenance.date > endDate) return false;
+                        return true;
+                    }).map(maintenance => {
+                        const vehicle = appData.vehicles.find(v => v.id === maintenance.vehicleId);
+                        return {
+                            'Date': maintenance.date,
+                            'Vehicle': vehicle ? vehicle.name : 'Unknown',
+                            'Type': maintenance.type,
+                            'Cost': formatCurrency(maintenance.cost, maintenance.currency),
+                            'Description': maintenance.description
                         };
                     });
                     break;
@@ -2764,13 +3273,27 @@
             const customer = appData.customers.find(c => c.id === rental.customerId);
             const vehicle = appData.vehicles.find(v => v.id === rental.vehicleId);
             
+            // Get customer's rental history
+            const customerRentals = appData.rentals.filter(r => r.customerId === rental.customerId);
+            
             // Update print content
             document.getElementById('printInvoiceCode').textContent = rental.invoiceCode;
             document.getElementById('printInvoiceDate').textContent = rental.date;
             document.getElementById('printCustomerName').textContent = customer ? customer.fullName : 'Unknown';
             document.getElementById('printVehicleName').textContent = vehicle ? vehicle.name : 'Unknown';
+            document.getElementById('printCustomerId').textContent = customer ? customer.idNumber : 'Unknown';
+            document.getElementById('printCustomerAddress').textContent = customer ? customer.address : 'Unknown';
             document.getElementById('printRentalAmount').textContent = formatCurrency(rental.amount, rental.currency);
+            document.getElementById('printRentalDays').textContent = rental.days;
             document.getElementById('printTotalAmount').textContent = formatCurrency(rental.amount * rental.days, rental.currency);
+            
+            // Add rental history
+            const rentalHistory = customerRentals.map(r => {
+                const v = appData.vehicles.find(veh => veh.id === r.vehicleId);
+                return `${r.date} - ${v ? v.name : 'Unknown'} - ${formatCurrency(r.amount, r.currency)} - ${r.status}`;
+            }).join('<br>');
+            
+            document.getElementById('printRentalHistory').innerHTML = rentalHistory;
             
             // Show print dialog
             const printContent = document.getElementById('invoicePrint').innerHTML;
@@ -2826,6 +3349,7 @@
                         <p><strong>Plate Number:</strong> ${vehicle.plate}</p>
                         <p><strong>VIN:</strong> ${vehicle.vin}</p>
                         <p><strong>Odometer:</strong> ${vehicle.odometer.toLocaleString()} km</p>
+                        <p><strong>Rental Price:</strong> ${formatCurrency(vehicle.rentalPrice, vehicle.rentalCurrency)}</p>
                         <p><strong>Status:</strong> ${vehicle.status}</p>
                     </div>
                     <div class="col-md-6">
@@ -2850,6 +3374,33 @@
                                             </tr>
                                         `;
                                     }).join('')}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-12">
+                        <h5>Maintenance History</h5>
+                        <div class="table-responsive">
+                            <table class="table table-sm">
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Type</th>
+                                        <th>Cost</th>
+                                        <th>Description</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${appData.maintenance.filter(m => m.vehicleId === vehicleId).map(maintenance => `
+                                        <tr>
+                                            <td>${maintenance.date}</td>
+                                            <td>${maintenance.type}</td>
+                                            <td>${formatCurrency(maintenance.cost, maintenance.currency)}</td>
+                                            <td>${maintenance.description}</td>
+                                        </tr>
+                                    `).join('')}
                                 </tbody>
                             </table>
                         </div>
@@ -2947,9 +3498,67 @@
             localStorage.setItem('carRentalData', JSON.stringify(appData));
         }
 
-        // Admin functions for editing and deleting (stubs for demonstration)
+        // Admin functions for editing and deleting
         function editVehicle(id) {
-            alert(`Edit vehicle with ID: ${id} - This would open an edit form in a real application.`);
+            const vehicle = appData.vehicles.find(v => v.id === id);
+            if (!vehicle) return;
+            
+            document.getElementById('vehicleName').value = vehicle.name;
+            document.getElementById('vehicleOdometer').value = vehicle.odometer;
+            document.getElementById('vehicleVin').value = vehicle.vin;
+            document.getElementById('vehiclePlate').value = vehicle.plate;
+            document.getElementById('vehicleColor').value = vehicle.color;
+            document.getElementById('vehicleModel').value = vehicle.model;
+            document.getElementById('vehicleRentalPrice').value = vehicle.rentalPrice;
+            document.getElementById('vehicleRentalCurrency').value = vehicle.rentalCurrency;
+            
+            // Change form to update mode
+            const form = document.getElementById('addVehicleForm');
+            const submitBtn = form.querySelector('button[type="submit"]');
+            submitBtn.textContent = 'Update Vehicle';
+            submitBtn.classList.remove('btn-primary');
+            submitBtn.classList.add('btn-warning');
+            
+            // Remove existing event listener and add update listener
+            form.onsubmit = function(e) {
+                e.preventDefault();
+                updateVehicle(id);
+            };
+            
+            // Scroll to form
+            document.querySelector('[href="#addVehicle"]').click();
+        }
+
+        function updateVehicle(id) {
+            const vehicle = appData.vehicles.find(v => v.id === id);
+            if (!vehicle) return;
+            
+            vehicle.name = document.getElementById('vehicleName').value;
+            vehicle.odometer = parseInt(document.getElementById('vehicleOdometer').value);
+            vehicle.vin = document.getElementById('vehicleVin').value;
+            vehicle.plate = document.getElementById('vehiclePlate').value;
+            vehicle.color = document.getElementById('vehicleColor').value;
+            vehicle.model = document.getElementById('vehicleModel').value;
+            vehicle.rentalPrice = parseFloat(document.getElementById('vehicleRentalPrice').value);
+            vehicle.rentalCurrency = document.getElementById('vehicleRentalCurrency').value;
+            
+            saveData();
+            loadVehicles();
+            
+            // Reset form
+            document.getElementById('addVehicleForm').reset();
+            const submitBtn = document.querySelector('#addVehicleForm button[type="submit"]');
+            submitBtn.textContent = 'Add Vehicle';
+            submitBtn.classList.remove('btn-warning');
+            submitBtn.classList.add('btn-primary');
+            
+            // Reset event listener
+            document.getElementById('addVehicleForm').onsubmit = function(e) {
+                e.preventDefault();
+                addVehicle();
+            };
+            
+            alert('Vehicle updated successfully!');
         }
 
         function deleteVehicle(id) {
@@ -2962,7 +3571,61 @@
         }
 
         function editCustomer(id) {
-            alert(`Edit customer with ID: ${id} - This would open an edit form in a real application.`);
+            const customer = appData.customers.find(c => c.id === id);
+            if (!customer) return;
+            
+            document.getElementById('customerFullName').value = customer.fullName;
+            document.getElementById('customerAge').value = customer.age;
+            document.getElementById('customerId').value = customer.idNumber;
+            document.getElementById('customerNationality').value = customer.nationality;
+            document.getElementById('customerContact').value = customer.contact;
+            document.getElementById('customerAddress').value = customer.address;
+            
+            // Change form to update mode
+            const form = document.getElementById('addCustomerForm');
+            const submitBtn = form.querySelector('button[type="submit"]');
+            submitBtn.textContent = 'Update Customer';
+            submitBtn.classList.remove('btn-primary');
+            submitBtn.classList.add('btn-warning');
+            
+            // Remove existing event listener and add update listener
+            form.onsubmit = function(e) {
+                e.preventDefault();
+                updateCustomer(id);
+            };
+            
+            // Scroll to form
+            document.querySelector('[href="#addCustomer"]').click();
+        }
+
+        function updateCustomer(id) {
+            const customer = appData.customers.find(c => c.id === id);
+            if (!customer) return;
+            
+            customer.fullName = document.getElementById('customerFullName').value;
+            customer.age = parseInt(document.getElementById('customerAge').value);
+            customer.idNumber = document.getElementById('customerId').value;
+            customer.nationality = document.getElementById('customerNationality').value;
+            customer.contact = document.getElementById('customerContact').value;
+            customer.address = document.getElementById('customerAddress').value;
+            
+            saveData();
+            loadCustomers();
+            
+            // Reset form
+            document.getElementById('addCustomerForm').reset();
+            const submitBtn = document.querySelector('#addCustomerForm button[type="submit"]');
+            submitBtn.textContent = 'Add Customer';
+            submitBtn.classList.remove('btn-warning');
+            submitBtn.classList.add('btn-primary');
+            
+            // Reset event listener
+            document.getElementById('addCustomerForm').onsubmit = function(e) {
+                e.preventDefault();
+                addCustomer();
+            };
+            
+            alert('Customer updated successfully!');
         }
 
         function deleteCustomer(id) {
@@ -2980,9 +3643,21 @@
 
         function deleteRental(id) {
             if (confirm('Are you sure you want to delete this rental?')) {
+                const rental = appData.rentals.find(r => r.id === id);
+                if (rental) {
+                    // Make the vehicle available again if it was rented
+                    if (rental.status === 'active') {
+                        const vehicle = appData.vehicles.find(v => v.id === rental.vehicleId);
+                        if (vehicle) {
+                            vehicle.status = 'available';
+                        }
+                    }
+                }
+                
                 appData.rentals = appData.rentals.filter(r => r.id !== id);
                 saveData();
                 loadRentals();
+                loadVehicles();
                 alert('Rental deleted successfully!');
             }
         }
@@ -3009,6 +3684,19 @@
             }
         }
 
+        function editMaintenance(id) {
+            alert(`Edit maintenance with ID: ${id} - This would open an edit form in a real application.`);
+        }
+
+        function deleteMaintenance(id) {
+            if (confirm('Are you sure you want to delete this maintenance record?')) {
+                appData.maintenance = appData.maintenance.filter(m => m.id !== id);
+                saveData();
+                loadMaintenance();
+                alert('Maintenance record deleted successfully!');
+            }
+        }
+
         function editUser(username) {
             alert(`Edit user: ${username} - This would open an edit form in a real application.`);
         }
@@ -3020,6 +3708,20 @@
                 saveData();
                 loadUsers();
                 alert(`User ${user.active ? 'activated' : 'deactivated'} successfully!`);
+            }
+        }
+
+        function deleteUser(username) {
+            if (confirm(`Are you sure you want to delete user ${username}?`)) {
+                if (username === appData.currentUser.username) {
+                    alert('You cannot delete your own account!');
+                    return;
+                }
+                
+                appData.users = appData.users.filter(u => u.username !== username);
+                saveData();
+                loadUsers();
+                alert('User deleted successfully!');
             }
         }
     </script>
