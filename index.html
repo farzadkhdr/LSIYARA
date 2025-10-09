@@ -229,10 +229,6 @@
             border-top: 1px solid #000;
             padding-top: 10px;
         }
-        
-        .maintenance-status {
-            background-color: #fff3cd;
-        }
     </style>
 </head>
 <body>
@@ -1443,7 +1439,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
         // Application data and state
-        let appData = {
+        const appData = {
             users: [
                 { 
                     username: 'admin', 
@@ -1531,9 +1527,6 @@
 
         // Initialize the application
         document.addEventListener('DOMContentLoaded', function() {
-            // Load saved data from localStorage
-            loadFromLocalStorage();
-            
             // Check if user is already logged in
             const savedUser = localStorage.getItem('currentUser');
             if (savedUser) {
@@ -1558,24 +1551,17 @@
                 }
             });
 
+            // Logout button
+            document.getElementById('logoutBtn').addEventListener('click', function() {
+                appData.currentUser = null;
+                localStorage.removeItem('currentUser');
+                document.getElementById('mainApp').style.display = 'none';
+                document.getElementById('loginScreen').style.display = 'block';
+            });
+
             // Initialize the main application
             initializeApp();
         });
-
-        // Load data from localStorage
-        function loadFromLocalStorage() {
-            const savedData = localStorage.getItem('carRentalData');
-            if (savedData) {
-                const parsedData = JSON.parse(savedData);
-                // Merge with default data, preserving current structure
-                appData = {
-                    ...appData,
-                    ...parsedData,
-                    // Ensure currentUser is not overwritten from localStorage
-                    currentUser: appData.currentUser
-                };
-            }
-        }
 
         // Show main application after login
         function showMainApp() {
@@ -1613,8 +1599,6 @@
             adminElements.forEach(el => {
                 if (user.role !== 'admin') {
                     el.style.display = 'none';
-                } else {
-                    el.style.display = 'block';
                 }
             });
             
@@ -1637,8 +1621,6 @@
                 elements.forEach(el => {
                     if (!permissions.includes(perm)) {
                         el.style.display = 'none';
-                    } else {
-                        el.style.display = 'block';
                     }
                 });
             }
@@ -1685,6 +1667,13 @@
 
         // Initialize the application
         function initializeApp() {
+            // Load saved data from localStorage if available
+            const savedData = localStorage.getItem('carRentalData');
+            if (savedData) {
+                const parsedData = JSON.parse(savedData);
+                Object.assign(appData, parsedData);
+            }
+            
             // Set up event listeners for forms
             setupEventListeners();
             
@@ -1748,11 +1737,6 @@
                 changePassword();
             });
             
-            // Logout button
-            document.getElementById('logoutBtn').addEventListener('click', function() {
-                handleLogout();
-            });
-            
             // Search functionality
             document.getElementById('vehicleSearchBtn').addEventListener('click', searchVehicles);
             document.getElementById('customerSearchBtn').addEventListener('click', searchCustomers);
@@ -1810,20 +1794,10 @@
                     reader.onload = function(e) {
                         appData.settings.logo = e.target.result;
                         applySystemSettings();
-                        saveData();
                     };
                     reader.readAsDataURL(file);
                 }
             });
-        }
-
-        // Handle logout
-        function handleLogout() {
-            appData.currentUser = null;
-            localStorage.removeItem('currentUser');
-            document.getElementById('mainApp').style.display = 'none';
-            document.getElementById('loginScreen').style.display = 'block';
-            document.getElementById('loginForm').reset();
         }
 
         // Initialize charts
@@ -2015,7 +1989,7 @@
             // Update vehicle list table
             tableBody.innerHTML = appData.vehicles.map(vehicle => {
                 const statusClass = vehicle.status === 'available' ? 'status-returned' : 
-                                 vehicle.status === 'rented' ? 'status-not-returned' : 'maintenance-status';
+                                 vehicle.status === 'rented' ? 'status-not-returned' : 'table-warning';
                 const statusText = vehicle.status === 'available' ? 'Available' : 
                                  vehicle.status === 'rented' ? 'Rented' : 'Maintenance';
                 
@@ -2602,12 +2576,6 @@
             const password = document.getElementById('newUserPassword').value;
             const role = document.getElementById('newUserRole').value;
             
-            // Check if username already exists
-            if (appData.users.find(u => u.username === username)) {
-                alert('Username already exists!');
-                return;
-            }
-            
             // Get permissions from checkboxes
             const permissions = [];
             if (document.getElementById('dashboardPermission').checked) permissions.push('dashboard');
@@ -2633,11 +2601,7 @@
             saveData();
             loadUsers();
             document.getElementById('addUserForm').reset();
-            
-            // Close the modal
-            const modal = bootstrap.Modal.getInstance(document.getElementById('addUserModal'));
-            modal.hide();
-            
+            document.getElementById('addUserModal').querySelector('.btn-close').click();
             alert('User added successfully!');
         }
 
@@ -2661,11 +2625,7 @@
             user.password = newPassword;
             saveData();
             document.getElementById('changePasswordForm').reset();
-            
-            // Close the modal
-            const modal = bootstrap.Modal.getInstance(document.getElementById('changePasswordModal'));
-            modal.hide();
-            
+            document.getElementById('changePasswordModal').querySelector('.btn-close').click();
             alert('Password changed successfully!');
         }
 
@@ -2701,10 +2661,7 @@
                         const data = JSON.parse(event.target.result);
                         
                         if (data.vehicles && data.customers && data.rentals) {
-                            // Preserve current user session
-                            const currentUser = appData.currentUser;
-                            appData = data;
-                            appData.currentUser = currentUser;
+                            Object.assign(appData, data);
                             
                             saveData();
                             loadVehicles();
@@ -2745,7 +2702,7 @@
             const tableBody = document.getElementById('vehicleTableBody');
             tableBody.innerHTML = filteredVehicles.map(vehicle => {
                 const statusClass = vehicle.status === 'available' ? 'status-returned' : 
-                                 vehicle.status === 'rented' ? 'status-not-returned' : 'maintenance-status';
+                                 vehicle.status === 'rented' ? 'status-not-returned' : 'table-warning';
                 const statusText = vehicle.status === 'available' ? 'Available' : 
                                  vehicle.status === 'rented' ? 'Rented' : 'Maintenance';
                 
