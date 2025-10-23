@@ -1226,46 +1226,72 @@
 
                         <!-- Reports Tab -->
                         <div class="tab-pane fade" id="reports">
-                            <h2 class="mb-4">Reports</h2>
+                            <h2 class="mb-4">Customer Rental Report</h2>
                             
                             <div class="card">
                                 <div class="card-header">
-                                    Generate Report
+                                    Generate Customer Rental Report
                                 </div>
                                 <div class="card-body">
-                                    <div class="row">
-                                        <div class="col-md-4 mb-3">
-                                            <label for="reportType" class="form-label">Report Type</label>
-                                            <select class="form-select" id="reportType">
-                                                <option value="rental">Rental Report</option>
-                                                <option value="financial">Financial Report</option>
-                                                <option value="vehicle">Vehicle Report</option>
-                                                <option value="customer">Customer Report</option>
-                                            </select>
+                                    <form id="customerReportForm">
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label for="reportCustomer" class="form-label">Customer</label>
+                                                <input type="text" class="form-control" id="reportCustomer" placeholder="Search customer...">
+                                                <div class="suggestion-list" id="reportCustomerSuggestions"></div>
+                                            </div>
+                                            <div class="col-md-3 mb-3">
+                                                <label for="reportStartDate" class="form-label">Start Date</label>
+                                                <input type="date" class="form-control" id="reportStartDate">
+                                            </div>
+                                            <div class="col-md-3 mb-3">
+                                                <label for="reportEndDate" class="form-label">End Date</label>
+                                                <input type="date" class="form-control" id="reportEndDate">
+                                            </div>
                                         </div>
-                                        <div class="col-md-4 mb-3">
-                                            <label for="reportStartDate" class="form-label">Start Date</label>
-                                            <input type="date" class="form-control" id="reportStartDate">
-                                        </div>
-                                        <div class="col-md-4 mb-3">
-                                            <label for="reportEndDate" class="form-label">End Date</label>
-                                            <input type="date" class="form-control" id="reportEndDate">
-                                        </div>
-                                    </div>
-                                    <button class="btn btn-primary" id="generateReport">Generate Report</button>
-                                    <button class="btn btn-success" id="exportExcelBtn">
-                                        <i class="fas fa-file-excel"></i> Export to Excel
-                                    </button>
+                                        <button type="submit" class="btn btn-primary">Generate Report</button>
+                                        <button type="button" class="btn btn-success" id="exportReportBtn">
+                                            <i class="fas fa-file-excel"></i> Export to Excel
+                                        </button>
+                                    </form>
                                 </div>
                             </div>
                             
                             <div class="card mt-4">
                                 <div class="card-header">
-                                    Report Results
+                                    Customer Rental Report
                                 </div>
                                 <div class="card-body">
-                                    <div id="reportResults">
-                                        <!-- Report results will be displayed here -->
+                                    <div class="table-responsive">
+                                        <table class="table table-hover" id="customerRentalReportTable">
+                                            <thead>
+                                                <tr>
+                                                    <th>Vehicle Name</th>
+                                                    <th>Rental Date</th>
+                                                    <th>Return Date</th>
+                                                    <th>Rental Days</th>
+                                                    <th>Rental Amount (per day)</th>
+                                                    <th>Total Amount</th>
+                                                    <th>Advance Payment</th>
+                                                    <th>Total Payment</th>
+                                                    <th>Total Debt</th>
+                                                    <th>Status</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="customerRentalReportBody">
+                                                <!-- Customer rental report will be populated here -->
+                                            </tbody>
+                                            <tfoot>
+                                                <tr class="table-primary">
+                                                    <td colspan="5" class="text-end"><strong>Totals:</strong></td>
+                                                    <td><strong id="totalRentalAmount">0 AED</strong></td>
+                                                    <td><strong id="totalAdvancePayment">0 AED</strong></td>
+                                                    <td><strong id="totalPayment">0 AED</strong></td>
+                                                    <td><strong id="totalDebt">0 AED</strong></td>
+                                                    <td></td>
+                                                </tr>
+                                            </tfoot>
+                                        </table>
                                     </div>
                                 </div>
                             </div>
@@ -1727,6 +1753,10 @@
             
             // Auto-suggestions
             setupAutoSuggestions();
+            
+            // Customer Report Form
+            document.getElementById('customerReportForm').addEventListener('submit', generateCustomerRentalReport);
+            document.getElementById('exportReportBtn').addEventListener('click', exportCustomerRentalReport);
         }
 
         // Handle user login
@@ -2460,6 +2490,9 @@
             
             // Maintenance vehicle suggestions
             setupSuggestionInput('maintenanceVehicle', 'maintenanceVehicleSuggestions', systemData.vehicles.map(v => v.name));
+            
+            // Report customer suggestions
+            setupSuggestionInput('reportCustomer', 'reportCustomerSuggestions', systemData.customers.map(c => c.fullName));
         }
 
         // Setup suggestion input
@@ -3755,6 +3788,130 @@
             return csvContent;
         }
 
+        // Generate Customer Rental Report
+        function generateCustomerRentalReport(e) {
+            if (e) e.preventDefault();
+            
+            const customerName = document.getElementById('reportCustomer').value;
+            const startDate = document.getElementById('reportStartDate').value;
+            const endDate = document.getElementById('reportEndDate').value;
+            
+            // Find customer
+            const customer = systemData.customers.find(c => 
+                c.fullName.toLowerCase().includes(customerName.toLowerCase())
+            );
+            
+            if (!customer) {
+                showAlert('Customer not found!', 'danger');
+                return;
+            }
+            
+            // Get customer rentals
+            let customerRentals = systemData.rentals.filter(r => r.customerId === customer.id);
+            
+            // Apply date filters if provided
+            if (startDate) {
+                customerRentals = customerRentals.filter(r => r.startDate >= startDate);
+            }
+            
+            if (endDate) {
+                customerRentals = customerRentals.filter(r => r.startDate <= endDate);
+            }
+            
+            // Update report table
+            const tableBody = document.getElementById('customerRentalReportBody');
+            tableBody.innerHTML = '';
+            
+            let totalRentalAmount = 0;
+            let totalAdvancePayment = 0;
+            let totalPayment = 0;
+            let totalDebt = 0;
+            
+            customerRentals.forEach(rental => {
+                const vehicle = systemData.vehicles.find(v => v.id === rental.vehicleId);
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${vehicle ? vehicle.name : 'N/A'}</td>
+                    <td>${formatDate(rental.startDate)}</td>
+                    <td>${rental.returnDate ? formatDate(rental.returnDate) : 'Not Returned'}</td>
+                    <td>${rental.rentalDays}</td>
+                    <td>${formatCurrency(rental.rentalAmount)}</td>
+                    <td>${formatCurrency(rental.totalAmount)}</td>
+                    <td>${formatCurrency(rental.advancePayment)}</td>
+                    <td>${formatCurrency(rental.totalPayment)}</td>
+                    <td>${formatCurrency(rental.totalDebt)}</td>
+                    <td>
+                        <span class="badge ${rental.status === 'active' ? 'bg-warning' : 'bg-success'}">
+                            ${rental.status}
+                        </span>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+                
+                // Update totals
+                totalRentalAmount += rental.totalAmount;
+                totalAdvancePayment += rental.advancePayment;
+                totalPayment += rental.totalPayment;
+                totalDebt += rental.totalDebt;
+            });
+            
+            // Update totals in the table footer
+            document.getElementById('totalRentalAmount').textContent = formatCurrency(totalRentalAmount);
+            document.getElementById('totalAdvancePayment').textContent = formatCurrency(totalAdvancePayment);
+            document.getElementById('totalPayment').textContent = formatCurrency(totalPayment);
+            document.getElementById('totalDebt').textContent = formatCurrency(totalDebt);
+            
+            showAlert('Customer rental report generated successfully!', 'success');
+        }
+
+        // Export Customer Rental Report to Excel
+        function exportCustomerRentalReport() {
+            const customerName = document.getElementById('reportCustomer').value;
+            
+            if (!customerName) {
+                showAlert('Please generate a report first!', 'warning');
+                return;
+            }
+            
+            // Find customer
+            const customer = systemData.customers.find(c => 
+                c.fullName.toLowerCase().includes(customerName.toLowerCase())
+            );
+            
+            if (!customer) {
+                showAlert('Customer not found!', 'danger');
+                return;
+            }
+            
+            // Get customer rentals
+            let customerRentals = systemData.rentals.filter(r => r.customerId === customer.id);
+            
+            // Create CSV content
+            let csvContent = "Vehicle Name,Rental Date,Return Date,Rental Days,Rental Amount (per day),Total Amount,Advance Payment,Total Payment,Total Debt,Status\n";
+            
+            customerRentals.forEach(rental => {
+                const vehicle = systemData.vehicles.find(v => v.id === rental.vehicleId);
+                const vehicleName = vehicle ? vehicle.name : 'N/A';
+                const returnDate = rental.returnDate ? formatDate(rental.returnDate) : 'Not Returned';
+                
+                csvContent += `"${vehicleName}","${formatDate(rental.startDate)}","${returnDate}","${rental.rentalDays}","${rental.rentalAmount}","${rental.totalAmount}","${rental.advancePayment}","${rental.totalPayment}","${rental.totalDebt}","${rental.status}"\n`;
+            });
+            
+            // Create and download CSV file
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement("a");
+            const url = URL.createObjectURL(blob);
+            link.setAttribute("href", url);
+            link.setAttribute("download", `customer_rental_report_${customer.fullName.replace(/\s+/g, '_')}_${new Date().toISOString().split('T')[0]}.csv`);
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            showAlert('Customer rental report exported to Excel successfully!', 'success');
+        }
+
         // Utility functions
         function generateId() {
             return Date.now().toString(36) + Math.random().toString(36).substr(2);
@@ -3782,6 +3939,10 @@
             } else {
                 return date.toISOString().split('T')[0];
             }
+        }
+
+        function formatCurrency(amount) {
+            return `${amount} ${systemData.settings.currency}`;
         }
 
         function showAlert(message, type) {
