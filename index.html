@@ -1637,7 +1637,12 @@
             const savedData = localStorage.getItem('carRentalSystemData');
             if (savedData) {
                 const parsedData = JSON.parse(savedData);
-                Object.assign(systemData, parsedData);
+                // Merge with default data, preserving existing data
+                Object.keys(systemData).forEach(key => {
+                    if (parsedData[key]) {
+                        systemData[key] = parsedData[key];
+                    }
+                });
             }
         }
 
@@ -1650,16 +1655,24 @@
         function initializeUI() {
             // Set current date for date inputs
             const today = new Date().toISOString().split('T')[0];
-            document.getElementById('returnDate').value = today;
-            document.getElementById('maintenanceDate').value = today;
-            document.getElementById('paymentDate').value = today;
-            document.getElementById('fineDate').value = today;
-            document.getElementById('rentalStartDate').value = today;
+            const dateInputs = [
+                'returnDate', 'maintenanceDate', 'paymentDate', 'fineDate', 
+                'rentalStartDate', 'rentalEndDate', 'reportStartDate', 'reportEndDate'
+            ];
             
-            // Set end date to 7 days from now
-            const endDate = new Date();
-            endDate.setDate(endDate.getDate() + 7);
-            document.getElementById('rentalEndDate').value = endDate.toISOString().split('T')[0];
+            dateInputs.forEach(id => {
+                const element = document.getElementById(id);
+                if (element) {
+                    if (id === 'rentalEndDate') {
+                        // Set end date to 7 days from now
+                        const endDate = new Date();
+                        endDate.setDate(endDate.getDate() + 7);
+                        element.value = endDate.toISOString().split('T')[0];
+                    } else {
+                        element.value = today;
+                    }
+                }
+            });
             
             // Apply system settings
             applySystemSettings();
@@ -1676,9 +1689,14 @@
 
         // Apply system settings to UI
         function applySystemSettings() {
-            document.getElementById('systemName').value = systemData.settings.systemName;
-            document.getElementById('currency').value = systemData.settings.currency;
-            document.getElementById('dateFormat').value = systemData.settings.dateFormat;
+            // Update settings form
+            const systemNameInput = document.getElementById('systemName');
+            const currencyInput = document.getElementById('currency');
+            const dateFormatInput = document.getElementById('dateFormat');
+            
+            if (systemNameInput) systemNameInput.value = systemData.settings.systemName;
+            if (currencyInput) currencyInput.value = systemData.settings.currency;
+            if (dateFormatInput) dateFormatInput.value = systemData.settings.dateFormat;
             
             // Update header and sidebar
             document.getElementById('headerSystemName').textContent = systemData.settings.systemName;
@@ -1740,10 +1758,10 @@
             document.getElementById('closeCustomerDetails').addEventListener('click', closeCustomerDetails);
             
             // Generate report
-            document.getElementById('generateReport').addEventListener('click', generateReport);
+            document.getElementById('exportReportBtn').addEventListener('click', exportCustomerRentalReport);
             
-            // Export to Excel
-            document.getElementById('exportExcelBtn').addEventListener('click', exportToExcel);
+            // Customer Report Form
+            document.getElementById('customerReportForm').addEventListener('submit', generateCustomerRentalReport);
             
             // User permissions
             document.getElementById('savePermissions').addEventListener('click', savePermissions);
@@ -1753,10 +1771,6 @@
             
             // Auto-suggestions
             setupAutoSuggestions();
-            
-            // Customer Report Form
-            document.getElementById('customerReportForm').addEventListener('submit', generateCustomerRentalReport);
-            document.getElementById('exportReportBtn').addEventListener('click', exportCustomerRentalReport);
         }
 
         // Handle user login
@@ -1771,6 +1785,7 @@
             if (user) {
                 // Store current user
                 systemData.currentUser = user;
+                saveDataToStorage();
                 
                 // Show main application
                 document.getElementById('loginScreen').style.display = 'none';
@@ -1792,6 +1807,7 @@
         // Handle user logout
         function handleLogout() {
             systemData.currentUser = null;
+            saveDataToStorage();
             document.getElementById('loginScreen').style.display = 'block';
             document.getElementById('mainApp').style.display = 'none';
             document.getElementById('loginForm').reset();
@@ -1824,12 +1840,6 @@
                 if (element) {
                     element.style.display = permissions.includes(module) ? 'block' : 'none';
                 }
-            }
-            
-            // If current tab is not accessible, redirect to dashboard
-            const currentTab = document.querySelector('.tab-pane.active');
-            if (currentTab && !permissions.includes(currentTab.id)) {
-                document.querySelector('a[href="#dashboard"]').click();
             }
         }
 
@@ -2283,70 +2293,136 @@
             document.getElementById('customerDetailsCard').style.display = 'none';
         }
 
-        // Generate report
-        function generateReport() {
-            const reportType = document.getElementById('reportType').value;
+        // Generate Customer Rental Report - FIXED VERSION
+        function generateCustomerRentalReport(e) {
+            if (e) e.preventDefault();
+            
+            const customerName = document.getElementById('reportCustomer').value;
             const startDate = document.getElementById('reportStartDate').value;
             const endDate = document.getElementById('reportEndDate').value;
             
-            let reportData = '';
+            // Find customer
+            const customer = systemData.customers.find(c => 
+                c.fullName.toLowerCase().includes(customerName.toLowerCase())
+            );
             
-            switch (reportType) {
-                case 'rental':
-                    reportData = generateRentalReport(startDate, endDate);
-                    break;
-                case 'financial':
-                    reportData = generateFinancialReport(startDate, endDate);
-                    break;
-                case 'vehicle':
-                    reportData = generateVehicleReport();
-                    break;
-                case 'customer':
-                    reportData = generateCustomerReport();
-                    break;
+            if (!customer) {
+                showAlert('Customer not found!', 'danger');
+                return;
             }
             
-            document.getElementById('reportResults').innerHTML = reportData;
+            // Get customer rentals
+            let customerRentals = systemData.rentals.filter(r => r.customerId === customer.id);
+            
+            // Apply date filters if provided
+            if (startDate) {
+                customerRentals = customerRentals.filter(r => r.startDate >= startDate);
+            }
+            
+            if (endDate) {
+                customerRentals = customerRentals.filter(r => r.startDate <= endDate);
+            }
+            
+            // Update report table
+            const tableBody = document.getElementById('customerRentalReportBody');
+            tableBody.innerHTML = '';
+            
+            let totalRentalAmount = 0;
+            let totalAdvancePayment = 0;
+            let totalPayment = 0;
+            let totalDebt = 0;
+            
+            customerRentals.forEach(rental => {
+                const vehicle = systemData.vehicles.find(v => v.id === rental.vehicleId);
+                const rentalPayments = systemData.payments.filter(p => p.rentalId === rental.id);
+                const totalPaid = rentalPayments.reduce((sum, payment) => sum + payment.amount, 0);
+                const totalAmount = rental.rentalAmount * rental.rentalDays;
+                const remainingDebt = totalAmount - rental.advancePayment - totalPaid;
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${vehicle ? vehicle.name : 'N/A'}</td>
+                    <td>${formatDate(rental.startDate)}</td>
+                    <td>${rental.returnDate ? formatDate(rental.returnDate) : 'Not Returned'}</td>
+                    <td>${rental.rentalDays}</td>
+                    <td>${formatCurrency(rental.rentalAmount)}</td>
+                    <td>${formatCurrency(totalAmount)}</td>
+                    <td>${formatCurrency(rental.advancePayment)}</td>
+                    <td>${formatCurrency(totalPaid)}</td>
+                    <td>${formatCurrency(remainingDebt)}</td>
+                    <td>
+                        <span class="badge ${rental.status === 'active' ? 'bg-warning' : 'bg-success'}">
+                            ${rental.status}
+                        </span>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+                
+                // Update totals
+                totalRentalAmount += totalAmount;
+                totalAdvancePayment += rental.advancePayment;
+                totalPayment += totalPaid;
+                totalDebt += remainingDebt;
+            });
+            
+            // Update totals in the table footer
+            document.getElementById('totalRentalAmount').textContent = formatCurrency(totalRentalAmount);
+            document.getElementById('totalAdvancePayment').textContent = formatCurrency(totalAdvancePayment);
+            document.getElementById('totalPayment').textContent = formatCurrency(totalPayment);
+            document.getElementById('totalDebt').textContent = formatCurrency(totalDebt);
+            
+            showAlert('Customer rental report generated successfully!', 'success');
         }
 
-        // Export to Excel
-        function exportToExcel() {
-            const reportType = document.getElementById('reportType').value;
-            const startDate = document.getElementById('reportStartDate').value;
-            const endDate = document.getElementById('reportEndDate').value;
+        // Export Customer Rental Report to Excel
+        function exportCustomerRentalReport() {
+            const customerName = document.getElementById('reportCustomer').value;
             
-            let csvContent = "";
-            
-            switch (reportType) {
-                case 'rental':
-                    csvContent = generateRentalReportCSV(startDate, endDate);
-                    break;
-                case 'financial':
-                    csvContent = generateFinancialReportCSV(startDate, endDate);
-                    break;
-                case 'vehicle':
-                    csvContent = generateVehicleReportCSV();
-                    break;
-                case 'customer':
-                    csvContent = generateCustomerReportCSV();
-                    break;
-                default:
-                    showAlert('Please select a report type first!', 'warning');
-                    return;
+            if (!customerName) {
+                showAlert('Please generate a report first!', 'warning');
+                return;
             }
+            
+            // Find customer
+            const customer = systemData.customers.find(c => 
+                c.fullName.toLowerCase().includes(customerName.toLowerCase())
+            );
+            
+            if (!customer) {
+                showAlert('Customer not found!', 'danger');
+                return;
+            }
+            
+            // Get customer rentals
+            let customerRentals = systemData.rentals.filter(r => r.customerId === customer.id);
+            
+            // Create CSV content
+            let csvContent = "Vehicle Name,Rental Date,Return Date,Rental Days,Rental Amount (per day),Total Amount,Advance Payment,Total Payment,Total Debt,Status\n";
+            
+            customerRentals.forEach(rental => {
+                const vehicle = systemData.vehicles.find(v => v.id === rental.vehicleId);
+                const vehicleName = vehicle ? vehicle.name : 'N/A';
+                const returnDate = rental.returnDate ? formatDate(rental.returnDate) : 'Not Returned';
+                const rentalPayments = systemData.payments.filter(p => p.rentalId === rental.id);
+                const totalPaid = rentalPayments.reduce((sum, payment) => sum + payment.amount, 0);
+                const totalAmount = rental.rentalAmount * rental.rentalDays;
+                const remainingDebt = totalAmount - rental.advancePayment - totalPaid;
+                
+                csvContent += `"${vehicleName}","${formatDate(rental.startDate)}","${returnDate}","${rental.rentalDays}","${rental.rentalAmount}","${totalAmount}","${rental.advancePayment}","${totalPaid}","${remainingDebt}","${rental.status}"\n`;
+            });
             
             // Create and download CSV file
             const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
             const link = document.createElement("a");
             const url = URL.createObjectURL(blob);
             link.setAttribute("href", url);
-            link.setAttribute("download", `${reportType}_report_${new Date().toISOString().split('T')[0]}.csv`);
+            link.setAttribute("download", `customer_rental_report_${customer.fullName.replace(/\s+/g, '_')}_${new Date().toISOString().split('T')[0]}.csv`);
             link.style.visibility = 'hidden';
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
             
-            showAlert('Report exported to Excel successfully!', 'success');
+            showAlert('Customer rental report exported to Excel successfully!', 'success');
         }
 
         // Save permissions
@@ -2500,6 +2576,8 @@
             const input = document.getElementById(inputId);
             const suggestionList = document.getElementById(suggestionId);
             
+            if (!input || !suggestionList) return;
+            
             input.addEventListener('input', function() {
                 const value = this.value.toLowerCase();
                 const filtered = suggestions.filter(s => s.toLowerCase().includes(value));
@@ -2535,6 +2613,8 @@
             const input = document.getElementById('rentalCustomer');
             const suggestionList = document.getElementById('customerSuggestions');
             
+            if (!input || !suggestionList) return;
+            
             input.addEventListener('input', function() {
                 const value = this.value.toLowerCase();
                 const filtered = systemData.customers.filter(c => 
@@ -2561,19 +2641,14 @@
                     suggestionList.style.display = 'none';
                 }
             });
-            
-            // Hide suggestions when clicking outside
-            document.addEventListener('click', function(e) {
-                if (e.target !== input) {
-                    suggestionList.style.display = 'none';
-                }
-            });
         }
 
         // Setup vehicle suggestions
         function setupVehicleSuggestions() {
             const input = document.getElementById('rentalVehicle');
             const suggestionList = document.getElementById('vehicleSuggestions');
+            
+            if (!input || !suggestionList) return;
             
             input.addEventListener('input', function() {
                 const value = this.value.toLowerCase();
@@ -2599,19 +2674,14 @@
                     suggestionList.style.display = 'none';
                 }
             });
-            
-            // Hide suggestions when clicking outside
-            document.addEventListener('click', function(e) {
-                if (e.target !== input) {
-                    suggestionList.style.display = 'none';
-                }
-            });
         }
 
         // Setup invoice suggestions
         function setupInvoiceSuggestions() {
             const input = document.getElementById('returnInvoiceCode');
             const suggestionList = document.getElementById('invoiceSuggestions');
+            
+            if (!input || !suggestionList) return;
             
             input.addEventListener('input', function() {
                 const value = this.value.toLowerCase();
@@ -2633,13 +2703,6 @@
                     });
                     suggestionList.style.display = 'block';
                 } else {
-                    suggestionList.style.display = 'none';
-                }
-            });
-            
-            // Hide suggestions when clicking outside
-            document.addEventListener('click', function(e) {
-                if (e.target !== input) {
                     suggestionList.style.display = 'none';
                 }
             });
@@ -2775,12 +2838,19 @@
 
         // Load vehicle status chart
         function loadVehicleStatusChart() {
-            const ctx = document.getElementById('vehicleStatusChart').getContext('2d');
+            const ctx = document.getElementById('vehicleStatusChart');
+            if (!ctx) return;
+            
             const available = systemData.vehicles.filter(v => v.status === 'available').length;
             const rented = systemData.vehicles.filter(v => v.status === 'rented').length;
             const maintenance = systemData.vehicles.filter(v => v.status === 'maintenance').length;
             
-            new Chart(ctx, {
+            // Destroy existing chart if it exists
+            if (window.vehicleStatusChart) {
+                window.vehicleStatusChart.destroy();
+            }
+            
+            window.vehicleStatusChart = new Chart(ctx, {
                 type: 'doughnut',
                 data: {
                     labels: ['Available', 'Rented', 'Maintenance'],
@@ -2813,6 +2883,8 @@
         // Load vehicle table
         function loadVehicleTable() {
             const vehicleTableBody = document.getElementById('vehicleTableBody');
+            if (!vehicleTableBody) return;
+            
             vehicleTableBody.innerHTML = '';
             
             systemData.vehicles.forEach(vehicle => {
@@ -2858,25 +2930,13 @@
                     viewVehicleDetails(vehicleId);
                 });
             });
-            
-            document.querySelectorAll('.edit-vehicle').forEach(button => {
-                button.addEventListener('click', function() {
-                    const vehicleId = this.getAttribute('data-id');
-                    editVehicle(vehicleId);
-                });
-            });
-            
-            document.querySelectorAll('.delete-vehicle').forEach(button => {
-                button.addEventListener('click', function() {
-                    const vehicleId = this.getAttribute('data-id');
-                    deleteVehicle(vehicleId);
-                });
-            });
         }
 
         // Load customer table
         function loadCustomerTable() {
             const customerTableBody = document.getElementById('customerTableBody');
+            if (!customerTableBody) return;
+            
             customerTableBody.innerHTML = '';
             
             systemData.customers.forEach(customer => {
@@ -2924,6 +2984,8 @@
         // Load rental table
         function loadRentalTable() {
             const rentalTableBody = document.getElementById('rentalTableBody');
+            if (!rentalTableBody) return;
+            
             rentalTableBody.innerHTML = '';
             
             systemData.rentals.forEach(rental => {
@@ -2956,25 +3018,13 @@
                     rentalTableBody.appendChild(row);
                 }
             });
-            
-            // Add event listeners
-            document.querySelectorAll('.print-invoice').forEach(button => {
-                button.addEventListener('click', function() {
-                    const rentalId = this.getAttribute('data-id');
-                    const rental = systemData.rentals.find(r => r.id === rentalId);
-                    const customer = systemData.customers.find(c => c.id === rental.customerId);
-                    const vehicle = systemData.vehicles.find(v => v.id === rental.vehicleId);
-                    
-                    if (rental && customer && vehicle) {
-                        printInvoice(rental, customer, vehicle);
-                    }
-                });
-            });
         }
 
         // Load return history table
         function loadReturnHistoryTable() {
             const returnHistoryBody = document.getElementById('returnHistoryTableBody');
+            if (!returnHistoryBody) return;
+            
             returnHistoryBody.innerHTML = '';
             
             systemData.returns.forEach(returnRecord => {
@@ -3007,6 +3057,8 @@
         // Load maintenance history table
         function loadMaintenanceHistoryTable() {
             const maintenanceHistoryBody = document.getElementById('maintenanceHistoryTableBody');
+            if (!maintenanceHistoryBody) return;
+            
             maintenanceHistoryBody.innerHTML = '';
             
             systemData.maintenance.forEach(maintenance => {
@@ -3032,19 +3084,13 @@
                     maintenanceHistoryBody.appendChild(row);
                 }
             });
-            
-            // Add event listeners for delete buttons
-            document.querySelectorAll('.delete-maintenance').forEach(button => {
-                button.addEventListener('click', function() {
-                    const maintenanceId = this.getAttribute('data-id');
-                    deleteMaintenance(maintenanceId);
-                });
-            });
         }
 
         // Load fines and taxes table
         function loadFinesTaxesTable() {
             const finesTaxesBody = document.getElementById('finesTaxesTableBody');
+            if (!finesTaxesBody) return;
+            
             finesTaxesBody.innerHTML = '';
             
             systemData.finesTaxes.forEach(fineTax => {
@@ -3078,26 +3124,13 @@
                     finesTaxesBody.appendChild(row);
                 }
             });
-            
-            // Add event listeners
-            document.querySelectorAll('.mark-paid').forEach(button => {
-                button.addEventListener('click', function() {
-                    const fineId = this.getAttribute('data-id');
-                    markFineAsPaid(fineId);
-                });
-            });
-            
-            document.querySelectorAll('.delete-fine').forEach(button => {
-                button.addEventListener('click', function() {
-                    const fineId = this.getAttribute('data-id');
-                    deleteFine(fineId);
-                });
-            });
         }
 
         // Load user table
         function loadUserTable() {
             const userTableBody = document.getElementById('userTableBody');
+            if (!userTableBody) return;
+            
             userTableBody.innerHTML = '';
             
             systemData.users.forEach(user => {
@@ -3124,44 +3157,6 @@
                     </td>
                 `;
                 userTableBody.appendChild(row);
-            });
-            
-            // Also update user management modal table
-            const userManagementBody = document.getElementById('userManagementTableBody');
-            userManagementBody.innerHTML = '';
-            
-            systemData.users.forEach(user => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${user.username}</td>
-                    <td>${user.fullName}</td>
-                    <td>${user.role}</td>
-                    <td>
-                        <span class="badge ${user.status === 'active' ? 'bg-success' : 'bg-danger'}">
-                            ${user.status}
-                        </span>
-                    </td>
-                    <td>
-                        <button class="btn btn-sm btn-warning edit-user" data-username="${user.username}">
-                            <i class="fas fa-edit"></i>
-                        </button>
-                        ${user.username !== 'admin' ? 
-                            `<button class="btn btn-sm btn-danger delete-user" data-username="${user.username}">
-                                <i class="fas fa-trash"></i>
-                            </button>` : 
-                            ''
-                        }
-                    </td>
-                `;
-                userManagementBody.appendChild(row);
-            });
-            
-            // Add event listeners for delete buttons
-            document.querySelectorAll('.delete-user').forEach(button => {
-                button.addEventListener('click', function() {
-                    const username = this.getAttribute('data-username');
-                    deleteUser(username);
-                });
             });
         }
 
@@ -3388,530 +3383,6 @@
             });
         }
 
-        // Delete vehicle
-        function deleteVehicle(vehicleId) {
-            if (confirm('Are you sure you want to delete this vehicle?')) {
-                systemData.vehicles = systemData.vehicles.filter(v => v.id !== vehicleId);
-                saveDataToStorage();
-                loadVehicleTable();
-                showAlert('Vehicle deleted successfully!', 'success');
-            }
-        }
-
-        // Delete maintenance record
-        function deleteMaintenance(maintenanceId) {
-            if (confirm('Are you sure you want to delete this maintenance record?')) {
-                systemData.maintenance = systemData.maintenance.filter(m => m.id !== maintenanceId);
-                saveDataToStorage();
-                loadMaintenanceHistoryTable();
-                showAlert('Maintenance record deleted successfully!', 'success');
-            }
-        }
-
-        // Mark fine as paid
-        function markFineAsPaid(fineId) {
-            const fine = systemData.finesTaxes.find(f => f.id === fineId);
-            if (fine) {
-                fine.status = 'paid';
-                saveDataToStorage();
-                loadFinesTaxesTable();
-                showAlert('Fine/Tax marked as paid!', 'success');
-            }
-        }
-
-        // Delete fine
-        function deleteFine(fineId) {
-            if (confirm('Are you sure you want to delete this fine/tax record?')) {
-                systemData.finesTaxes = systemData.finesTaxes.filter(f => f.id !== fineId);
-                saveDataToStorage();
-                loadFinesTaxesTable();
-                showAlert('Fine/Tax deleted successfully!', 'success');
-            }
-        }
-
-        // Delete user
-        function deleteUser(username) {
-            if (confirm('Are you sure you want to delete this user?')) {
-                systemData.users = systemData.users.filter(u => u.username !== username);
-                saveDataToStorage();
-                loadUserTable();
-                showAlert('User deleted successfully!', 'success');
-            }
-        }
-
-        // Generate rental report
-        function generateRentalReport(startDate, endDate) {
-            let filteredRentals = systemData.rentals;
-            
-            if (startDate && endDate) {
-                filteredRentals = systemData.rentals.filter(r => 
-                    r.startDate >= startDate && r.startDate <= endDate
-                );
-            }
-            
-            let reportHTML = `
-                <h4>Rental Report</h4>
-                <p>Period: ${startDate || 'All time'} - ${endDate || 'All time'}</p>
-                <div class="table-responsive">
-                    <table class="table table-bordered">
-                        <thead>
-                            <tr>
-                                <th>Invoice Code</th>
-                                <th>Customer</th>
-                                <th>Vehicle</th>
-                                <th>Start Date</th>
-                                <th>End Date</th>
-                                <th>Amount</th>
-                                <th>Status</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-            `;
-            
-            let totalAmount = 0;
-            
-            filteredRentals.forEach(rental => {
-                const customer = systemData.customers.find(c => c.id === rental.customerId);
-                const vehicle = systemData.vehicles.find(v => v.id === rental.vehicleId);
-                
-                if (customer && vehicle) {
-                    const amount = rental.rentalAmount * rental.rentalDays;
-                    totalAmount += amount;
-                    
-                    reportHTML += `
-                        <tr>
-                            <td>${rental.invoiceCode}</td>
-                            <td>${customer.fullName}</td>
-                            <td>${vehicle.name}</td>
-                            <td>${formatDate(rental.startDate)}</td>
-                            <td>${formatDate(rental.endDate)}</td>
-                            <td>${amount} ${systemData.settings.currency}</td>
-                            <td>${rental.status}</td>
-                        </tr>
-                    `;
-                }
-            });
-            
-            reportHTML += `
-                        </tbody>
-                        <tfoot>
-                            <tr>
-                                <td colspan="5"><strong>Total</strong></td>
-                                <td colspan="2"><strong>${totalAmount} ${systemData.settings.currency}</strong></td>
-                            </tr>
-                        </tfoot>
-                    </table>
-                </div>
-            `;
-            
-            return reportHTML;
-        }
-
-        // Generate rental report CSV
-        function generateRentalReportCSV(startDate, endDate) {
-            let filteredRentals = systemData.rentals;
-            
-            if (startDate && endDate) {
-                filteredRentals = systemData.rentals.filter(r => 
-                    r.startDate >= startDate && r.startDate <= endDate
-                );
-            }
-            
-            let csvContent = "Invoice Code,Customer,Vehicle,Start Date,End Date,Amount,Status\n";
-            
-            filteredRentals.forEach(rental => {
-                const customer = systemData.customers.find(c => c.id === rental.customerId);
-                const vehicle = systemData.vehicles.find(v => v.id === rental.vehicleId);
-                
-                if (customer && vehicle) {
-                    const amount = rental.rentalAmount * rental.rentalDays;
-                    csvContent += `"${rental.invoiceCode}","${customer.fullName}","${vehicle.name}","${formatDate(rental.startDate)}","${formatDate(rental.endDate)}","${amount}","${rental.status}"\n`;
-                }
-            });
-            
-            return csvContent;
-        }
-
-        // Generate financial report
-        function generateFinancialReport(startDate, endDate) {
-            let reportHTML = `
-                <h4>Financial Report</h4>
-                <p>Period: ${startDate || 'All time'} - ${endDate || 'All time'}</p>
-            `;
-            
-            // Calculate totals
-            const rentalIncome = systemData.rentals.reduce((sum, rental) => {
-                if (startDate && endDate && (rental.startDate < startDate || rental.startDate > endDate)) {
-                    return sum;
-                }
-                return sum + (rental.rentalAmount * rental.rentalDays);
-            }, 0);
-            
-            const fineIncome = systemData.finesTaxes.reduce((sum, fine) => {
-                if (startDate && endDate && (fine.date < startDate || fine.date > endDate)) {
-                    return sum;
-                }
-                return sum + (fine.status === 'paid' ? fine.amount : 0);
-            }, 0);
-            
-            const maintenanceCost = systemData.maintenance.reduce((sum, maintenance) => {
-                if (startDate && endDate && (maintenance.date < startDate || maintenance.date > endDate)) {
-                    return sum;
-                }
-                return sum + maintenance.cost;
-            }, 0);
-            
-            const netIncome = rentalIncome + fineIncome - maintenanceCost;
-            
-            reportHTML += `
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="card bg-success text-white mb-3">
-                            <div class="card-body">
-                                <h5 class="card-title">Rental Income</h5>
-                                <h3>${rentalIncome} ${systemData.settings.currency}</h3>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="card bg-info text-white mb-3">
-                            <div class="card-body">
-                                <h5 class="card-title">Fine/Tax Income</h5>
-                                <h3>${fineIncome} ${systemData.settings.currency}</h3>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="card bg-warning text-white mb-3">
-                            <div class="card-body">
-                                <h5 class="card-title">Maintenance Cost</h5>
-                                <h3>${maintenanceCost} ${systemData.settings.currency}</h3>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="card bg-primary text-white mb-3">
-                            <div class="card-body">
-                                <h5 class="card-title">Net Income</h5>
-                                <h3>${netIncome} ${systemData.settings.currency}</h3>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
-            
-            return reportHTML;
-        }
-
-        // Generate financial report CSV
-        function generateFinancialReportCSV(startDate, endDate) {
-            const rentalIncome = systemData.rentals.reduce((sum, rental) => {
-                if (startDate && endDate && (rental.startDate < startDate || rental.startDate > endDate)) {
-                    return sum;
-                }
-                return sum + (rental.rentalAmount * rental.rentalDays);
-            }, 0);
-            
-            const fineIncome = systemData.finesTaxes.reduce((sum, fine) => {
-                if (startDate && endDate && (fine.date < startDate || fine.date > endDate)) {
-                    return sum;
-                }
-                return sum + (fine.status === 'paid' ? fine.amount : 0);
-            }, 0);
-            
-            const maintenanceCost = systemData.maintenance.reduce((sum, maintenance) => {
-                if (startDate && endDate && (maintenance.date < startDate || maintenance.date > endDate)) {
-                    return sum;
-                }
-                return sum + maintenance.cost;
-            }, 0);
-            
-            const netIncome = rentalIncome + fineIncome - maintenanceCost;
-            
-            let csvContent = "Category,Amount\n";
-            csvContent += `"Rental Income","${rentalIncome}"\n`;
-            csvContent += `"Fine/Tax Income","${fineIncome}"\n`;
-            csvContent += `"Maintenance Cost","${maintenanceCost}"\n`;
-            csvContent += `"Net Income","${netIncome}"\n`;
-            
-            return csvContent;
-        }
-
-        // Generate vehicle report
-        function generateVehicleReport() {
-            let reportHTML = `
-                <h4>Vehicle Report</h4>
-                <div class="table-responsive">
-                    <table class="table table-bordered">
-                        <thead>
-                            <tr>
-                                <th>Vehicle</th>
-                                <th>Model</th>
-                                <th>Color</th>
-                                <th>Plate</th>
-                                <th>Odometer</th>
-                                <th>Rental Price</th>
-                                <th>Status</th>
-                                <th>Total Rentals</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-            `;
-            
-            systemData.vehicles.forEach(vehicle => {
-                const totalRentals = systemData.rentals.filter(r => r.vehicleId === vehicle.id).length;
-                
-                reportHTML += `
-                    <tr>
-                        <td>${vehicle.name}</td>
-                        <td>${vehicle.model}</td>
-                        <td>${vehicle.color}</td>
-                        <td>${vehicle.plate}</td>
-                        <td>${vehicle.odometer}</td>
-                        <td>${vehicle.rentalPrice} ${systemData.settings.currency}</td>
-                        <td>${vehicle.status}</td>
-                        <td>${totalRentals}</td>
-                    </tr>
-                `;
-            });
-            
-            reportHTML += `
-                        </tbody>
-                    </table>
-                </div>
-            `;
-            
-            return reportHTML;
-        }
-
-        // Generate vehicle report CSV
-        function generateVehicleReportCSV() {
-            let csvContent = "Vehicle,Model,Color,Plate,Odometer,Rental Price,Status,Total Rentals\n";
-            
-            systemData.vehicles.forEach(vehicle => {
-                const totalRentals = systemData.rentals.filter(r => r.vehicleId === vehicle.id).length;
-                csvContent += `"${vehicle.name}","${vehicle.model}","${vehicle.color}","${vehicle.plate}","${vehicle.odometer}","${vehicle.rentalPrice}","${vehicle.status}","${totalRentals}"\n`;
-            });
-            
-            return csvContent;
-        }
-
-        // Generate customer report
-        function generateCustomerReport() {
-            let reportHTML = `
-                <h4>Customer Report</h4>
-                <div class="table-responsive">
-                    <table class="table table-bordered">
-                        <thead>
-                            <tr>
-                                <th>Customer</th>
-                                <th>Age</th>
-                                <th>ID</th>
-                                <th>Nationality</th>
-                                <th>Contact</th>
-                                <th>Total Rentals</th>
-                                <th>Total Spent</th>
-                                <th>Current Debt</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-            `;
-            
-            systemData.customers.forEach(customer => {
-                const customerRentals = systemData.rentals.filter(r => r.customerId === customer.id);
-                const totalRentals = customerRentals.length;
-                const totalSpent = customerRentals.reduce((sum, rental) => 
-                    sum + (rental.rentalAmount * rental.rentalDays), 0);
-                
-                const activeRentals = customerRentals.filter(r => r.status === 'active');
-                const rentalDebt = activeRentals.reduce((sum, rental) => {
-                    const rentalAmount = rental.rentalAmount * rental.rentalDays;
-                    return sum + (rentalAmount - rental.advancePayment);
-                }, 0);
-                
-                const fineDebt = systemData.finesTaxes
-                    .filter(f => f.customerId === customer.id && f.status === 'unpaid')
-                    .reduce((sum, fine) => sum + fine.amount, 0);
-                
-                const currentDebt = rentalDebt + fineDebt;
-                
-                reportHTML += `
-                    <tr>
-                        <td>${customer.fullName}</td>
-                        <td>${customer.age}</td>
-                        <td>${customer.idNumber}</td>
-                        <td>${customer.nationality}</td>
-                        <td>${customer.contact}</td>
-                        <td>${totalRentals}</td>
-                        <td>${totalSpent} ${systemData.settings.currency}</td>
-                        <td>${currentDebt} ${systemData.settings.currency}</td>
-                    </tr>
-                `;
-            });
-            
-            reportHTML += `
-                        </tbody>
-                    </table>
-                </div>
-            `;
-            
-            return reportHTML;
-        }
-
-        // Generate customer report CSV
-        function generateCustomerReportCSV() {
-            let csvContent = "Customer,Age,ID,Nationality,Contact,Total Rentals,Total Spent,Current Debt\n";
-            
-            systemData.customers.forEach(customer => {
-                const customerRentals = systemData.rentals.filter(r => r.customerId === customer.id);
-                const totalRentals = customerRentals.length;
-                const totalSpent = customerRentals.reduce((sum, rental) => 
-                    sum + (rental.rentalAmount * rental.rentalDays), 0);
-                
-                const activeRentals = customerRentals.filter(r => r.status === 'active');
-                const rentalDebt = activeRentals.reduce((sum, rental) => {
-                    const rentalAmount = rental.rentalAmount * rental.rentalDays;
-                    return sum + (rentalAmount - rental.advancePayment);
-                }, 0);
-                
-                const fineDebt = systemData.finesTaxes
-                    .filter(f => f.customerId === customer.id && f.status === 'unpaid')
-                    .reduce((sum, fine) => sum + fine.amount, 0);
-                
-                const currentDebt = rentalDebt + fineDebt;
-                
-                csvContent += `"${customer.fullName}","${customer.age}","${customer.idNumber}","${customer.nationality}","${customer.contact}","${totalRentals}","${totalSpent}","${currentDebt}"\n`;
-            });
-            
-            return csvContent;
-        }
-
-        // Generate Customer Rental Report
-        function generateCustomerRentalReport(e) {
-            if (e) e.preventDefault();
-            
-            const customerName = document.getElementById('reportCustomer').value;
-            const startDate = document.getElementById('reportStartDate').value;
-            const endDate = document.getElementById('reportEndDate').value;
-            
-            // Find customer
-            const customer = systemData.customers.find(c => 
-                c.fullName.toLowerCase().includes(customerName.toLowerCase())
-            );
-            
-            if (!customer) {
-                showAlert('Customer not found!', 'danger');
-                return;
-            }
-            
-            // Get customer rentals
-            let customerRentals = systemData.rentals.filter(r => r.customerId === customer.id);
-            
-            // Apply date filters if provided
-            if (startDate) {
-                customerRentals = customerRentals.filter(r => r.startDate >= startDate);
-            }
-            
-            if (endDate) {
-                customerRentals = customerRentals.filter(r => r.startDate <= endDate);
-            }
-            
-            // Update report table
-            const tableBody = document.getElementById('customerRentalReportBody');
-            tableBody.innerHTML = '';
-            
-            let totalRentalAmount = 0;
-            let totalAdvancePayment = 0;
-            let totalPayment = 0;
-            let totalDebt = 0;
-            
-            customerRentals.forEach(rental => {
-                const vehicle = systemData.vehicles.find(v => v.id === rental.vehicleId);
-                
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${vehicle ? vehicle.name : 'N/A'}</td>
-                    <td>${formatDate(rental.startDate)}</td>
-                    <td>${rental.returnDate ? formatDate(rental.returnDate) : 'Not Returned'}</td>
-                    <td>${rental.rentalDays}</td>
-                    <td>${formatCurrency(rental.rentalAmount)}</td>
-                    <td>${formatCurrency(rental.totalAmount)}</td>
-                    <td>${formatCurrency(rental.advancePayment)}</td>
-                    <td>${formatCurrency(rental.totalPayment)}</td>
-                    <td>${formatCurrency(rental.totalDebt)}</td>
-                    <td>
-                        <span class="badge ${rental.status === 'active' ? 'bg-warning' : 'bg-success'}">
-                            ${rental.status}
-                        </span>
-                    </td>
-                `;
-                tableBody.appendChild(row);
-                
-                // Update totals
-                totalRentalAmount += rental.totalAmount;
-                totalAdvancePayment += rental.advancePayment;
-                totalPayment += rental.totalPayment;
-                totalDebt += rental.totalDebt;
-            });
-            
-            // Update totals in the table footer
-            document.getElementById('totalRentalAmount').textContent = formatCurrency(totalRentalAmount);
-            document.getElementById('totalAdvancePayment').textContent = formatCurrency(totalAdvancePayment);
-            document.getElementById('totalPayment').textContent = formatCurrency(totalPayment);
-            document.getElementById('totalDebt').textContent = formatCurrency(totalDebt);
-            
-            showAlert('Customer rental report generated successfully!', 'success');
-        }
-
-        // Export Customer Rental Report to Excel
-        function exportCustomerRentalReport() {
-            const customerName = document.getElementById('reportCustomer').value;
-            
-            if (!customerName) {
-                showAlert('Please generate a report first!', 'warning');
-                return;
-            }
-            
-            // Find customer
-            const customer = systemData.customers.find(c => 
-                c.fullName.toLowerCase().includes(customerName.toLowerCase())
-            );
-            
-            if (!customer) {
-                showAlert('Customer not found!', 'danger');
-                return;
-            }
-            
-            // Get customer rentals
-            let customerRentals = systemData.rentals.filter(r => r.customerId === customer.id);
-            
-            // Create CSV content
-            let csvContent = "Vehicle Name,Rental Date,Return Date,Rental Days,Rental Amount (per day),Total Amount,Advance Payment,Total Payment,Total Debt,Status\n";
-            
-            customerRentals.forEach(rental => {
-                const vehicle = systemData.vehicles.find(v => v.id === rental.vehicleId);
-                const vehicleName = vehicle ? vehicle.name : 'N/A';
-                const returnDate = rental.returnDate ? formatDate(rental.returnDate) : 'Not Returned';
-                
-                csvContent += `"${vehicleName}","${formatDate(rental.startDate)}","${returnDate}","${rental.rentalDays}","${rental.rentalAmount}","${rental.totalAmount}","${rental.advancePayment}","${rental.totalPayment}","${rental.totalDebt}","${rental.status}"\n`;
-            });
-            
-            // Create and download CSV file
-            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-            const link = document.createElement("a");
-            const url = URL.createObjectURL(blob);
-            link.setAttribute("href", url);
-            link.setAttribute("download", `customer_rental_report_${customer.fullName.replace(/\s+/g, '_')}_${new Date().toISOString().split('T')[0]}.csv`);
-            link.style.visibility = 'hidden';
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            
-            showAlert('Customer rental report exported to Excel successfully!', 'success');
-        }
-
         // Utility functions
         function generateId() {
             return Date.now().toString(36) + Math.random().toString(36).substr(2);
@@ -3946,6 +3417,7 @@
         }
 
         function showAlert(message, type) {
+            // Create alert element
             const alertDiv = document.createElement('div');
             alertDiv.className = `alert alert-${type} alert-dismissible fade show`;
             alertDiv.innerHTML = `
@@ -3953,7 +3425,13 @@
                 <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
             `;
             
-            document.querySelector('.tab-content').insertBefore(alertDiv, document.querySelector('.tab-content').firstChild);
+            // Find a good place to insert the alert
+            const tabContent = document.querySelector('.tab-content');
+            if (tabContent) {
+                tabContent.insertBefore(alertDiv, tabContent.firstChild);
+            } else {
+                document.body.insertBefore(alertDiv, document.body.firstChild);
+            }
             
             // Auto remove after 5 seconds
             setTimeout(() => {
@@ -3961,24 +3439,6 @@
                     alertDiv.remove();
                 }
             }, 5000);
-        }
-
-        // Vehicle editing functionality would go here
-        function editVehicle(vehicleId) {
-            // Implementation for editing a vehicle
-            showAlert('Edit vehicle functionality would be implemented here', 'info');
-        }
-
-        // Customer editing functionality would go here
-        function editCustomer(customerId) {
-            // Implementation for editing a customer
-            showAlert('Edit customer functionality would be implemented here', 'info');
-        }
-
-        // User editing functionality would go here
-        function editUser(username) {
-            // Implementation for editing a user
-            showAlert('Edit user functionality would be implemented here', 'info');
         }
     </script>
 </body>
