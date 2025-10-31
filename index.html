@@ -141,14 +141,29 @@
                 display: none !important;
             }
             .print-only {
-                display: block;
+                display: block !important;
             }
             body {
                 background-color: white;
+                font-size: 12px;
             }
             .card {
                 box-shadow: none;
                 border: 1px solid #ddd;
+            }
+            .table {
+                font-size: 11px;
+            }
+            .invoice-logo {
+                text-align: center;
+                margin-bottom: 20px;
+                border-bottom: 2px solid #333;
+                padding-bottom: 10px;
+            }
+            .signature-area {
+                margin-top: 50px;
+                border-top: 1px solid #000;
+                padding-top: 10px;
             }
         }
         
@@ -853,52 +868,107 @@
                                                 <strong>Date:</strong> <span id="printInvoiceDate"></span>
                                             </div>
                                         </div>
-                                        <div class="row mb-3">
+                                        
+                                        <div class="row mb-4">
                                             <div class="col-6">
-                                                <strong>Customer:</strong> <span id="printCustomerName"></span>
+                                                <h5>Customer Information</h5>
+                                                <table class="table table-bordered">
+                                                    <tr>
+                                                        <td><strong>Name:</strong></td>
+                                                        <td id="printCustomerName"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><strong>Age:</strong></td>
+                                                        <td id="printCustomerAge"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><strong>Address:</strong></td>
+                                                        <td id="printCustomerAddress"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><strong>ID Number:</strong></td>
+                                                        <td id="printCustomerId"></td>
+                                                    </tr>
+                                                </table>
                                             </div>
                                             <div class="col-6">
-                                                <strong>Vehicle:</strong> <span id="printVehicleName"></span>
+                                                <h5>Vehicle Information</h5>
+                                                <table class="table table-bordered">
+                                                    <tr>
+                                                        <td><strong>Vehicle:</strong></td>
+                                                        <td id="printVehicleName"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><strong>Model:</strong></td>
+                                                        <td id="printVehicleModel"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><strong>Color:</strong></td>
+                                                        <td id="printVehicleColor"></td>
+                                                    </tr>
+                                                </table>
+                                                <div id="printVehicleImage" class="text-center mt-2">
+                                                    <!-- Vehicle image will be inserted here -->
+                                                </div>
                                             </div>
                                         </div>
-                                        <div class="row mb-3">
-                                            <div class="col-6">
-                                                <strong>Customer ID:</strong> <span id="printCustomerId"></span>
-                                            </div>
-                                            <div class="col-6">
-                                                <strong>Customer Address:</strong> <span id="printCustomerAddress"></span>
-                                            </div>
-                                        </div>
-                                        <div class="row mb-3">
+                                        
+                                        <div class="row mb-4">
                                             <div class="col-12">
-                                                <strong>Rental Amount (per day):</strong> <span id="printRentalAmount"></span>
+                                                <h5>Rental Details</h5>
+                                                <table class="table table-bordered">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Rental Date</th>
+                                                            <th>Return Date</th>
+                                                            <th>Rental Days</th>
+                                                            <th>Daily Rate</th>
+                                                            <th>Total Amount</th>
+                                                            <th>Advance Payment</th>
+                                                            <th>Remaining Balance</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody id="printRentalDetails">
+                                                        <!-- Rental details will be inserted here -->
+                                                    </tbody>
+                                                </table>
                                             </div>
                                         </div>
-                                        <div class="row mb-3">
+                                        
+                                        <div class="row mb-4">
                                             <div class="col-12">
-                                                <strong>Rental Days:</strong> <span id="printRentalDays"></span>
+                                                <h5>Payment Summary</h5>
+                                                <table class="table table-bordered">
+                                                    <tr>
+                                                        <td><strong>Total Amount:</strong></td>
+                                                        <td id="printTotalAmount"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><strong>Advance Payment:</strong></td>
+                                                        <td id="printAdvancePayment"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><strong>Remaining Balance:</strong></td>
+                                                        <td id="printRemainingBalance"></td>
+                                                    </tr>
+                                                </table>
                                             </div>
                                         </div>
-                                        <div class="row mb-3">
-                                            <div class="col-12">
-                                                <strong>Rental History:</strong>
-                                                <div id="printRentalHistory"></div>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-12">
-                                                <hr>
-                                                <h4 class="text-end">Total: <span id="printTotalAmount"></span></h4>
-                                            </div>
-                                        </div>
+                                        
                                         <div class="row signature-area">
                                             <div class="col-6">
                                                 <strong>Customer Signature:</strong>
-                                                <div style="height: 50px; border-bottom: 1px solid #000;"></div>
+                                                <div style="height: 50px; border-bottom: 1px solid #000; margin-top: 10px;"></div>
                                             </div>
                                             <div class="col-6 text-end">
                                                 <strong>Company Signature:</strong>
-                                                <div style="height: 50px; border-bottom: 1px solid #000;"></div>
+                                                <div style="height: 50px; border-bottom: 1px solid #000; margin-top: 10px;"></div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="row mt-4">
+                                            <div class="col-12 text-center">
+                                                <small>Thank you for choosing our car rental service!</small>
                                             </div>
                                         </div>
                                     </div>
@@ -1110,7 +1180,7 @@
                                     </div>
                                     
                                     <div class="add-payment mt-4">
-                                        <h5>Add Payment</h5>
+                                        <h5>Add/Edit Payment</h5>
                                         <form id="addPaymentForm">
                                             <div class="row">
                                                 <div class="col-md-3 mb-3">
@@ -1139,6 +1209,7 @@
                                                 </div>
                                             </div>
                                             <button type="submit" class="btn btn-success">Add Payment</button>
+                                            <button type="reset" class="btn btn-secondary">Cancel Edit</button>
                                         </form>
                                     </div>
                                 </div>
@@ -1339,6 +1410,70 @@
                                         </div>
                                         <button type="submit" class="btn btn-primary">Save Settings</button>
                                     </form>
+                                </div>
+                            </div>
+                            
+                            <!-- Backup & Restore Section -->
+                            <div class="card mt-4 admin-only">
+                                <div class="card-header">
+                                    <h5 class="mb-0">باکەپ کردن و گەڕاندنەوە</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="card">
+                                                <div class="card-header bg-primary text-white">
+                                                    <h6 class="mb-0">دروستکردنی باکەپ</h6>
+                                                </div>
+                                                <div class="card-body">
+                                                    <p class="card-text">هەموو داتاکانی سیستەمەکە کۆپی بکە بۆ فایلێک.</p>
+                                                    <button type="button" class="btn btn-success w-100" id="backupBtn">
+                                                        <i class="fas fa-download me-2"></i>دروستکردنی باکەپ
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="card">
+                                                <div class="card-header bg-warning text-dark">
+                                                    <h6 class="mb-0">گەڕاندنەوەی باکەپ</h6>
+                                                </div>
+                                                <div class="card-body">
+                                                    <p class="card-text">داتاکانی پێشوو لە فایلێکەوە باربکەوە.</p>
+                                                    <div class="mb-3">
+                                                        <label for="backupFile" class="form-label">هەڵبژاردنی فایلی باکەپ</label>
+                                                        <input class="form-control" type="file" id="backupFile" accept=".json">
+                                                    </div>
+                                                    <button type="button" class="btn btn-warning w-100" id="restoreBtn">
+                                                        <i class="fas fa-upload me-2"></i>گەڕاندنەوەی باکەپ
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="card mt-4">
+                                        <div class="card-header bg-info text-white">
+                                            <h6 class="mb-0">باکەپەکانی پێشوو</h6>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="table-responsive">
+                                                <table class="table table-hover">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>ناوی فایل</th>
+                                                            <th>قەبارە</th>
+                                                            <th>کاتی دروستکردن</th>
+                                                            <th>کردارەکان</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody id="backupHistoryTable">
+                                                        <!-- مێژووی باکەپەکان لێرە نمایش دەبێت -->
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             
@@ -1685,6 +1820,9 @@
             loadMaintenanceHistoryTable();
             loadFinesTaxesTable();
             loadUserTable();
+            
+            // Load backup history
+            loadBackupHistory();
         }
 
         // Apply system settings to UI
@@ -1778,11 +1916,18 @@
             document.getElementById('deleteRole').addEventListener('click', deleteRole);
             document.getElementById('permissionRole').addEventListener('change', loadRolePermissions);
             
+            // Backup and Restore
+            document.getElementById('backupBtn').addEventListener('click', createBackup);
+            document.getElementById('restoreBtn').addEventListener('click', restoreBackup);
+            
             // Auto-suggestions
             setupAutoSuggestions();
             
             // Add event listeners for delete buttons
             setupDeleteEventListeners();
+            
+            // Add event listeners for view and delete buttons
+            setupViewDeleteEventListeners();
         }
 
         // Setup delete event listeners
@@ -1832,6 +1977,64 @@
                 if (e.target.closest('.print-invoice')) {
                     const rentalId = e.target.closest('.print-invoice').getAttribute('data-id');
                     printRentalInvoice(rentalId);
+                }
+
+                // زیادکردنی فەنکشنی بینین و سڕینەوەی فاکتور
+                if (e.target.closest('.view-invoice')) {
+                    const rentalId = e.target.closest('.view-invoice').getAttribute('data-id');
+                    viewRentalInvoice(rentalId);
+                }
+
+                if (e.target.closest('.delete-rental')) {
+                    const rentalId = e.target.closest('.delete-rental').getAttribute('data-id');
+                    deleteRental(rentalId);
+                }
+            });
+        }
+
+        // Setup view and delete event listeners for all modules
+        function setupViewDeleteEventListeners() {
+            document.addEventListener('click', function(e) {
+                // بینینی گەیاندنەوە
+                if (e.target.closest('.view-return')) {
+                    const returnId = e.target.closest('.view-return').getAttribute('data-id');
+                    viewReturnDetails(returnId);
+                }
+                
+                // سڕینەوەی گەیاندنەوە
+                if (e.target.closest('.delete-return')) {
+                    const returnId = e.target.closest('.delete-return').getAttribute('data-id');
+                    deleteReturn(returnId);
+                }
+                
+                // بینینی چاکسازی
+                if (e.target.closest('.view-maintenance')) {
+                    const maintenanceId = e.target.closest('.view-maintenance').getAttribute('data-id');
+                    viewMaintenanceDetails(maintenanceId);
+                }
+                
+                // بینینی تاوان
+                if (e.target.closest('.view-fine')) {
+                    const fineId = e.target.closest('.view-fine').getAttribute('data-id');
+                    viewFineDetails(fineId);
+                }
+                
+                // بینینی پارەدان
+                if (e.target.closest('.view-payment')) {
+                    const paymentId = e.target.closest('.view-payment').getAttribute('data-id');
+                    viewPaymentDetails(paymentId);
+                }
+                
+                // سڕینەوەی پارەدان
+                if (e.target.closest('.delete-payment-record')) {
+                    const paymentId = e.target.closest('.delete-payment-record').getAttribute('data-id');
+                    deletePaymentRecord(paymentId);
+                }
+                
+                // بینینی کرێ
+                if (e.target.closest('.view-rental')) {
+                    const rentalId = e.target.closest('.view-rental').getAttribute('data-id');
+                    viewRentalDetails(rentalId);
                 }
             });
         }
@@ -2109,7 +2312,7 @@
             showAlert('Maintenance record added successfully!', 'success');
         }
 
-        // Handle adding payment
+        // Handle adding payment - Updated with print functionality
         function handleAddPayment(e) {
             e.preventDefault();
             
@@ -2137,7 +2340,136 @@
             document.getElementById('addPaymentForm').reset();
             loadCustomerPaymentDetails(customer);
             
-            showAlert('Payment added successfully!', 'success');
+            // Show print option
+            showAlert('Payment added successfully! <button class="btn btn-sm btn-success ms-2" onclick="printPaymentReceipt(\'' + payment.id + '\')">Print Receipt</button>', 'success');
+        }
+
+        // Print payment receipt
+        function printPaymentReceipt(paymentId) {
+            const payment = systemData.payments.find(p => p.id === paymentId);
+            if (!payment) return;
+            
+            const customer = systemData.customers.find(c => c.id === payment.customerId);
+            
+            // Create print content
+            const printContent = `
+                <div class="print-only">
+                    <div class="invoice-logo">
+                        ${systemData.settings.logo ? 
+                            `<img src="${systemData.settings.logo}" style="max-width: 200px;">` : 
+                            `<i class="fas fa-car fa-3x"></i>`
+                        }
+                        <h3>${systemData.settings.systemName}</h3>
+                    </div>
+                    <div class="card">
+                        <div class="card-header text-center">
+                            <h3>Payment Receipt</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="row mb-3">
+                                <div class="col-6">
+                                    <strong>Receipt #:</strong> PAY-${payment.id.substr(-6).toUpperCase()}
+                                </div>
+                                <div class="col-6 text-end">
+                                    <strong>Date:</strong> ${formatDate(payment.date)}
+                                </div>
+                            </div>
+                            
+                            <div class="row mb-4">
+                                <div class="col-12">
+                                    <h5>Customer Information</h5>
+                                    <table class="table table-bordered">
+                                        <tr>
+                                            <td><strong>Name:</strong></td>
+                                            <td>${customer.fullName}</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>ID Number:</strong></td>
+                                            <td>${customer.idNumber}</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Contact:</strong></td>
+                                            <td>${customer.contact}</td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                            
+                            <div class="row mb-4">
+                                <div class="col-12">
+                                    <h5>Payment Details</h5>
+                                    <table class="table table-bordered">
+                                        <tr>
+                                            <td><strong>Amount:</strong></td>
+                                            <td>${payment.amount} ${systemData.settings.currency}</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Payment Type:</strong></td>
+                                            <td>${payment.type}</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Description:</strong></td>
+                                            <td>${payment.description || '-'}</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Payment Date:</strong></td>
+                                            <td>${formatDate(payment.date)}</td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                            
+                            <div class="row signature-area">
+                                <div class="col-6">
+                                    <strong>Customer Signature:</strong>
+                                    <div style="height: 50px; border-bottom: 1px solid #000; margin-top: 10px;"></div>
+                                </div>
+                                <div class="col-6 text-end">
+                                    <strong>Company Signature:</strong>
+                                    <div style="height: 50px; border-bottom: 1px solid #000; margin-top: 10px;"></div>
+                                </div>
+                            </div>
+                            
+                            <div class="row mt-4">
+                                <div class="col-12 text-center">
+                                    <small>Thank you for your payment!</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // Open print window
+            const printWindow = window.open('', '_blank');
+            printWindow.document.write(`
+                <html>
+                    <head>
+                        <title>Payment Receipt</title>
+                        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+                        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+                        <style>
+                            body { font-family: Arial, sans-serif; }
+                            .print-only { display: block !important; }
+                            .no-print { display: none !important; }
+                            .invoice-logo { text-align: center; margin-bottom: 20px; border-bottom: 2px solid #333; padding-bottom: 10px; }
+                            .signature-area { margin-top: 50px; border-top: 1px solid #000; padding-top: 10px; }
+                        </style>
+                    </head>
+                    <body>
+                        ${printContent}
+                        <script>
+                            window.onload = function() {
+                                window.print();
+                                setTimeout(function() {
+                                    window.close();
+                                }, 500);
+                            };
+                        <\/script>
+                    </body>
+                </html>
+            `);
+            printWindow.document.close();
         }
 
         // Handle adding fine/tax
@@ -2307,7 +2639,7 @@
             };
         }
 
-        // Update the loadCustomerPaymentDetails function to use the new calculation
+        // Updated loadCustomerPaymentDetails function with payment history management
         function loadCustomerPaymentDetails(customer) {
             document.getElementById('customerPaymentDetails').style.display = 'block';
             
@@ -2321,33 +2653,7 @@
             document.getElementById('remainingBalance').textContent = `${debtInfo.remainingBalance} ${systemData.settings.currency}`;
             
             // Load payment history
-            const paymentHistoryBody = document.getElementById('paymentHistoryTableBody');
-            paymentHistoryBody.innerHTML = '';
-            
-            const customerPayments = systemData.payments.filter(p => p.customerId === customer.id);
-            customerPayments.forEach(payment => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${formatDate(payment.date)}</td>
-                    <td>${payment.amount} ${systemData.settings.currency}</td>
-                    <td>${payment.type}</td>
-                    <td>${payment.description || '-'}</td>
-                    <td>
-                        <button class="btn btn-sm btn-danger delete-payment" data-id="${payment.id}">
-                            <i class="fas fa-trash"></i>
-                        </button>
-                    </td>
-                `;
-                paymentHistoryBody.appendChild(row);
-            });
-            
-            // Add event listeners to delete buttons
-            document.querySelectorAll('.delete-payment').forEach(button => {
-                button.addEventListener('click', function() {
-                    const paymentId = this.getAttribute('data-id');
-                    deletePayment(paymentId, customer);
-                });
-            });
+            loadPaymentHistoryTable(customer);
         }
 
         // Delete payment
@@ -2492,6 +2798,664 @@
             
             if (customer && vehicle) {
                 printInvoice(rental, customer, vehicle);
+            }
+        }
+
+        // Print invoice - Updated Version
+        function printInvoice(rental, customer, vehicle) {
+            // Update print content
+            document.getElementById('printInvoiceCode').textContent = rental.invoiceCode;
+            document.getElementById('printInvoiceDate').textContent = formatDate(new Date());
+            document.getElementById('printCustomerName').textContent = customer.fullName;
+            document.getElementById('printCustomerAge').textContent = customer.age;
+            document.getElementById('printCustomerAddress').textContent = customer.address;
+            document.getElementById('printCustomerId').textContent = customer.idNumber;
+            document.getElementById('printVehicleName').textContent = vehicle.name;
+            document.getElementById('printVehicleModel').textContent = vehicle.model;
+            document.getElementById('printVehicleColor').textContent = vehicle.color;
+            
+            // Set vehicle image
+            const vehicleImageContainer = document.getElementById('printVehicleImage');
+            if (vehicle.image) {
+                vehicleImageContainer.innerHTML = `<img src="${vehicle.image}" style="max-width: 150px; max-height: 100px; object-fit: cover;" alt="${vehicle.name}">`;
+            } else {
+                vehicleImageContainer.innerHTML = '<i class="fas fa-car fa-2x text-muted"></i>';
+            }
+            
+            // Calculate payment details
+            const totalAmount = rental.rentalAmount * rental.rentalDays;
+            const advancePayment = rental.advancePayment || 0;
+            const remainingBalance = totalAmount - advancePayment;
+            
+            // Update rental details table
+            document.getElementById('printRentalDetails').innerHTML = `
+                <tr>
+                    <td>${formatDate(rental.startDate)}</td>
+                    <td>${formatDate(rental.endDate)}</td>
+                    <td>${rental.rentalDays}</td>
+                    <td>${rental.rentalAmount} ${systemData.settings.currency}</td>
+                    <td>${totalAmount} ${systemData.settings.currency}</td>
+                    <td>${advancePayment} ${systemData.settings.currency}</td>
+                    <td>${remainingBalance} ${systemData.settings.currency}</td>
+                </tr>
+            `;
+            
+            // Update payment summary
+            document.getElementById('printTotalAmount').textContent = `${totalAmount} ${systemData.settings.currency}`;
+            document.getElementById('printAdvancePayment').textContent = `${advancePayment} ${systemData.settings.currency}`;
+            document.getElementById('printRemainingBalance').textContent = `${remainingBalance} ${systemData.settings.currency}`;
+            
+            // Set logo if available
+            const printLogo = document.getElementById('printLogo');
+            if (systemData.settings.logo) {
+                printLogo.src = systemData.settings.logo;
+                printLogo.style.display = 'block';
+            } else {
+                printLogo.style.display = 'none';
+            }
+            
+            // Set system name
+            document.getElementById('printSystemName').textContent = systemData.settings.systemName;
+            
+            // Print the invoice
+            window.print();
+        }
+
+        // View Rental Invoice Details
+        function viewRentalInvoice(rentalId) {
+            const rental = systemData.rentals.find(r => r.id === rentalId);
+            if (!rental) return;
+            
+            const customer = systemData.customers.find(c => c.id === rental.customerId);
+            const vehicle = systemData.vehicles.find(v => v.id === rental.vehicleId);
+            
+            if (!customer || !vehicle) {
+                showAlert('Customer or vehicle not found!', 'danger');
+                return;
+            }
+            
+            // Calculate totals
+            const totalAmount = rental.rentalAmount * rental.rentalDays;
+            const advancePayment = rental.advancePayment || 0;
+            const remainingBalance = totalAmount - advancePayment;
+            
+            // Create modal for viewing invoice
+            const modalHtml = `
+                <div class="modal fade" id="viewInvoiceModal" tabindex="-1">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Rental Invoice Details</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="invoice-logo text-center mb-4">
+                                    ${systemData.settings.logo ? 
+                                        `<img src="${systemData.settings.logo}" style="max-width: 150px;" alt="${systemData.settings.systemName}">` : 
+                                        `<i class="fas fa-car fa-3x text-primary"></i>`
+                                    }
+                                    <h3>${systemData.settings.systemName}</h3>
+                                </div>
+                                
+                                <div class="row mb-4">
+                                    <div class="col-6">
+                                        <strong>Invoice Code:</strong> ${rental.invoiceCode}
+                                    </div>
+                                    <div class="col-6 text-end">
+                                        <strong>Date:</strong> ${formatDate(rental.created)}
+                                    </div>
+                                </div>
+                                
+                                <div class="row mb-4">
+                                    <div class="col-6">
+                                        <h5>Customer Information</h5>
+                                        <table class="table table-bordered table-sm">
+                                            <tr><td><strong>Name:</strong></td><td>${customer.fullName}</td></tr>
+                                            <tr><td><strong>Age:</strong></td><td>${customer.age}</td></tr>
+                                            <tr><td><strong>ID:</strong></td><td>${customer.idNumber}</td></tr>
+                                            <tr><td><strong>Contact:</strong></td><td>${customer.contact}</td></tr>
+                                            <tr><td><strong>Address:</strong></td><td>${customer.address}</td></tr>
+                                        </table>
+                                    </div>
+                                    <div class="col-6">
+                                        <h5>Vehicle Information</h5>
+                                        <table class="table table-bordered table-sm">
+                                            <tr><td><strong>Vehicle:</strong></td><td>${vehicle.name}</td></tr>
+                                            <tr><td><strong>Model:</strong></td><td>${vehicle.model}</td></tr>
+                                            <tr><td><strong>Color:</strong></td><td>${vehicle.color}</td></tr>
+                                            <tr><td><strong>Plate:</strong></td><td>${vehicle.plate}</td></tr>
+                                            <tr><td><strong>Daily Rate:</strong></td><td>${rental.rentalAmount} ${systemData.settings.currency}</td></tr>
+                                        </table>
+                                        ${vehicle.image ? 
+                                            `<img src="${vehicle.image}" class="img-fluid mt-2" style="max-height: 100px;" alt="${vehicle.name}">` : 
+                                            ''
+                                        }
+                                    </div>
+                                </div>
+                                
+                                <div class="row mb-4">
+                                    <div class="col-12">
+                                        <h5>Rental Details</h5>
+                                        <table class="table table-bordered">
+                                            <thead class="table-light">
+                                                <tr>
+                                                    <th>Start Date</th>
+                                                    <th>End Date</th>
+                                                    <th>Days</th>
+                                                    <th>Daily Rate</th>
+                                                    <th>Total Amount</th>
+                                                    <th>Advance Payment</th>
+                                                    <th>Remaining Balance</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>${formatDate(rental.startDate)}</td>
+                                                    <td>${formatDate(rental.endDate)}</td>
+                                                    <td>${rental.rentalDays}</td>
+                                                    <td>${rental.rentalAmount} ${systemData.settings.currency}</td>
+                                                    <td>${totalAmount} ${systemData.settings.currency}</td>
+                                                    <td>${advancePayment} ${systemData.settings.currency}</td>
+                                                    <td>${remainingBalance} ${systemData.settings.currency}</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                
+                                <div class="row">
+                                    <div class="col-12">
+                                        <div class="alert ${remainingBalance > 0 ? 'alert-warning' : 'alert-success'}">
+                                            <strong>Status:</strong> ${rental.status} | 
+                                            <strong>Remaining Balance:</strong> ${remainingBalance} ${systemData.settings.currency}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <button type="button" class="btn btn-primary" onclick="printRentalInvoice('${rental.id}')">
+                                    <i class="fas fa-print"></i> Print Invoice
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // Remove existing modal if any
+            const existingModal = document.getElementById('viewInvoiceModal');
+            if (existingModal) {
+                existingModal.remove();
+            }
+            
+            // Add modal to body and show it
+            document.body.insertAdjacentHTML('beforeend', modalHtml);
+            const modal = new bootstrap.Modal(document.getElementById('viewInvoiceModal'));
+            modal.show();
+        }
+
+        // Delete Rental Function
+        function deleteRental(rentalId) {
+            const rental = systemData.rentals.find(r => r.id === rentalId);
+            if (!rental) return;
+            
+            // Check if rental is active
+            if (rental.status === 'active') {
+                showAlert('Cannot delete active rental! Please return the vehicle first.', 'danger');
+                return;
+            }
+            
+            if (confirm('Are you sure you want to delete this rental record? This action cannot be undone.')) {
+                // Find and update vehicle status if it was returned
+                if (rental.status === 'returned') {
+                    const vehicle = systemData.vehicles.find(v => v.id === rental.vehicleId);
+                    if (vehicle) {
+                        vehicle.status = 'available';
+                    }
+                    
+                    // Remove return record
+                    systemData.returns = systemData.returns.filter(r => r.rentalId !== rental.id);
+                }
+                
+                // Remove rental
+                systemData.rentals = systemData.rentals.filter(r => r.id !== rental.id);
+                saveDataToStorage();
+                
+                // Reload tables
+                loadRentalTable();
+                loadVehicleTable();
+                loadReturnHistoryTable();
+                
+                showAlert('Rental record deleted successfully!', 'success');
+            }
+        }
+
+        // بینینی وردەکارییەکانی گەیاندنەوە
+        function viewReturnDetails(returnId) {
+            const returnRecord = systemData.returns.find(r => r.id === returnId);
+            if (!returnRecord) return;
+            
+            const rental = systemData.rentals.find(r => r.id === returnRecord.rentalId);
+            const customer = rental ? systemData.customers.find(c => c.id === rental.customerId) : null;
+            const vehicle = rental ? systemData.vehicles.find(v => v.id === rental.vehicleId) : null;
+            
+            if (!rental || !customer || !vehicle) {
+                showAlert('Return record details not found!', 'danger');
+                return;
+            }
+            
+            const modalHtml = `
+                <div class="modal fade" id="viewReturnModal" tabindex="-1">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Return Details</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <h5>Rental Information</h5>
+                                        <table class="table table-bordered table-sm">
+                                            <tr><td><strong>Invoice Code:</strong></td><td>${rental.invoiceCode}</td></tr>
+                                            <tr><td><strong>Vehicle:</strong></td><td>${vehicle.name}</td></tr>
+                                            <tr><td><strong>Customer:</strong></td><td>${customer.fullName}</td></tr>
+                                            <tr><td><strong>Rental Period:</strong></td><td>${formatDate(rental.startDate)} to ${formatDate(rental.endDate)}</td></tr>
+                                        </table>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <h5>Return Information</h5>
+                                        <table class="table table-bordered table-sm">
+                                            <tr><td><strong>Return Date:</strong></td><td>${formatDate(returnRecord.returnDate)}</td></tr>
+                                            <tr><td><strong>Return Time:</strong></td><td>${new Date(returnRecord.created).toLocaleTimeString()}</td></tr>
+                                            <tr><td><strong>Status:</strong></td><td><span class="badge bg-success">Returned</span></td></tr>
+                                        </table>
+                                    </div>
+                                </div>
+                                
+                                ${returnRecord.notes ? `
+                                <div class="row mt-3">
+                                    <div class="col-12">
+                                        <h5>Notes</h5>
+                                        <div class="alert alert-info">${returnRecord.notes}</div>
+                                    </div>
+                                </div>
+                                ` : ''}
+                                
+                                <div class="row mt-3">
+                                    <div class="col-12">
+                                        <h5>Payment Summary</h5>
+                                        <table class="table table-bordered">
+                                            <tr>
+                                                <td><strong>Total Rental Amount:</strong></td>
+                                                <td>${rental.rentalAmount * rental.rentalDays} ${systemData.settings.currency}</td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Advance Payment:</strong></td>
+                                                <td>${rental.advancePayment} ${systemData.settings.currency}</td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Remaining Balance:</strong></td>
+                                                <td class="fw-bold">${(rental.rentalAmount * rental.rentalDays) - rental.advancePayment} ${systemData.settings.currency}</td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // Remove existing modal if any
+            const existingModal = document.getElementById('viewReturnModal');
+            if (existingModal) {
+                existingModal.remove();
+            }
+            
+            // Add modal to body and show it
+            document.body.insertAdjacentHTML('beforeend', modalHtml);
+            const modal = new bootstrap.Modal(document.getElementById('viewReturnModal'));
+            modal.show();
+        }
+
+        // بینینی وردەکارییەکانی چاکسازی
+        function viewMaintenanceDetails(maintenanceId) {
+            const maintenance = systemData.maintenance.find(m => m.id === maintenanceId);
+            if (!maintenance) return;
+            
+            const vehicle = systemData.vehicles.find(v => v.id === maintenance.vehicleId);
+            
+            const modalHtml = `
+                <div class="modal fade" id="viewMaintenanceModal" tabindex="-1">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Maintenance Details</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <h5>Vehicle Information</h5>
+                                        <table class="table table-bordered table-sm">
+                                            <tr><td><strong>Vehicle:</strong></td><td>${vehicle ? vehicle.name : 'N/A'}</td></tr>
+                                            <tr><td><strong>Model:</strong></td><td>${vehicle ? vehicle.model : 'N/A'}</td></tr>
+                                            <tr><td><strong>Plate:</strong></td><td>${vehicle ? vehicle.plate : 'N/A'}</td></tr>
+                                        </table>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <h5>Maintenance Information</h5>
+                                        <table class="table table-bordered table-sm">
+                                            <tr><td><strong>Type:</strong></td><td>${maintenance.type}</td></tr>
+                                            <tr><td><strong>Date:</strong></td><td>${formatDate(maintenance.date)}</td></tr>
+                                            <tr><td><strong>Cost:</strong></td><td>${maintenance.cost} ${systemData.settings.currency}</td></tr>
+                                        </table>
+                                    </div>
+                                </div>
+                                
+                                <div class="row mt-3">
+                                    <div class="col-12">
+                                        <h5>Description</h5>
+                                        <div class="alert alert-info">${maintenance.description}</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // Remove existing modal if any
+            const existingModal = document.getElementById('viewMaintenanceModal');
+            if (existingModal) {
+                existingModal.remove();
+            }
+            
+            // Add modal to body and show it
+            document.body.insertAdjacentHTML('beforeend', modalHtml);
+            const modal = new bootstrap.Modal(document.getElementById('viewMaintenanceModal'));
+            modal.show();
+        }
+
+        // بینینی وردەکارییەکانی تاوان
+        function viewFineDetails(fineId) {
+            const fineTax = systemData.finesTaxes.find(f => f.id === fineId);
+            if (!fineTax) return;
+            
+            const customer = systemData.customers.find(c => c.id === fineTax.customerId);
+            
+            const modalHtml = `
+                <div class="modal fade" id="viewFineModal" tabindex="-1">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Fine/Tax Details</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <h5>Customer Information</h5>
+                                        <table class="table table-bordered table-sm">
+                                            <tr><td><strong>Name:</strong></td><td>${customer ? customer.fullName : 'N/A'}</td></tr>
+                                            <tr><td><strong>ID:</strong></td><td>${customer ? customer.idNumber : 'N/A'}</td></tr>
+                                            <tr><td><strong>Contact:</strong></td><td>${customer ? customer.contact : 'N/A'}</td></tr>
+                                        </table>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <h5>Fine/Tax Information</h5>
+                                        <table class="table table-bordered table-sm">
+                                            <tr><td><strong>Type:</strong></td><td>${fineTax.type}</td></tr>
+                                            <tr><td><strong>Amount:</strong></td><td>${fineTax.amount} ${systemData.settings.currency}</td></tr>
+                                            <tr><td><strong>Date:</strong></td><td>${formatDate(fineTax.date)}</td></tr>
+                                            <tr><td><strong>Status:</strong></td><td>
+                                                <span class="badge ${fineTax.status === 'paid' ? 'bg-success' : 'bg-danger'}">
+                                                    ${fineTax.status}
+                                                </span>
+                                            </td></tr>
+                                        </table>
+                                    </div>
+                                </div>
+                                
+                                <div class="row mt-3">
+                                    <div class="col-12">
+                                        <h5>Description</h5>
+                                        <div class="alert alert-info">${fineTax.description}</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                ${fineTax.status === 'unpaid' ? 
+                                    `<button type="button" class="btn btn-success" onclick="markFineAsPaid('${fineTax.id}'); document.getElementById('viewFineModal').querySelector('.btn-close').click();">
+                                        Mark as Paid
+                                    </button>` : ''
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // Remove existing modal if any
+            const existingModal = document.getElementById('viewFineModal');
+            if (existingModal) {
+                existingModal.remove();
+            }
+            
+            // Add modal to body and show it
+            document.body.insertAdjacentHTML('beforeend', modalHtml);
+            const modal = new bootstrap.Modal(document.getElementById('viewFineModal'));
+            modal.show();
+        }
+
+        // بینینی وردەکارییەکانی پارەدان
+        function viewPaymentDetails(paymentId) {
+            const payment = systemData.payments.find(p => p.id === paymentId);
+            if (!payment) return;
+            
+            const customer = systemData.customers.find(c => c.id === payment.customerId);
+            
+            const modalHtml = `
+                <div class="modal fade" id="viewPaymentModal" tabindex="-1">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Payment Details</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="row">
+                                    <div class="col-12">
+                                        <table class="table table-bordered">
+                                            <tr><td><strong>Customer:</strong></td><td>${customer ? customer.fullName : 'N/A'}</td></tr>
+                                            <tr><td><strong>Amount:</strong></td><td>${payment.amount} ${systemData.settings.currency}</td></tr>
+                                            <tr><td><strong>Date:</strong></td><td>${formatDate(payment.date)}</td></tr>
+                                            <tr><td><strong>Type:</strong></td><td>${payment.type}</td></tr>
+                                            <tr><td><strong>Description:</strong></td><td>${payment.description || '-'}</td></tr>
+                                            <tr><td><strong>Payment Time:</strong></td><td>${new Date(payment.created).toLocaleString()}</td></tr>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // Remove existing modal if any
+            const existingModal = document.getElementById('viewPaymentModal');
+            if (existingModal) {
+                existingModal.remove();
+            }
+            
+            // Add modal to body and show it
+            document.body.insertAdjacentHTML('beforeend', modalHtml);
+            const modal = new bootstrap.Modal(document.getElementById('viewPaymentModal'));
+            modal.show();
+        }
+
+        // بینینی وردەکارییەکانی کرێ
+        function viewRentalDetails(rentalId) {
+            const rental = systemData.rentals.find(r => r.id === rentalId);
+            if (!rental) return;
+            
+            const customer = systemData.customers.find(c => c.id === rental.customerId);
+            const vehicle = systemData.vehicles.find(v => v.id === rental.vehicleId);
+            
+            if (!customer || !vehicle) {
+                showAlert('Rental details not found!', 'danger');
+                return;
+            }
+            
+            const modalHtml = `
+                <div class="modal fade" id="viewRentalModal" tabindex="-1">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Rental Details</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <h5>Customer Information</h5>
+                                        <table class="table table-bordered table-sm">
+                                            <tr><td><strong>Name:</strong></td><td>${customer.fullName}</td></tr>
+                                            <tr><td><strong>Age:</strong></td><td>${customer.age}</td></tr>
+                                            <tr><td><strong>ID:</strong></td><td>${customer.idNumber}</td></tr>
+                                            <tr><td><strong>Contact:</strong></td><td>${customer.contact}</td></tr>
+                                        </table>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <h5>Vehicle Information</h5>
+                                        <table class="table table-bordered table-sm">
+                                            <tr><td><strong>Vehicle:</strong></td><td>${vehicle.name}</td></tr>
+                                            <tr><td><strong>Model:</strong></td><td>${vehicle.model}</td></tr>
+                                            <tr><td><strong>Color:</strong></td><td>${vehicle.color}</td></tr>
+                                            <tr><td><strong>Plate:</strong></td><td>${vehicle.plate}</td></tr>
+                                        </table>
+                                    </div>
+                                </div>
+                                
+                                <div class="row mt-3">
+                                    <div class="col-md-6">
+                                        <h5>Rental Information</h5>
+                                        <table class="table table-bordered table-sm">
+                                            <tr><td><strong>Invoice Code:</strong></td><td>${rental.invoiceCode}</td></tr>
+                                            <tr><td><strong>Start Date:</strong></td><td>${formatDate(rental.startDate)}</td></tr>
+                                            <tr><td><strong>End Date:</strong></td><td>${formatDate(rental.endDate)}</td></tr>
+                                            <tr><td><strong>Rental Days:</strong></td><td>${rental.rentalDays}</td></tr>
+                                        </table>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <h5>Payment Information</h5>
+                                        <table class="table table-bordered table-sm">
+                                            <tr><td><strong>Daily Rate:</strong></td><td>${rental.rentalAmount} ${systemData.settings.currency}</td></tr>
+                                            <tr><td><strong>Total Amount:</strong></td><td>${rental.rentalAmount * rental.rentalDays} ${systemData.settings.currency}</td></tr>
+                                            <tr><td><strong>Advance Payment:</strong></td><td>${rental.advancePayment} ${systemData.settings.currency}</td></tr>
+                                            <tr><td><strong>Remaining Balance:</strong></td><td class="fw-bold">${(rental.rentalAmount * rental.rentalDays) - rental.advancePayment} ${systemData.settings.currency}</td></tr>
+                                        </table>
+                                    </div>
+                                </div>
+                                
+                                <div class="row mt-3">
+                                    <div class="col-12">
+                                        <div class="alert ${rental.status === 'active' ? 'alert-warning' : 'alert-success'}">
+                                            <strong>Status:</strong> ${rental.status} | 
+                                            <strong>Return Date:</strong> ${rental.returnDate ? formatDate(rental.returnDate) : 'Not Returned'}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <button type="button" class="btn btn-primary" onclick="printRentalInvoice('${rental.id}')">
+                                    <i class="fas fa-print"></i> Print Invoice
+                                </button>
+                                ${rental.status === 'returned' ? 
+                                    `<button type="button" class="btn btn-danger" onclick="deleteRental('${rental.id}'); document.getElementById('viewRentalModal').querySelector('.btn-close').click();">
+                                        <i class="fas fa-trash"></i> Delete Rental
+                                    </button>` : ''
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // Remove existing modal if any
+            const existingModal = document.getElementById('viewRentalModal');
+            if (existingModal) {
+                existingModal.remove();
+            }
+            
+            // Add modal to body and show it
+            document.body.insertAdjacentHTML('beforeend', modalHtml);
+            const modal = new bootstrap.Modal(document.getElementById('viewRentalModal'));
+            modal.show();
+        }
+
+        // سڕینەوەی تۆمارێکی گەیاندنەوە
+        function deleteReturn(returnId) {
+            const returnRecord = systemData.returns.find(r => r.id === returnId);
+            if (!returnRecord) return;
+            
+            const rental = systemData.rentals.find(r => r.id === returnRecord.rentalId);
+            
+            if (confirm('Are you sure you want to delete this return record? This will make the rental active again.')) {
+                // Make rental active again
+                if (rental) {
+                    rental.status = 'active';
+                    rental.returnDate = null;
+                    
+                    // Make vehicle rented again
+                    const vehicle = systemData.vehicles.find(v => v.id === rental.vehicleId);
+                    if (vehicle) {
+                        vehicle.status = 'rented';
+                    }
+                }
+                
+                // Remove return record
+                systemData.returns = systemData.returns.filter(r => r.id !== returnId);
+                saveDataToStorage();
+                
+                // Reload tables
+                loadReturnHistoryTable();
+                loadRentalTable();
+                loadVehicleTable();
+                
+                showAlert('Return record deleted successfully!', 'success');
+            }
+        }
+
+        // سڕینەوەی تۆمارێکی پارەدان
+        function deletePaymentRecord(paymentId) {
+            const payment = systemData.payments.find(p => p.id === paymentId);
+            if (!payment) return;
+            
+            if (confirm('Are you sure you want to delete this payment record?')) {
+                systemData.payments = systemData.payments.filter(p => p.id !== paymentId);
+                saveDataToStorage();
+                
+                // Reload payment tables if open
+                const customer = systemData.customers.find(c => c.id === payment.customerId);
+                if (customer && document.getElementById('customerPaymentDetails').style.display === 'block') {
+                    loadCustomerPaymentDetails(customer);
+                }
+                
+                showAlert('Payment record deleted successfully!', 'success');
             }
         }
 
@@ -2753,6 +3717,219 @@
             loadRolePermissions();
         }
 
+        // Backup and Restore Functions
+        // Create backup function
+        function createBackup() {
+            // Get current data
+            const dataToBackup = {
+                systemData: systemData,
+                timestamp: new Date().toISOString(),
+                version: '1.0'
+            };
+            
+            // Create blob and download link
+            const blob = new Blob([JSON.stringify(dataToBackup, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            
+            // Create filename with timestamp
+            const date = new Date();
+            const filename = `car_rental_backup_${date.getFullYear()}${(date.getMonth()+1).toString().padStart(2, '0')}${date.getDate().toString().padStart(2, '0')}_${date.getHours().toString().padStart(2, '0')}${date.getMinutes().toString().padStart(2, '0')}.json`;
+            
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            // Save backup info to localStorage
+            saveBackupInfo(filename, blob.size);
+            
+            showAlert('باکەپ بە سەرکەوتوویی دروست کرا!', 'success');
+        }
+
+        // Restore backup function
+        function restoreBackup() {
+            const fileInput = document.getElementById('backupFile');
+            const file = fileInput.files[0];
+            
+            if (!file) {
+                showAlert('تکایە فایلێکی باکەپ هەڵبژێرە!', 'warning');
+                return;
+            }
+            
+            if (!file.name.endsWith('.json')) {
+                showAlert('تکایە فایلێکی JSON هەڵبژێرە!', 'danger');
+                return;
+            }
+            
+            const reader = new FileReader();
+            
+            reader.onload = function(e) {
+                try {
+                    const backupData = JSON.parse(e.target.result);
+                    
+                    // Verify backup structure
+                    if (!backupData.systemData || !backupData.timestamp) {
+                        showAlert('فایلی باکەپ نادروستە!', 'danger');
+                        return;
+                    }
+                    
+                    // Confirm restore action
+                    if (confirm('ئایا دڵنیای کە دەتەوێت هەموو داتاکانی ئێستا بسڕیتەوە و باکەپەکە باربکەیت؟ ئەم کردارە ناگەڕێتەوە!')) {
+                        // Restore data
+                        Object.keys(systemData).forEach(key => {
+                            if (backupData.systemData[key]) {
+                                systemData[key] = backupData.systemData[key];
+                            }
+                        });
+                        
+                        // Save to localStorage
+                        saveDataToStorage();
+                        
+                        // Reload the page to reflect changes
+                        location.reload();
+                        
+                        showAlert('باکەپ بە سەرکەوتوویی بارکرایەوە!', 'success');
+                    }
+                } catch (error) {
+                    console.error('Error restoring backup:', error);
+                    showAlert('هەڵە لە خوێندنەوەی فایلی باکەپ!', 'danger');
+                }
+            };
+            
+            reader.onerror = function() {
+                showAlert('هەڵە لە خوێندنەوەی فایل!', 'danger');
+            };
+            
+            reader.readAsText(file);
+        }
+
+        // Save backup information to localStorage
+        function saveBackupInfo(filename, size) {
+            let backupHistory = JSON.parse(localStorage.getItem('backupHistory') || '[]');
+            
+            backupHistory.unshift({
+                filename: filename,
+                size: size,
+                timestamp: new Date().toISOString()
+            });
+            
+            // Keep only last 10 backups in history
+            if (backupHistory.length > 10) {
+                backupHistory = backupHistory.slice(0, 10);
+            }
+            
+            localStorage.setItem('backupHistory', JSON.stringify(backupHistory));
+            
+            // Update backup history table
+            loadBackupHistory();
+        }
+
+        // Load backup history
+        function loadBackupHistory() {
+            const backupHistory = JSON.parse(localStorage.getItem('backupHistory') || '[]');
+            const tableBody = document.getElementById('backupHistoryTable');
+            
+            if (!tableBody) return;
+            
+            tableBody.innerHTML = '';
+            
+            if (backupHistory.length === 0) {
+                tableBody.innerHTML = `
+                    <tr>
+                        <td colspan="4" class="text-center text-muted">هیچ باکەپێک بوونی نیە</td>
+                    </tr>
+                `;
+                return;
+            }
+            
+            backupHistory.forEach(backup => {
+                const date = new Date(backup.timestamp);
+                const formattedDate = date.toLocaleString();
+                const sizeInKB = (backup.size / 1024).toFixed(2);
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${backup.filename}</td>
+                    <td>${sizeInKB} KB</td>
+                    <td>${formattedDate}</td>
+                    <td>
+                        <button class="btn btn-sm btn-outline-primary download-backup" data-filename="${backup.filename}">
+                            <i class="fas fa-download"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline-danger delete-backup" data-filename="${backup.filename}">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+            
+            // Add event listeners for download and delete buttons
+            document.querySelectorAll('.download-backup').forEach(button => {
+                button.addEventListener('click', function() {
+                    const filename = this.getAttribute('data-filename');
+                    downloadBackup(filename);
+                });
+            });
+            
+            document.querySelectorAll('.delete-backup').forEach(button => {
+                button.addEventListener('click', function() {
+                    const filename = this.getAttribute('data-filename');
+                    deleteBackup(filename);
+                });
+            });
+        }
+
+        // Download specific backup
+        function downloadBackup(filename) {
+            // In a real application, this would retrieve the actual backup file
+            // For this demo, we'll create a new backup with the requested filename
+            const dataToBackup = {
+                systemData: systemData,
+                timestamp: new Date().toISOString(),
+                version: '1.0'
+            };
+            
+            const blob = new Blob([JSON.stringify(dataToBackup, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            showAlert(`باکەپی ${filename} بارکرا!`, 'success');
+        }
+
+        // Delete backup from history
+        function deleteBackup(filename) {
+            if (confirm(`ئایا دڵنیای کە دەتەوێت باکەپی ${filename} بسڕیتەوە؟`)) {
+                let backupHistory = JSON.parse(localStorage.getItem('backupHistory') || '[]');
+                backupHistory = backupHistory.filter(backup => backup.filename !== filename);
+                localStorage.setItem('backupHistory', JSON.stringify(backupHistory));
+                loadBackupHistory();
+                showAlert('باکەپ سڕدرایەوە!', 'success');
+            }
+        }
+
+        // Auto backup function (optional - runs automatically)
+        function autoBackup() {
+            // Check if auto backup is enabled and last backup was more than 24 hours ago
+            const lastBackup = localStorage.getItem('lastAutoBackup');
+            const now = new Date().getTime();
+            
+            if (!lastBackup || (now - parseInt(lastBackup)) > 24 * 60 * 60 * 1000) {
+                createBackup();
+                localStorage.setItem('lastAutoBackup', now.toString());
+            }
+        }
+
         // Setup auto-suggestions
         function setupAutoSuggestions() {
             // Color suggestions
@@ -2926,14 +4103,18 @@
             });
         }
 
-        // Load dashboard data
+        // Load dashboard data - Updated Version with auto-refresh
         function loadDashboardData() {
             // Update statistics
             const availableVehicles = systemData.vehicles.filter(v => v.status === 'available').length;
             const rentedVehicles = systemData.vehicles.filter(v => v.status === 'rented').length;
             const activeRentals = systemData.rentals.filter(r => r.status === 'active').length;
             const totalCustomers = systemData.customers.length;
-            const totalPayments = systemData.payments.reduce((sum, payment) => sum + payment.amount, 0);
+            
+            // Calculate total payments including advance payments from rentals
+            const totalAdvancePayments = systemData.rentals.reduce((sum, rental) => sum + rental.advancePayment, 0);
+            const totalPaymentSectionPayments = systemData.payments.reduce((sum, payment) => sum + payment.amount, 0);
+            const totalPayments = totalAdvancePayments + totalPaymentSectionPayments;
             
             document.getElementById('dashboardStats').innerHTML = `
                 <div class="col-md-2">
@@ -3003,6 +4184,7 @@
                                 <div>
                                     <h4>${totalPayments}</h4>
                                     <p>Total Payments</p>
+                                    <small class="opacity-75">(Includes advance payments)</small>
                                 </div>
                                 <div class="align-self-center">
                                     <i class="fas fa-money-bill-wave fa-2x"></i>
@@ -3053,6 +4235,13 @@
             // Load vehicle status chart
             loadVehicleStatusChart();
         }
+
+        // Auto-refresh dashboard every 30 seconds
+        setInterval(function() {
+            if (document.getElementById('dashboard').classList.contains('active')) {
+                loadDashboardData();
+            }
+        }, 30000);
 
         // Load vehicle status chart
         function loadVehicleStatusChart() {
@@ -3231,6 +4420,12 @@
                             <button class="btn btn-sm btn-primary print-invoice" data-id="${rental.id}">
                                 <i class="fas fa-print"></i>
                             </button>
+                            <button class="btn btn-sm btn-warning view-invoice" data-id="${rental.id}">
+                                <i class="fas fa-file-invoice"></i>
+                            </button>
+                            <button class="btn btn-sm btn-danger delete-rental" data-id="${rental.id}">
+                                <i class="fas fa-trash"></i>
+                            </button>
                         </td>
                     `;
                     rentalTableBody.appendChild(row);
@@ -3263,6 +4458,9 @@
                             <td>
                                 <button class="btn btn-sm btn-info view-return" data-id="${returnRecord.id}">
                                     <i class="fas fa-eye"></i>
+                                </button>
+                                <button class="btn btn-sm btn-danger delete-return" data-id="${returnRecord.id}">
+                                    <i class="fas fa-trash"></i>
                                 </button>
                             </td>
                         `;
@@ -3376,6 +4574,109 @@
                 `;
                 userTableBody.appendChild(row);
             });
+        }
+
+        // Updated loadPaymentHistoryTable function with enhanced actions
+        function loadPaymentHistoryTable(customer) {
+            const paymentHistoryBody = document.getElementById('paymentHistoryTableBody');
+            if (!paymentHistoryBody) return;
+            
+            paymentHistoryBody.innerHTML = '';
+            
+            const customerPayments = systemData.payments.filter(p => p.customerId === customer.id);
+            customerPayments.forEach(payment => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${formatDate(payment.date)}</td>
+                    <td>${payment.amount} ${systemData.settings.currency}</td>
+                    <td>${payment.type}</td>
+                    <td>${payment.description || '-'}</td>
+                    <td>
+                        <button class="btn btn-sm btn-info view-payment" data-id="${payment.id}">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                        <button class="btn btn-sm btn-primary print-payment" data-id="${payment.id}">
+                            <i class="fas fa-print"></i>
+                        </button>
+                        <button class="btn btn-sm btn-warning edit-payment" data-id="${payment.id}">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="btn btn-sm btn-danger delete-payment-record" data-id="${payment.id}">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                `;
+                paymentHistoryBody.appendChild(row);
+            });
+            
+            // Add event listeners for new buttons
+            document.querySelectorAll('.print-payment').forEach(button => {
+                button.addEventListener('click', function() {
+                    const paymentId = this.getAttribute('data-id');
+                    printPaymentReceipt(paymentId);
+                });
+            });
+            
+            document.querySelectorAll('.edit-payment').forEach(button => {
+                button.addEventListener('click', function() {
+                    const paymentId = this.getAttribute('data-id');
+                    editPayment(paymentId);
+                });
+            });
+        }
+
+        // Edit payment function
+        function editPayment(paymentId) {
+            const payment = systemData.payments.find(p => p.id === paymentId);
+            if (!payment) return;
+            
+            const customer = systemData.customers.find(c => c.id === payment.customerId);
+            
+            // Populate payment form
+            document.getElementById('paymentCustomerSearch').value = customer.fullName;
+            document.getElementById('paymentAmount').value = payment.amount;
+            document.getElementById('paymentDate').value = payment.date;
+            document.getElementById('paymentType').value = payment.type;
+            document.getElementById('paymentDescription').value = payment.description || '';
+            
+            // Show customer payment details
+            loadCustomerPaymentDetails(customer);
+            
+            // Change form submit behavior to update instead of add
+            const form = document.getElementById('addPaymentForm');
+            const originalSubmit = form.onsubmit;
+            
+            form.onsubmit = function(e) {
+                e.preventDefault();
+                
+                // Update payment
+                payment.amount = parseInt(document.getElementById('paymentAmount').value);
+                payment.date = document.getElementById('paymentDate').value;
+                payment.type = document.getElementById('paymentType').value;
+                payment.description = document.getElementById('paymentDescription').value;
+                
+                saveDataToStorage();
+                loadCustomerPaymentDetails(customer);
+                
+                // Restore original submit behavior
+                form.onsubmit = originalSubmit;
+                form.reset();
+                
+                showAlert('Payment updated successfully!', 'success');
+            };
+            
+            // Change button text
+            const submitButton = form.querySelector('button[type="submit"]');
+            const originalText = submitButton.textContent;
+            submitButton.textContent = 'Update Payment';
+            
+            // Restore original button text when form is reset
+            form.addEventListener('reset', function() {
+                submitButton.textContent = originalText;
+                form.onsubmit = originalSubmit;
+            });
+            
+            showAlert('Payment data loaded for editing. Update and submit to save changes.', 'info');
         }
 
         // View vehicle details
@@ -3515,57 +4816,6 @@
             `;
             
             document.getElementById('customerDetailsCard').style.display = 'block';
-        }
-
-        // Print invoice
-        function printInvoice(rental, customer, vehicle) {
-            // Update print content
-            document.getElementById('printInvoiceCode').textContent = rental.invoiceCode;
-            document.getElementById('printInvoiceDate').textContent = formatDate(rental.created);
-            document.getElementById('printCustomerName').textContent = customer.fullName;
-            document.getElementById('printVehicleName').textContent = vehicle.name;
-            document.getElementById('printCustomerId').textContent = customer.idNumber;
-            document.getElementById('printCustomerAddress').textContent = customer.address;
-            document.getElementById('printRentalAmount').textContent = `${rental.rentalAmount} ${systemData.settings.currency}`;
-            document.getElementById('printRentalDays').textContent = rental.rentalDays;
-            document.getElementById('printTotalAmount').textContent = `${rental.rentalAmount * rental.rentalDays} ${systemData.settings.currency}`;
-            
-            // Set logo if available
-            const printLogo = document.getElementById('printLogo');
-            if (systemData.settings.logo) {
-                printLogo.src = systemData.settings.logo;
-                printLogo.style.display = 'block';
-            } else {
-                printLogo.style.display = 'none';
-            }
-            
-            // Show rental history
-            const rentalHistory = document.getElementById('printRentalHistory');
-            rentalHistory.innerHTML = `
-                <table class="table table-bordered">
-                    <thead>
-                        <tr>
-                            <th>Start Date</th>
-                            <th>End Date</th>
-                            <th>Days</th>
-                            <th>Amount/Day</th>
-                            <th>Total</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>${formatDate(rental.startDate)}</td>
-                            <td>${formatDate(rental.endDate)}</td>
-                            <td>${rental.rentalDays}</td>
-                            <td>${rental.rentalAmount} ${systemData.settings.currency}</td>
-                            <td>${rental.rentalAmount * rental.rentalDays} ${systemData.settings.currency}</td>
-                        </tr>
-                    </tbody>
-                </table>
-            `;
-            
-            // Print the invoice
-            window.print();
         }
 
         // Search vehicles
