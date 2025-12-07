@@ -309,6 +309,18 @@
             border-radius: 5px;
             margin-bottom: 20px;
         }
+        
+        /* دەستکاری نوێ: ڕەنگی هەڵە بۆ خانەکان */
+        .error-field {
+            border-color: #e74c3c !important;
+            box-shadow: 0 0 0 0.25rem rgba(231, 76, 60, 0.25) !important;
+        }
+        
+        .error-message {
+            color: #e74c3c;
+            font-size: 0.875em;
+            margin-top: 0.25rem;
+        }
     </style>
 </head>
 <body>
@@ -678,8 +690,8 @@
                                                     <h5>Customer Information</h5>
                                                     <div class="row">
                                                         <div class="col-md-6 mb-3">
-                                                            <label for="rentalCustomer" class="form-label">Customer</label>
-                                                            <input type="text" class="form-control" id="rentalCustomer" placeholder="Search customer or add new...">
+                                                            <label for="rentalCustomer" class="form-label">Customer <span class="text-danger">*</span></label>
+                                                            <input type="text" class="form-control" id="rentalCustomer" placeholder="Search customer or add new..." required>
                                                             <div class="suggestion-list" id="customerSuggestions"></div>
                                                             <div class="form-text">If customer doesn't exist, you can add them below</div>
                                                         </div>
@@ -692,37 +704,37 @@
                                                     
                                                     <!-- New Customer Form (Initially Hidden) -->
                                                     <div class="customer-form-container" id="newCustomerForm">
-                                                        <h6>Add New Customer</h6>
+                                                        <h6>Add New Customer <span class="text-danger">*Required fields</span></h6>
                                                         <div class="row">
                                                             <div class="col-md-6 mb-3">
-                                                                <label for="customerFullName" class="form-label">Full Name *</label>
-                                                                <input type="text" class="form-control" id="customerFullName">
+                                                                <label for="customerFullName" class="form-label">Full Name <span class="text-danger">*</span></label>
+                                                                <input type="text" class="form-control" id="customerFullName" required>
                                                             </div>
                                                             <div class="col-md-6 mb-3">
-                                                                <label for="customerDateOfBirth" class="form-label">Date of Birth *</label>
-                                                                <input type="date" class="form-control" id="customerDateOfBirth" max="2006-12-31">
+                                                                <label for="customerDateOfBirth" class="form-label">Date of Birth <span class="text-danger">*</span></label>
+                                                                <input type="date" class="form-control" id="customerDateOfBirth" max="2006-12-31" required>
                                                                 <div class="form-text" id="customerAgeText"></div>
                                                             </div>
                                                         </div>
                                                         <div class="row">
                                                             <div class="col-md-6 mb-3">
-                                                                <label for="customerId" class="form-label">PS/ID *</label>
-                                                                <input type="text" class="form-control" id="customerId">
+                                                                <label for="customerId" class="form-label">PS/ID <span class="text-danger">*</span></label>
+                                                                <input type="text" class="form-control" id="customerId" required>
                                                             </div>
                                                             <div class="col-md-6 mb-3">
-                                                                <label for="customerNationality" class="form-label">Nationality *</label>
-                                                                <input type="text" class="form-control" id="customerNationality" placeholder="Type country name...">
+                                                                <label for="customerNationality" class="form-label">Nationality <span class="text-danger">*</span></label>
+                                                                <input type="text" class="form-control" id="customerNationality" placeholder="Type country name..." required>
                                                                 <div class="suggestion-list" id="nationalitySuggestions"></div>
                                                             </div>
                                                         </div>
                                                         <div class="row">
                                                             <div class="col-md-6 mb-3">
-                                                                <label for="customerContact" class="form-label">Contact Number *</label>
-                                                                <input type="text" class="form-control" id="customerContact">
+                                                                <label for="customerContact" class="form-label">Contact Number <span class="text-danger">*</span></label>
+                                                                <input type="text" class="form-control" id="customerContact" required>
                                                             </div>
                                                             <div class="col-md-6 mb-3">
-                                                                <label for="customerAddress" class="form-label">Address *</label>
-                                                                <input type="text" class="form-control" id="customerAddress">
+                                                                <label for="customerAddress" class="form-label">Address <span class="text-danger">*</span></label>
+                                                                <input type="text" class="form-control" id="customerAddress" required>
                                                             </div>
                                                         </div>
                                                         <div class="mb-3">
@@ -736,12 +748,12 @@
                                                     <h5>Vehicle Information</h5>
                                                     <div class="row">
                                                         <div class="col-md-6 mb-3">
-                                                            <label for="rentalVehicle" class="form-label">Vehicle</label>
-                                                            <input type="text" class="form-control" id="rentalVehicle" placeholder="Search vehicle...">
+                                                            <label for="rentalVehicle" class="form-label">Vehicle <span class="text-danger">*</span></label>
+                                                            <input type="text" class="form-control" id="rentalVehicle" placeholder="Search vehicle..." required>
                                                             <div class="suggestion-list" id="vehicleSuggestions"></div>
                                                         </div>
                                                         <div class="col-md-6 mb-3">
-                                                            <label for="rentalPeriodType" class="form-label">Rental Period Type</label>
+                                                            <label for="rentalPeriodType" class="form-label">Rental Period Type <span class="text-danger">*</span></label>
                                                             <select class="form-select" id="rentalPeriodType" required>
                                                                 <option value="daily">Daily</option>
                                                                 <option value="weekly">Weekly</option>
@@ -751,7 +763,7 @@
                                                     </div>
                                                     <div class="row">
                                                         <div class="col-md-6 mb-3">
-                                                            <label for="rentalAmount" class="form-label">Rental Amount</label>
+                                                            <label for="rentalAmount" class="form-label">Rental Amount <span class="text-danger">*</span></label>
                                                             <div class="input-group">
                                                                 <input type="number" class="form-control" id="rentalAmount" required>
                                                                 <span class="input-group-text">AED</span>
@@ -759,7 +771,7 @@
                                                             <div class="form-text">According to selected rental period type</div>
                                                         </div>
                                                         <div class="col-md-6 mb-3">
-                                                            <label for="rentalDays" class="form-label">Rental Period</label>
+                                                            <label for="rentalDays" class="form-label">Rental Period <span class="text-danger">*</span></label>
                                                             <input type="number" class="form-control" id="rentalDays" required>
                                                         </div>
                                                     </div>
@@ -769,13 +781,13 @@
                                                             <input type="text" class="form-control" id="invoiceCode">
                                                         </div>
                                                         <div class="col-md-6 mb-3">
-                                                            <label for="rentalStartDate" class="form-label">Rental Start Date</label>
+                                                            <label for="rentalStartDate" class="form-label">Rental Start Date <span class="text-danger">*</span></label>
                                                             <input type="date" class="form-control" id="rentalStartDate" required>
                                                         </div>
                                                     </div>
                                                     <div class="row">
                                                         <div class="col-md-6 mb-3">
-                                                            <label for="rentalEndDate" class="form-label">Rental End Date</label>
+                                                            <label for="rentalEndDate" class="form-label">Rental End Date <span class="text-danger">*</span></label>
                                                             <input type="date" class="form-control" id="rentalEndDate" required>
                                                         </div>
                                                         <div class="col-md-6 mb-3">
@@ -2252,24 +2264,171 @@
             showAlert('Vehicle added successfully!', 'success');
         }
 
-        // Handle creating a new rental
+        // Handle creating a new rental - UPDATED VERSION WITH VALIDATIONS
         function handleCreateRental(e) {
             e.preventDefault();
             
-            // Check if we need to create a new customer
+            // Clear any previous error highlights
+            clearErrorHighlights();
+            
+            // 🔴 تێستی نوێ: پشکنین بۆ سەیارەی هەڵبژێردراو
+            const vehicleName = document.getElementById('rentalVehicle').value;
+            const rentalAmount = document.getElementById('rentalAmount').value;
+            const rentalDays = document.getElementById('rentalDays').value;
             const customerName = document.getElementById('rentalCustomer').value;
+            const startDate = document.getElementById('rentalStartDate').value;
+            const endDate = document.getElementById('rentalEndDate').value;
+            
+            let hasError = false;
+            
+            // 1. پشکنین ئایا سەیارە هەڵبژێردراوە
+            if (!vehicleName || vehicleName.trim() === '') {
+                showAlert('تکایە سەیارەیەک هەڵبژێرە!', 'danger');
+                highlightErrorField('rentalVehicle');
+                hasError = true;
+            } else {
+                // 2. پشکنین ئایا سەیارە بوونی هەیە لە سیستەمدا
+                const vehicle = systemData.vehicles.find(v => v.name === vehicleName);
+                if (!vehicle) {
+                    showAlert('سەیارە بوونی نیە! تکایە سەیارەیەکی دروست هەڵبژێرە.', 'danger');
+                    highlightErrorField('rentalVehicle');
+                    hasError = true;
+                } else {
+                    // 3. پشکنین ئایا سەیارە بەردەستە (نەکرێدراوە)
+                    if (vehicle.status !== 'available') {
+                        showAlert('ئەم سەیارەیە بەردەست نیە! سەیارەیەکی تر هەڵبژێرە.', 'danger');
+                        highlightErrorField('rentalVehicle');
+                        hasError = true;
+                    }
+                }
+            }
+            
+            // 4. پشکنین ئایا نرخی کرێ دیاریکراوە
+            if (!rentalAmount || isNaN(rentalAmount) || parseInt(rentalAmount) <= 0) {
+                showAlert('نرخی کرێیەکی دروست داخڵ بکە!', 'danger');
+                highlightErrorField('rentalAmount');
+                hasError = true;
+            }
+            
+            // 5. پشکنین ئایا ماوەی کرێ دیاریکراوە
+            if (!rentalDays || isNaN(rentalDays) || parseInt(rentalDays) <= 0) {
+                showAlert('ماوەی کرێیەکی دروست داخڵ بکە!', 'danger');
+                highlightErrorField('rentalDays');
+                hasError = true;
+            }
+            
+            // 6. پشکنین ئایا کڕیار دیاریکراوە
+            if (!customerName || customerName.trim() === '') {
+                showAlert('تکایە کڕیارێک هەڵبژێرە یان کڕیارێکی نوێ زیاد بکە!', 'danger');
+                highlightErrorField('rentalCustomer');
+                hasError = true;
+            }
+            
+            // 7. پشکنین ئایا بەرواری دەستپێک دیاریکراوە
+            if (!startDate || startDate.trim() === '') {
+                showAlert('تکایە بەرواری دەستپێک دیاری بکە!', 'danger');
+                highlightErrorField('rentalStartDate');
+                hasError = true;
+            }
+            
+            // 8. پشکنین ئایا بەرواری کۆتایی دیاریکراوە
+            if (!endDate || endDate.trim() === '') {
+                showAlert('تکایە بەرواری کۆتایی دیاری بکە!', 'danger');
+                highlightErrorField('rentalEndDate');
+                hasError = true;
+            }
+            
+            // 9. پشکنین ئایا بەرواری کۆتایی دوای بەرواری دەستپێکە
+            if (startDate && endDate && new Date(endDate) <= new Date(startDate)) {
+                showAlert('بەرواری کۆتایی دەبێت دوای بەرواری دەستپێک بێت!', 'danger');
+                highlightErrorField('rentalEndDate');
+                hasError = true;
+            }
+            
+            // If there are errors, stop processing
+            if (hasError) {
+                return;
+            }
+            
+            // Check if we need to create a new customer
             let customer = systemData.customers.find(c => c.fullName === customerName);
             
             if (!customer) {
+                // پشکنین ئایا فۆرمی کڕیاری نوێ کراوەتەوە
+                const customerForm = document.getElementById('newCustomerForm');
+                if (customerForm.style.display === 'none' || customerForm.style.display === '') {
+                    showAlert('تکایە زانیارییەکانی کڕیاری نوێ پڕبکەوە یان کڕیارێکی تر هەڵبژێرە!', 'danger');
+                    highlightErrorField('rentalCustomer');
+                    return;
+                }
+                
+                // پشکنینی زانیارییە پێویستەکانی کڕیاری نوێ
+                const fullName = document.getElementById('customerFullName').value;
+                const dateOfBirth = document.getElementById('customerDateOfBirth').value;
+                const idNumber = document.getElementById('customerId').value;
+                const nationality = document.getElementById('customerNationality').value;
+                const contact = document.getElementById('customerContact').value;
+                const address = document.getElementById('customerAddress').value;
+                
+                let customerErrors = false;
+                
+                if (!fullName || fullName.trim() === '') {
+                    showAlert('ناوی تەواوی کڕیار داخڵ بکە!', 'danger');
+                    highlightErrorField('customerFullName');
+                    customerErrors = true;
+                }
+                
+                if (!dateOfBirth || dateOfBirth.trim() === '') {
+                    showAlert('بەرواری لەدایکبوونی کڕیار دیاری بکە!', 'danger');
+                    highlightErrorField('customerDateOfBirth');
+                    customerErrors = true;
+                } else {
+                    // پشکنینی تەمەن
+                    const age = calculateAge(dateOfBirth);
+                    if (age < 18) {
+                        showAlert('کڕیار دەبێت لانی کەم ١٨ ساڵ بێت!', 'danger');
+                        highlightErrorField('customerDateOfBirth');
+                        customerErrors = true;
+                    }
+                }
+                
+                if (!idNumber || idNumber.trim() === '') {
+                    showAlert('ناسنامەی کڕیار داخڵ بکە!', 'danger');
+                    highlightErrorField('customerId');
+                    customerErrors = true;
+                }
+                
+                if (!nationality || nationality.trim() === '') {
+                    showAlert('نەتەوەی کڕیار داخڵ بکە!', 'danger');
+                    highlightErrorField('customerNationality');
+                    customerErrors = true;
+                }
+                
+                if (!contact || contact.trim() === '') {
+                    showAlert('ژمارەی پەیوەندی کڕیار داخڵ بکە!', 'danger');
+                    highlightErrorField('customerContact');
+                    customerErrors = true;
+                }
+                
+                if (!address || address.trim() === '') {
+                    showAlert('ناونیشانی کڕیار داخڵ بکە!', 'danger');
+                    highlightErrorField('customerAddress');
+                    customerErrors = true;
+                }
+                
+                if (customerErrors) {
+                    return;
+                }
+                
                 // Create new customer
                 customer = {
                     id: generateId(),
-                    fullName: document.getElementById('customerFullName').value,
-                    dateOfBirth: document.getElementById('customerDateOfBirth').value,
-                    idNumber: document.getElementById('customerId').value,
-                    nationality: document.getElementById('customerNationality').value,
-                    contact: document.getElementById('customerContact').value,
-                    address: document.getElementById('customerAddress').value,
+                    fullName: fullName,
+                    dateOfBirth: dateOfBirth,
+                    idNumber: idNumber,
+                    nationality: nationality,
+                    contact: contact,
+                    address: address,
                     guaranteeDoc: null,
                     created: new Date().toISOString()
                 };
@@ -4071,6 +4230,26 @@
             }
         }
 
+        // دەستکاری نوێ: فەنکشنی ڕەنگکردنی هەڵە بۆ خانەکان
+        function highlightErrorField(fieldId) {
+            const field = document.getElementById(fieldId);
+            if (field) {
+                field.classList.add('error-field');
+                
+                // لابردنی ڕەنگەکە دوای چەند چرکەیەک
+                setTimeout(() => {
+                    field.classList.remove('error-field');
+                }, 3000);
+            }
+        }
+
+        // دەستکاری نوێ: فەنکشنی پاککردنەوەی هەموو ڕەنگی هەڵەکان
+        function clearErrorHighlights() {
+            document.querySelectorAll('.error-field').forEach(field => {
+                field.classList.remove('error-field');
+            });
+        }
+
         // Setup auto-suggestions
         function setupAutoSuggestions() {
             // Color suggestions
@@ -4127,6 +4306,8 @@
                         div.addEventListener('click', function() {
                             input.value = item;
                             suggestionList.style.display = 'none';
+                            // پاککردنەوەی ڕەنگی هەڵە کاتێک بەشێوەیەکی دروست هەڵدەبژێردرێت
+                            input.classList.remove('error-field');
                         });
                         suggestionList.appendChild(div);
                     });
@@ -4169,6 +4350,8 @@
                             
                             // Hide new customer form if showing
                             document.getElementById('newCustomerForm').style.display = 'none';
+                            // پاککردنەوەی ڕەنگی هەڵە
+                            input.classList.remove('error-field');
                         });
                         suggestionList.appendChild(div);
                     });
@@ -4203,6 +4386,8 @@
                             // Update rental amount based on current period type
                             updateRentalAmountByPeriodType();
                             suggestionList.style.display = 'none';
+                            // پاککردنەوەی ڕەنگی هەڵە
+                            input.classList.remove('error-field');
                         });
                         suggestionList.appendChild(div);
                     });
