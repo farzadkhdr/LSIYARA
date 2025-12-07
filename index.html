@@ -534,14 +534,30 @@
                                                     </div>
                                                 </div>
                                                 <div class="row">
-                                                    <div class="col-md-6 mb-3">
-                                                        <label for="vehicleRentalPrice" class="form-label">Rental Price (per day)</label>
+                                                    <div class="col-md-4 mb-3">
+                                                        <label for="vehicleRentalPriceDaily" class="form-label">Rental Price (per day)</label>
                                                         <div class="input-group">
-                                                            <input type="number" class="form-control" id="vehicleRentalPrice" required>
+                                                            <input type="number" class="form-control" id="vehicleRentalPriceDaily" required>
                                                             <span class="input-group-text">AED</span>
                                                         </div>
                                                     </div>
-                                                    <div class="col-md-6 mb-3">
+                                                    <div class="col-md-4 mb-3">
+                                                        <label for="vehicleRentalPriceWeekly" class="form-label">Rental Price (weekly)</label>
+                                                        <div class="input-group">
+                                                            <input type="number" class="form-control" id="vehicleRentalPriceWeekly" required>
+                                                            <span class="input-group-text">AED</span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4 mb-3">
+                                                        <label for="vehicleRentalPriceMonthly" class="form-label">Rental Price (monthly)</label>
+                                                        <div class="input-group">
+                                                            <input type="number" class="form-control" id="vehicleRentalPriceMonthly" required>
+                                                            <span class="input-group-text">AED</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-12 mb-3">
                                                         <label for="vehicleImage" class="form-label">Vehicle Image</label>
                                                         <input type="file" class="form-control" id="vehicleImage" accept="image/*">
                                                     </div>
@@ -574,7 +590,7 @@
                                                             <th>Color</th>
                                                             <th>Plate #</th>
                                                             <th>Odometer</th>
-                                                            <th>Rental Price</th>
+                                                            <th>Rental Prices</th>
                                                             <th>Status</th>
                                                             <th>Actions</th>
                                                         </tr>
@@ -683,8 +699,9 @@
                                                                 <input type="text" class="form-control" id="customerFullName">
                                                             </div>
                                                             <div class="col-md-6 mb-3">
-                                                                <label for="customerAge" class="form-label">Age *</label>
-                                                                <input type="number" class="form-control" id="customerAge">
+                                                                <label for="customerDateOfBirth" class="form-label">Date of Birth *</label>
+                                                                <input type="date" class="form-control" id="customerDateOfBirth" max="2006-12-31">
+                                                                <div class="form-text" id="customerAgeText"></div>
                                                             </div>
                                                         </div>
                                                         <div class="row">
@@ -724,34 +741,43 @@
                                                             <div class="suggestion-list" id="vehicleSuggestions"></div>
                                                         </div>
                                                         <div class="col-md-6 mb-3">
-                                                            <label for="rentalAmount" class="form-label">Rental Amount (per day)</label>
+                                                            <label for="rentalPeriodType" class="form-label">Rental Period Type</label>
+                                                            <select class="form-select" id="rentalPeriodType" required>
+                                                                <option value="daily">Daily</option>
+                                                                <option value="weekly">Weekly</option>
+                                                                <option value="monthly">Monthly</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-md-6 mb-3">
+                                                            <label for="rentalAmount" class="form-label">Rental Amount</label>
                                                             <div class="input-group">
                                                                 <input type="number" class="form-control" id="rentalAmount" required>
                                                                 <span class="input-group-text">AED</span>
                                                             </div>
+                                                            <div class="form-text">According to selected rental period type</div>
+                                                        </div>
+                                                        <div class="col-md-6 mb-3">
+                                                            <label for="rentalDays" class="form-label">Rental Period</label>
+                                                            <input type="number" class="form-control" id="rentalDays" required>
                                                         </div>
                                                     </div>
                                                     <div class="row">
-                                                        <div class="col-md-6 mb-3">
-                                                            <label for="rentalDays" class="form-label">Rental Days</label>
-                                                            <input type="number" class="form-control" id="rentalDays" required>
-                                                        </div>
                                                         <div class="col-md-6 mb-3">
                                                             <label for="invoiceCode" class="form-label">Invoice Code</label>
                                                             <input type="text" class="form-control" id="invoiceCode">
                                                         </div>
-                                                    </div>
-                                                    <div class="row">
                                                         <div class="col-md-6 mb-3">
                                                             <label for="rentalStartDate" class="form-label">Rental Start Date</label>
                                                             <input type="date" class="form-control" id="rentalStartDate" required>
                                                         </div>
+                                                    </div>
+                                                    <div class="row">
                                                         <div class="col-md-6 mb-3">
                                                             <label for="rentalEndDate" class="form-label">Rental End Date</label>
                                                             <input type="date" class="form-control" id="rentalEndDate" required>
                                                         </div>
-                                                    </div>
-                                                    <div class="row">
                                                         <div class="col-md-6 mb-3">
                                                             <label for="advancePayment" class="form-label">Advance Payment (Optional)</label>
                                                             <div class="input-group">
@@ -835,6 +861,7 @@
                                                             <th>Start Date</th>
                                                             <th>End Date</th>
                                                             <th>Amount</th>
+                                                            <th>Period Type</th>
                                                             <th>Status</th>
                                                             <th>Actions</th>
                                                         </tr>
@@ -921,8 +948,9 @@
                                                         <tr>
                                                             <th>Rental Date</th>
                                                             <th>Return Date</th>
-                                                            <th>Rental Days</th>
-                                                            <th>Daily Rate</th>
+                                                            <th>Rental Period</th>
+                                                            <th>Period Type</th>
+                                                            <th>Rate</th>
                                                             <th>Total Amount</th>
                                                             <th>Advance Payment</th>
                                                             <th>Remaining Balance</th>
@@ -1340,8 +1368,9 @@
                                                     <th>Vehicle Name</th>
                                                     <th>Rental Date</th>
                                                     <th>Return Date</th>
-                                                    <th>Rental Days</th>
-                                                    <th>Rental Amount (per day)</th>
+                                                    <th>Rental Period</th>
+                                                    <th>Period Type</th>
+                                                    <th>Rental Amount</th>
                                                     <th>Total Amount</th>
                                                     <th>Advance Payment</th>
                                                     <th>Total Payment</th>
@@ -1354,7 +1383,7 @@
                                             </tbody>
                                             <tfoot>
                                                 <tr class="table-primary">
-                                                    <td colspan="5" class="text-end"><strong>Totals:</strong></td>
+                                                    <td colspan="6" class="text-end"><strong>Totals:</strong></td>
                                                     <td><strong id="totalRentalAmount">0 AED</strong></td>
                                                     <td><strong id="totalAdvancePayment">0 AED</strong></td>
                                                     <td><strong id="totalPayment">0 AED</strong></td>
@@ -1792,7 +1821,8 @@
             const today = new Date().toISOString().split('T')[0];
             const dateInputs = [
                 'returnDate', 'maintenanceDate', 'paymentDate', 'fineDate', 
-                'rentalStartDate', 'rentalEndDate', 'reportStartDate', 'reportEndDate'
+                'rentalStartDate', 'rentalEndDate', 'reportStartDate', 'reportEndDate',
+                'customerDateOfBirth'
             ];
             
             dateInputs.forEach(id => {
@@ -1803,6 +1833,13 @@
                         const endDate = new Date();
                         endDate.setDate(endDate.getDate() + 7);
                         element.value = endDate.toISOString().split('T')[0];
+                    } else if (id === 'customerDateOfBirth') {
+                        // Set default date of birth to 25 years ago
+                        const dob = new Date();
+                        dob.setFullYear(dob.getFullYear() - 25);
+                        element.value = dob.toISOString().split('T')[0];
+                        // Calculate and display age
+                        calculateAndDisplayAge(dob.toISOString().split('T')[0]);
                     } else {
                         element.value = today;
                     }
@@ -1823,6 +1860,30 @@
             
             // Load backup history
             loadBackupHistory();
+        }
+
+        // Calculate and display age from date of birth
+        function calculateAndDisplayAge(dateOfBirth) {
+            const ageText = document.getElementById('customerAgeText');
+            if (ageText && dateOfBirth) {
+                const age = calculateAge(dateOfBirth);
+                ageText.textContent = `Age: ${age} years`;
+                ageText.style.color = age < 18 ? 'red' : 'green';
+            }
+        }
+
+        // Calculate age from date of birth
+        function calculateAge(dateOfBirth) {
+            const today = new Date();
+            const birthDate = new Date(dateOfBirth);
+            let age = today.getFullYear() - birthDate.getFullYear();
+            const monthDiff = today.getMonth() - birthDate.getMonth();
+            
+            if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+                age--;
+            }
+            
+            return age;
         }
 
         // Apply system settings to UI
@@ -1891,6 +1952,21 @@
             // Add user form
             document.getElementById('addUserForm').addEventListener('submit', handleAddUser);
             
+            // Date of birth change listener
+            document.getElementById('customerDateOfBirth').addEventListener('change', function() {
+                calculateAndDisplayAge(this.value);
+            });
+            
+            // Rental period type change listener
+            document.getElementById('rentalPeriodType').addEventListener('change', function() {
+                updateRentalAmountByPeriodType();
+            });
+            
+            // Vehicle selection change listener for rental
+            document.getElementById('rentalVehicle').addEventListener('input', function() {
+                updateRentalAmountByPeriodType();
+            });
+            
             // Search functionality
             document.getElementById('vehicleSearchBtn').addEventListener('click', searchVehicles);
             document.getElementById('customerSearchBtn').addEventListener('click', searchCustomers);
@@ -1928,6 +2004,29 @@
             
             // Add event listeners for view and delete buttons
             setupViewDeleteEventListeners();
+        }
+
+        // Update rental amount based on selected period type
+        function updateRentalAmountByPeriodType() {
+            const vehicleName = document.getElementById('rentalVehicle').value;
+            const periodType = document.getElementById('rentalPeriodType').value;
+            const vehicle = systemData.vehicles.find(v => v.name === vehicleName);
+            
+            if (vehicle) {
+                let rentalAmount = 0;
+                switch(periodType) {
+                    case 'daily':
+                        rentalAmount = vehicle.rentalPriceDaily;
+                        break;
+                    case 'weekly':
+                        rentalAmount = vehicle.rentalPriceWeekly;
+                        break;
+                    case 'monthly':
+                        rentalAmount = vehicle.rentalPriceMonthly;
+                        break;
+                }
+                document.getElementById('rentalAmount').value = rentalAmount;
+            }
         }
 
         // Setup delete event listeners
@@ -2121,7 +2220,9 @@
                 plate: document.getElementById('vehiclePlate').value,
                 vin: document.getElementById('vehicleVin').value,
                 odometer: parseInt(document.getElementById('vehicleOdometer').value),
-                rentalPrice: parseInt(document.getElementById('vehicleRentalPrice').value),
+                rentalPriceDaily: parseInt(document.getElementById('vehicleRentalPriceDaily').value),
+                rentalPriceWeekly: parseInt(document.getElementById('vehicleRentalPriceWeekly').value),
+                rentalPriceMonthly: parseInt(document.getElementById('vehicleRentalPriceMonthly').value),
                 status: 'available',
                 image: null,
                 created: new Date().toISOString()
@@ -2164,7 +2265,7 @@
                 customer = {
                     id: generateId(),
                     fullName: document.getElementById('customerFullName').value,
-                    age: parseInt(document.getElementById('customerAge').value),
+                    dateOfBirth: document.getElementById('customerDateOfBirth').value,
                     idNumber: document.getElementById('customerId').value,
                     nationality: document.getElementById('customerNationality').value,
                     contact: document.getElementById('customerContact').value,
@@ -2172,6 +2273,9 @@
                     guaranteeDoc: null,
                     created: new Date().toISOString()
                 };
+                
+                // Calculate age
+                customer.age = calculateAge(customer.dateOfBirth);
                 
                 // Handle document upload
                 const docInput = document.getElementById('guaranteeDoc');
@@ -2205,6 +2309,11 @@
                 return;
             }
             
+            // Get rental period type and amount
+            const periodType = document.getElementById('rentalPeriodType').value;
+            const rentalAmount = parseInt(document.getElementById('rentalAmount').value);
+            const rentalDays = parseInt(document.getElementById('rentalDays').value);
+            
             // Create rental
             const rental = {
                 id: generateId(),
@@ -2213,8 +2322,9 @@
                 vehicleId: vehicle.id,
                 startDate: document.getElementById('rentalStartDate').value,
                 endDate: document.getElementById('rentalEndDate').value,
-                rentalDays: parseInt(document.getElementById('rentalDays').value),
-                rentalAmount: parseInt(document.getElementById('rentalAmount').value),
+                rentalDays: rentalDays,
+                rentalAmount: rentalAmount,
+                rentalPeriodType: periodType,
                 advancePayment: parseInt(document.getElementById('advancePayment').value) || 0,
                 status: 'active',
                 created: new Date().toISOString()
@@ -2741,7 +2851,9 @@
             document.getElementById('vehiclePlate').value = vehicle.plate;
             document.getElementById('vehicleVin').value = vehicle.vin;
             document.getElementById('vehicleOdometer').value = vehicle.odometer;
-            document.getElementById('vehicleRentalPrice').value = vehicle.rentalPrice;
+            document.getElementById('vehicleRentalPriceDaily').value = vehicle.rentalPriceDaily;
+            document.getElementById('vehicleRentalPriceWeekly').value = vehicle.rentalPriceWeekly;
+            document.getElementById('vehicleRentalPriceMonthly').value = vehicle.rentalPriceMonthly;
             
             // Switch to add vehicle tab
             document.querySelector('[href="#addVehicle"]').click();
@@ -2756,7 +2868,8 @@
             
             // Populate form with customer data
             document.getElementById('customerFullName').value = customer.fullName;
-            document.getElementById('customerAge').value = customer.age;
+            document.getElementById('customerDateOfBirth').value = customer.dateOfBirth;
+            calculateAndDisplayAge(customer.dateOfBirth);
             document.getElementById('customerId').value = customer.idNumber;
             document.getElementById('customerNationality').value = customer.nationality;
             document.getElementById('customerContact').value = customer.contact;
@@ -2801,13 +2914,13 @@
             }
         }
 
-        // Print invoice - Updated Version
+        // Print invoice - Updated Version with period type
         function printInvoice(rental, customer, vehicle) {
             // Update print content
             document.getElementById('printInvoiceCode').textContent = rental.invoiceCode;
             document.getElementById('printInvoiceDate').textContent = formatDate(new Date());
             document.getElementById('printCustomerName').textContent = customer.fullName;
-            document.getElementById('printCustomerAge').textContent = customer.age;
+            document.getElementById('printCustomerAge').textContent = customer.age || calculateAge(customer.dateOfBirth);
             document.getElementById('printCustomerAddress').textContent = customer.address;
             document.getElementById('printCustomerId').textContent = customer.idNumber;
             document.getElementById('printVehicleName').textContent = vehicle.name;
@@ -2832,8 +2945,9 @@
                 <tr>
                     <td>${formatDate(rental.startDate)}</td>
                     <td>${formatDate(rental.endDate)}</td>
-                    <td>${rental.rentalDays}</td>
-                    <td>${rental.rentalAmount} ${systemData.settings.currency}</td>
+                    <td>${rental.rentalDays} ${getPeriodTypeLabel(rental.rentalPeriodType)}</td>
+                    <td>${rental.rentalPeriodType}</td>
+                    <td>${rental.rentalAmount} ${systemData.settings.currency}/${getPeriodTypeShort(rental.rentalPeriodType)}</td>
                     <td>${totalAmount} ${systemData.settings.currency}</td>
                     <td>${advancePayment} ${systemData.settings.currency}</td>
                     <td>${remainingBalance} ${systemData.settings.currency}</td>
@@ -2859,6 +2973,26 @@
             
             // Print the invoice
             window.print();
+        }
+
+        // Helper function to get period type label
+        function getPeriodTypeLabel(periodType) {
+            switch(periodType) {
+                case 'daily': return 'days';
+                case 'weekly': return 'weeks';
+                case 'monthly': return 'months';
+                default: return 'days';
+            }
+        }
+
+        // Helper function to get period type short label
+        function getPeriodTypeShort(periodType) {
+            switch(periodType) {
+                case 'daily': return 'day';
+                case 'weekly': return 'week';
+                case 'monthly': return 'month';
+                default: return 'day';
+            }
         }
 
         // View Rental Invoice Details
@@ -2911,7 +3045,7 @@
                                         <h5>Customer Information</h5>
                                         <table class="table table-bordered table-sm">
                                             <tr><td><strong>Name:</strong></td><td>${customer.fullName}</td></tr>
-                                            <tr><td><strong>Age:</strong></td><td>${customer.age}</td></tr>
+                                            <tr><td><strong>Age:</strong></td><td>${customer.age || calculateAge(customer.dateOfBirth)}</td></tr>
                                             <tr><td><strong>ID:</strong></td><td>${customer.idNumber}</td></tr>
                                             <tr><td><strong>Contact:</strong></td><td>${customer.contact}</td></tr>
                                             <tr><td><strong>Address:</strong></td><td>${customer.address}</td></tr>
@@ -2924,7 +3058,8 @@
                                             <tr><td><strong>Model:</strong></td><td>${vehicle.model}</td></tr>
                                             <tr><td><strong>Color:</strong></td><td>${vehicle.color}</td></tr>
                                             <tr><td><strong>Plate:</strong></td><td>${vehicle.plate}</td></tr>
-                                            <tr><td><strong>Daily Rate:</strong></td><td>${rental.rentalAmount} ${systemData.settings.currency}</td></tr>
+                                            <tr><td><strong>Period Type:</strong></td><td>${rental.rentalPeriodType}</td></tr>
+                                            <tr><td><strong>Rate:</strong></td><td>${rental.rentalAmount} ${systemData.settings.currency}/${getPeriodTypeShort(rental.rentalPeriodType)}</td></tr>
                                         </table>
                                         ${vehicle.image ? 
                                             `<img src="${vehicle.image}" class="img-fluid mt-2" style="max-height: 100px;" alt="${vehicle.name}">` : 
@@ -2941,8 +3076,9 @@
                                                 <tr>
                                                     <th>Start Date</th>
                                                     <th>End Date</th>
-                                                    <th>Days</th>
-                                                    <th>Daily Rate</th>
+                                                    <th>Period</th>
+                                                    <th>Period Type</th>
+                                                    <th>Rate</th>
                                                     <th>Total Amount</th>
                                                     <th>Advance Payment</th>
                                                     <th>Remaining Balance</th>
@@ -2953,7 +3089,8 @@
                                                     <td>${formatDate(rental.startDate)}</td>
                                                     <td>${formatDate(rental.endDate)}</td>
                                                     <td>${rental.rentalDays}</td>
-                                                    <td>${rental.rentalAmount} ${systemData.settings.currency}</td>
+                                                    <td>${rental.rentalPeriodType}</td>
+                                                    <td>${rental.rentalAmount} ${systemData.settings.currency}/${getPeriodTypeShort(rental.rentalPeriodType)}</td>
                                                     <td>${totalAmount} ${systemData.settings.currency}</td>
                                                     <td>${advancePayment} ${systemData.settings.currency}</td>
                                                     <td>${remainingBalance} ${systemData.settings.currency}</td>
@@ -3061,7 +3198,8 @@
                                             <tr><td><strong>Invoice Code:</strong></td><td>${rental.invoiceCode}</td></tr>
                                             <tr><td><strong>Vehicle:</strong></td><td>${vehicle.name}</td></tr>
                                             <tr><td><strong>Customer:</strong></td><td>${customer.fullName}</td></tr>
-                                            <tr><td><strong>Rental Period:</strong></td><td>${formatDate(rental.startDate)} to ${formatDate(rental.endDate)}</td></tr>
+                                            <tr><td><strong>Rental Period:</strong></td><td>${formatDate(rental.startDate)} to ${formatDate(rental.endDate)} (${rental.rentalDays} ${getPeriodTypeLabel(rental.rentalPeriodType)})</td></tr>
+                                            <tr><td><strong>Period Type:</strong></td><td>${rental.rentalPeriodType}</td></tr>
                                         </table>
                                     </div>
                                     <div class="col-md-6">
@@ -3333,7 +3471,7 @@
                                         <h5>Customer Information</h5>
                                         <table class="table table-bordered table-sm">
                                             <tr><td><strong>Name:</strong></td><td>${customer.fullName}</td></tr>
-                                            <tr><td><strong>Age:</strong></td><td>${customer.age}</td></tr>
+                                            <tr><td><strong>Age:</strong></td><td>${customer.age || calculateAge(customer.dateOfBirth)}</td></tr>
                                             <tr><td><strong>ID:</strong></td><td>${customer.idNumber}</td></tr>
                                             <tr><td><strong>Contact:</strong></td><td>${customer.contact}</td></tr>
                                         </table>
@@ -3345,6 +3483,8 @@
                                             <tr><td><strong>Model:</strong></td><td>${vehicle.model}</td></tr>
                                             <tr><td><strong>Color:</strong></td><td>${vehicle.color}</td></tr>
                                             <tr><td><strong>Plate:</strong></td><td>${vehicle.plate}</td></tr>
+                                            <tr><td><strong>Period Type:</strong></td><td>${rental.rentalPeriodType}</td></tr>
+                                            <tr><td><strong>Rate:</strong></td><td>${rental.rentalAmount} ${systemData.settings.currency}/${getPeriodTypeShort(rental.rentalPeriodType)}</td></tr>
                                         </table>
                                     </div>
                                 </div>
@@ -3356,13 +3496,13 @@
                                             <tr><td><strong>Invoice Code:</strong></td><td>${rental.invoiceCode}</td></tr>
                                             <tr><td><strong>Start Date:</strong></td><td>${formatDate(rental.startDate)}</td></tr>
                                             <tr><td><strong>End Date:</strong></td><td>${formatDate(rental.endDate)}</td></tr>
-                                            <tr><td><strong>Rental Days:</strong></td><td>${rental.rentalDays}</td></tr>
+                                            <tr><td><strong>Rental Period:</strong></td><td>${rental.rentalDays} ${getPeriodTypeLabel(rental.rentalPeriodType)}</td></tr>
                                         </table>
                                     </div>
                                     <div class="col-md-6">
                                         <h5>Payment Information</h5>
                                         <table class="table table-bordered table-sm">
-                                            <tr><td><strong>Daily Rate:</strong></td><td>${rental.rentalAmount} ${systemData.settings.currency}</td></tr>
+                                            <tr><td><strong>Rate:</strong></td><td>${rental.rentalAmount} ${systemData.settings.currency}/${getPeriodTypeShort(rental.rentalPeriodType)}</td></tr>
                                             <tr><td><strong>Total Amount:</strong></td><td>${rental.rentalAmount * rental.rentalDays} ${systemData.settings.currency}</td></tr>
                                             <tr><td><strong>Advance Payment:</strong></td><td>${rental.advancePayment} ${systemData.settings.currency}</td></tr>
                                             <tr><td><strong>Remaining Balance:</strong></td><td class="fw-bold">${(rental.rentalAmount * rental.rentalDays) - rental.advancePayment} ${systemData.settings.currency}</td></tr>
@@ -3527,7 +3667,8 @@
                     <td>${formatDate(rental.startDate)}</td>
                     <td>${rental.returnDate ? formatDate(rental.returnDate) : 'Not Returned'}</td>
                     <td>${rental.rentalDays}</td>
-                    <td>${formatCurrency(rental.rentalAmount)}</td>
+                    <td>${rental.rentalPeriodType}</td>
+                    <td>${formatCurrency(rental.rentalAmount)}/${getPeriodTypeShort(rental.rentalPeriodType)}</td>
                     <td>${formatCurrency(totalAmount)}</td>
                     <td>${formatCurrency(rental.advancePayment)}</td>
                     <td>${formatCurrency(totalPaid)}</td>
@@ -3579,7 +3720,7 @@
             let customerRentals = systemData.rentals.filter(r => r.customerId === customer.id);
             
             // Create CSV content
-            let csvContent = "Vehicle Name,Rental Date,Return Date,Rental Days,Rental Amount (per day),Total Amount,Advance Payment,Total Payment,Total Debt,Status\n";
+            let csvContent = "Vehicle Name,Rental Date,Return Date,Rental Period,Period Type,Rental Amount,Total Amount,Advance Payment,Total Payment,Total Debt,Status\n";
             
             customerRentals.forEach(rental => {
                 const vehicle = systemData.vehicles.find(v => v.id === rental.vehicleId);
@@ -3590,7 +3731,7 @@
                 const totalAmount = rental.rentalAmount * rental.rentalDays;
                 const remainingDebt = totalAmount - rental.advancePayment - totalPaid;
                 
-                csvContent += `"${vehicleName}","${formatDate(rental.startDate)}","${returnDate}","${rental.rentalDays}","${rental.rentalAmount}","${totalAmount}","${rental.advancePayment}","${totalPaid}","${remainingDebt}","${rental.status}"\n`;
+                csvContent += `"${vehicleName}","${formatDate(rental.startDate)}","${returnDate}","${rental.rentalDays}","${rental.rentalPeriodType}","${rental.rentalAmount} ${systemData.settings.currency}/${getPeriodTypeShort(rental.rentalPeriodType)}","${totalAmount}","${rental.advancePayment}","${totalPaid}","${remainingDebt}","${rental.status}"\n`;
             });
             
             // Create and download CSV file
@@ -4059,7 +4200,8 @@
                         div.textContent = vehicle.name;
                         div.addEventListener('click', function() {
                             input.value = vehicle.name;
-                            document.getElementById('rentalAmount').value = vehicle.rentalPrice;
+                            // Update rental amount based on current period type
+                            updateRentalAmountByPeriodType();
                             suggestionList.style.display = 'none';
                         });
                         suggestionList.appendChild(div);
@@ -4287,7 +4429,7 @@
             });
         }
 
-        // Load vehicle table
+        // Load vehicle table - Updated with rental prices
         function loadVehicleTable() {
             const vehicleTableBody = document.getElementById('vehicleTableBody');
             if (!vehicleTableBody) return;
@@ -4308,7 +4450,11 @@
                     <td>${vehicle.color}</td>
                     <td>${vehicle.plate}</td>
                     <td>${vehicle.odometer}</td>
-                    <td>${vehicle.rentalPrice} ${systemData.settings.currency}</td>
+                    <td>
+                        <small>Daily: ${vehicle.rentalPriceDaily} ${systemData.settings.currency}</small><br>
+                        <small>Weekly: ${vehicle.rentalPriceWeekly} ${systemData.settings.currency}</small><br>
+                        <small>Monthly: ${vehicle.rentalPriceMonthly} ${systemData.settings.currency}</small>
+                    </td>
                     <td>
                         <span class="badge ${vehicle.status === 'available' ? 'bg-success' : 
                                           vehicle.status === 'rented' ? 'bg-primary' : 'bg-warning'}">
@@ -4339,7 +4485,7 @@
             });
         }
 
-        // Load customer table
+        // Load customer table - Updated with calculated age
         function loadCustomerTable() {
             const customerTableBody = document.getElementById('customerTableBody');
             if (!customerTableBody) return;
@@ -4347,6 +4493,11 @@
             customerTableBody.innerHTML = '';
             
             systemData.customers.forEach(customer => {
+                // Calculate age if not already calculated
+                if (!customer.age && customer.dateOfBirth) {
+                    customer.age = calculateAge(customer.dateOfBirth);
+                }
+                
                 // Calculate total debt
                 const customerRentals = systemData.rentals.filter(r => r.customerId === customer.id);
                 const customerFines = systemData.finesTaxes.filter(f => f.customerId === customer.id && f.status === 'unpaid');
@@ -4362,7 +4513,7 @@
                 const row = document.createElement('tr');
                 row.innerHTML = `
                     <td>${customer.fullName}</td>
-                    <td>${customer.age}</td>
+                    <td>${customer.age || 'N/A'}</td>
                     <td>${customer.idNumber}</td>
                     <td>${customer.nationality}</td>
                     <td>${customer.contact}</td>
@@ -4388,7 +4539,7 @@
             });
         }
 
-        // Load rental table
+        // Load rental table - Updated with period type
         function loadRentalTable() {
             const rentalTableBody = document.getElementById('rentalTableBody');
             if (!rentalTableBody) return;
@@ -4408,6 +4559,7 @@
                         <td>${formatDate(rental.startDate)}</td>
                         <td>${formatDate(rental.endDate)}</td>
                         <td>${rental.rentalAmount * rental.rentalDays} ${systemData.settings.currency}</td>
+                        <td>${rental.rentalPeriodType}</td>
                         <td>
                             <span class="badge ${rental.status === 'active' ? 'bg-success' : 'bg-secondary'}">
                                 ${rental.status}
@@ -4679,7 +4831,7 @@
             showAlert('Payment data loaded for editing. Update and submit to save changes.', 'info');
         }
 
-        // View vehicle details
+        // View vehicle details - Updated with rental prices
         function viewVehicleDetails(vehicleId) {
             const vehicle = systemData.vehicles.find(v => v.id === vehicleId);
             if (!vehicle) return;
@@ -4717,8 +4869,16 @@
                                 <td>${vehicle.odometer}</td>
                             </tr>
                             <tr>
-                                <th>Rental Price</th>
-                                <td>${vehicle.rentalPrice} ${systemData.settings.currency} / day</td>
+                                <th>Daily Rental Price</th>
+                                <td>${vehicle.rentalPriceDaily} ${systemData.settings.currency}</td>
+                            </tr>
+                            <tr>
+                                <th>Weekly Rental Price</th>
+                                <td>${vehicle.rentalPriceWeekly} ${systemData.settings.currency}</td>
+                            </tr>
+                            <tr>
+                                <th>Monthly Rental Price</th>
+                                <td>${vehicle.rentalPriceMonthly} ${systemData.settings.currency}</td>
                             </tr>
                             <tr>
                                 <th>Status</th>
@@ -4737,7 +4897,7 @@
             document.getElementById('vehicleDetailsCard').style.display = 'block';
         }
 
-        // View customer details
+        // View customer details - Updated with calculated age
         function viewCustomerDetails(customerId) {
             const customer = systemData.customers.find(c => c.id === customerId);
             if (!customer) return;
@@ -4753,6 +4913,11 @@
             const totalSpent = customerRentals.reduce((sum, rental) => 
                 sum + (rental.rentalAmount * rental.rentalDays), 0);
             
+            // Calculate age if not already calculated
+            if (!customer.age && customer.dateOfBirth) {
+                customer.age = calculateAge(customer.dateOfBirth);
+            }
+            
             const detailsContent = document.getElementById('customerDetailsContent');
             detailsContent.innerHTML = `
                 <div class="row">
@@ -4760,8 +4925,12 @@
                         <h4>${customer.fullName}</h4>
                         <table class="table table-bordered">
                             <tr>
+                                <th>Date of Birth</th>
+                                <td>${formatDate(customer.dateOfBirth)}</td>
+                            </tr>
+                            <tr>
                                 <th>Age</th>
-                                <td>${customer.age}</td>
+                                <td>${customer.age || 'N/A'}</td>
                             </tr>
                             <tr>
                                 <th>ID Number</th>
