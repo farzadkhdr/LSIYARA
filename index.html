@@ -689,7 +689,7 @@
         </form>
         
         <div class="login-footer">
-            <small class="text-muted">Admin پاسۆردی بنەڕەت: <strong>000000</strong></small>
+            <small class="text-muted">بۆ چوونەژوورەوە ناوی بەکارهێنەر و پاسۆرد داخڵ بکە</small>
             <small class="developer-text">
                 <i class="fas fa-code me-2"></i>Developer System 
                 <span>FARZAD WARTY</span>
@@ -874,7 +874,7 @@
                                                     </div>
                                                     <div class="col-md-6 mb-3">
                                                         <label for="vehicleOdometer" class="form-label">Odometer</label>
-                                                        <input type="number" class="form-control" id="vehicleOdometer" required>
+                                                        <input type="number" step="0.1" class="form-control" id="vehicleOdometer" required>
                                                     </div>
                                                 </div>
                                                 <div class="row">
@@ -903,21 +903,21 @@
                                                     <div class="col-md-4 mb-3">
                                                         <label for="vehicleRentalPriceDaily" class="form-label">Rental Price (per day)</label>
                                                         <div class="input-group">
-                                                            <input type="number" class="form-control" id="vehicleRentalPriceDaily" required>
+                                                            <input type="number" step="0.01" class="form-control" id="vehicleRentalPriceDaily" required>
                                                             <span class="input-group-text">AED</span>
                                                         </div>
                                                     </div>
                                                     <div class="col-md-4 mb-3">
                                                         <label for="vehicleRentalPriceWeekly" class="form-label">Rental Price (weekly)</label>
                                                         <div class="input-group">
-                                                            <input type="number" class="form-control" id="vehicleRentalPriceWeekly" required>
+                                                            <input type="number" step="0.01" class="form-control" id="vehicleRentalPriceWeekly" required>
                                                             <span class="input-group-text">AED</span>
                                                         </div>
                                                     </div>
                                                     <div class="col-md-4 mb-3">
                                                         <label for="vehicleRentalPriceMonthly" class="form-label">Rental Price (monthly)</label>
                                                         <div class="input-group">
-                                                            <input type="number" class="form-control" id="vehicleRentalPriceMonthly" required>
+                                                            <input type="number" step="0.01" class="form-control" id="vehicleRentalPriceMonthly" required>
                                                             <span class="input-group-text">AED</span>
                                                         </div>
                                                     </div>
@@ -1119,7 +1119,7 @@
                                                         <div class="col-md-6 mb-3">
                                                             <label for="rentalAmount" class="form-label">Rental Amount <span class="text-danger">*</span></label>
                                                             <div class="input-group">
-                                                                <input type="number" class="form-control" id="rentalAmount" required>
+                                                                <input type="number" step="0.01" class="form-control" id="rentalAmount" required>
                                                                 <span class="input-group-text">AED</span>
                                                             </div>
                                                             <div class="form-text">According to selected rental period type</div>
@@ -1147,7 +1147,7 @@
                                                         <div class="col-md-6 mb-3">
                                                             <label for="advancePayment" class="form-label">Advance Payment (Optional)</label>
                                                             <div class="input-group">
-                                                                <input type="number" class="form-control" id="advancePayment" value="0">
+                                                                <input type="number" step="0.01" class="form-control" id="advancePayment" value="0">
                                                                 <span class="input-group-text">AED</span>
                                                             </div>
                                                         </div>
@@ -1464,7 +1464,7 @@
                                             <div class="col-md-6 mb-3">
                                                 <label for="maintenanceCost" class="form-label">Cost</label>
                                                 <div class="input-group">
-                                                    <input type="number" class="form-control" id="maintenanceCost" required>
+                                                    <input type="number" step="0.01" class="form-control" id="maintenanceCost" required>
                                                     <span class="input-group-text">AED</span>
                                                 </div>
                                             </div>
@@ -1580,7 +1580,7 @@
                                                 <div class="col-md-3 mb-3">
                                                     <label for="paymentAmount" class="form-label">Amount</label>
                                                     <div class="input-group">
-                                                        <input type="number" class="form-control" id="paymentAmount" required>
+                                                        <input type="number" step="0.01" class="form-control" id="paymentAmount" required>
                                                         <span class="input-group-text">AED</span>
                                                     </div>
                                                 </div>
@@ -1642,7 +1642,7 @@
                                             <div class="col-md-6 mb-3">
                                                 <label for="fineAmount" class="form-label">Amount</label>
                                                 <div class="input-group">
-                                                    <input type="number" class="form-control" id="fineAmount" required>
+                                                    <input type="number" step="0.01" class="form-control" id="fineAmount" required>
                                                     <span class="input-group-text">AED</span>
                                                 </div>
                                             </div>
@@ -2670,10 +2670,10 @@
                 color: document.getElementById('vehicleColor').value,
                 plate: document.getElementById('vehiclePlate').value,
                 vin: document.getElementById('vehicleVin').value,
-                odometer: parseInt(document.getElementById('vehicleOdometer').value),
-                rentalPriceDaily: parseInt(document.getElementById('vehicleRentalPriceDaily').value),
-                rentalPriceWeekly: parseInt(document.getElementById('vehicleRentalPriceWeekly').value),
-                rentalPriceMonthly: parseInt(document.getElementById('vehicleRentalPriceMonthly').value),
+                odometer: parseFloat(document.getElementById('vehicleOdometer').value),
+                rentalPriceDaily: parseFloat(document.getElementById('vehicleRentalPriceDaily').value),
+                rentalPriceWeekly: parseFloat(document.getElementById('vehicleRentalPriceWeekly').value),
+                rentalPriceMonthly: parseFloat(document.getElementById('vehicleRentalPriceMonthly').value),
                 status: 'available',
                 image: null,
                 created: new Date().toISOString()
@@ -2743,7 +2743,7 @@
             }
             
             // 4. پشکنین ئایا نرخی کرێ دیاریکراوە
-            if (!rentalAmount || isNaN(rentalAmount) || parseInt(rentalAmount) <= 0) {
+            if (!rentalAmount || isNaN(parseFloat(rentalAmount)) || parseFloat(rentalAmount) <= 0) {
                 showAlert('نرخی کرێیەکی دروست داخڵ بکە!', 'danger');
                 highlightErrorField('rentalAmount');
                 hasError = true;
@@ -2909,7 +2909,7 @@
             
             // Get rental period type and amount
             const periodType = document.getElementById('rentalPeriodType').value;
-            const rentalAmount = parseInt(document.getElementById('rentalAmount').value);
+            const rentalAmount = parseFloat(document.getElementById('rentalAmount').value);
             const rentalDays = parseInt(document.getElementById('rentalDays').value);
             
             // Create rental
@@ -2923,7 +2923,7 @@
                 rentalDays: rentalDays,
                 rentalAmount: rentalAmount,
                 rentalPeriodType: periodType,
-                advancePayment: parseInt(document.getElementById('advancePayment').value) || 0,
+                advancePayment: parseFloat(document.getElementById('advancePayment').value) || 0,
                 status: 'active',
                 created: new Date().toISOString()
             };
@@ -3006,7 +3006,7 @@
                 vehicleId: vehicle.id,
                 type: document.getElementById('maintenanceType').value,
                 date: document.getElementById('maintenanceDate').value,
-                cost: parseInt(document.getElementById('maintenanceCost').value),
+                cost: parseFloat(document.getElementById('maintenanceCost').value),
                 description: document.getElementById('maintenanceDescription').value,
                 created: new Date().toISOString()
             };
@@ -3035,7 +3035,7 @@
             const payment = {
                 id: generateId(),
                 customerId: customer.id,
-                amount: parseInt(document.getElementById('paymentAmount').value),
+                amount: parseFloat(document.getElementById('paymentAmount').value),
                 date: document.getElementById('paymentDate').value,
                 type: document.getElementById('paymentType').value,
                 description: document.getElementById('paymentDescription').value,
@@ -3196,7 +3196,7 @@
                 id: generateId(),
                 customerId: customer.id,
                 type: document.getElementById('fineType').value,
-                amount: parseInt(document.getElementById('fineAmount').value),
+                amount: parseFloat(document.getElementById('fineAmount').value),
                 date: document.getElementById('fineDate').value,
                 description: document.getElementById('fineDescription').value,
                 status: 'unpaid',
@@ -5426,7 +5426,7 @@
                 e.preventDefault();
                 
                 // Update payment
-                payment.amount = parseInt(document.getElementById('paymentAmount').value);
+                payment.amount = parseFloat(document.getElementById('paymentAmount').value);
                 payment.date = document.getElementById('paymentDate').value;
                 payment.type = document.getElementById('paymentType').value;
                 payment.description = document.getElementById('paymentDescription').value;
