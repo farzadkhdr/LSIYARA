@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-  <title>جەژنت پیرۆز 💖 رەیان</title>
+  <title>جەژنت پیرۆز 💖 ئاوات</title>
   <style>
     * {
       margin: 0;
@@ -24,6 +24,7 @@
       overflow-x: hidden;
     }
 
+    /* ڕازاندنەوەی پێکەوە */
     .hearts-container {
       position: fixed;
       top: 0;
@@ -66,7 +67,7 @@
       border: 1px solid rgba(220, 160, 140, 0.45);
       border-radius: 48px;
       padding: 35px 30px 45px;
-      max-width: 700px;
+      max-width: 750px;
       width: 100%;
       box-shadow: 0 35px 70px rgba(0, 0, 0, 0.7), 0 0 50px rgba(210, 120, 100, 0.4);
       text-align: center;
@@ -74,6 +75,7 @@
       transition: all 0.4s ease;
     }
 
+    /* کۆنترۆڵی موزیک */
     .music-control {
       position: absolute;
       top: 20px;
@@ -117,7 +119,7 @@
 
     .message-area {
       font-size: 1.7rem;
-      line-height: 2.4rem;
+      line-height: 2.5rem;
       min-height: 180px;
       white-space: pre-wrap;
       word-break: break-word;
@@ -202,28 +204,6 @@
       color: white;
     }
 
-    .loading-indicator {
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      z-index: 100;
-      color: #ffb7a7;
-      font-size: 1.4rem;
-      background: rgba(0,0,0,0.7);
-      padding: 15px 25px;
-      border-radius: 30px;
-      backdrop-filter: blur(10px);
-      animation: fadeInOut 2s ease-in-out;
-    }
-
-    @keyframes fadeInOut {
-      0% { opacity: 0; }
-      20% { opacity: 1; }
-      80% { opacity: 1; }
-      100% { opacity: 0; }
-    }
-
     @media (max-width: 500px) {
       .message-area {
         font-size: 1.3rem;
@@ -240,23 +220,26 @@
   </style>
 </head>
 <body>
+  <!-- دڵەکانی باکگراوند بۆ ئاشقانەبوون -->
   <div class="hearts-container" id="heartsContainer"></div>
-  
-  <!-- ئیندیکەیتەری بارکردن -->
-  <div class="loading-indicator" id="loadingIndicator">🎵 ئامادەکردنی موزیک...</div>
+
+  <!-- یوتیوب پلەیەری شاراوە بۆ گۆرانی -->
+  <div id="youtube-player" style="position: fixed; bottom: -200px; left: -200px; width: 1px; height: 1px; opacity: 0; pointer-events: none;"></div>
 
   <div class="card">
+    <!-- کۆنترۆڵی موزیک -->
     <div class="music-control">
-      <button class="music-btn" id="musicToggle" title="ڕاگرتن/دەستپێکردنی موزیک">🔊</button>
-      <input type="range" class="volume-slider" id="volumeSlider" min="0" max="100" value="40" title="ڕێکخستنی دەنگ">
+      <button class="music-btn" id="musicToggle" title="ڕاگرتن/دەستپێکردنی گۆرانی">🔊</button>
+      <input type="range" class="volume-slider" id="volumeSlider" min="0" max="100" value="35" title="ڕێکخستنی دەنگ">
     </div>
 
     <div class="message-area" id="typedMessage">
       <span id="textContainer"></span><span class="cursor" id="cursorSpan"></span>
     </div>
 
+    <!-- دەقی تایبەت کە دوای تەواوبوون دەردەکەوێت -->
     <div class="special-dedication" id="specialText">
-      رەیانم شەکرە سێوەکەم مەرگ جوانی من
+      دکتۆرە ئاوات ئەلماسی خاوێن و خاون دلێکی پاک و میهرەبان
     </div>
 
     <button class="reset-btn" id="replayBtn">🔄 دووبارە بینینەوەی نامەکە</button>
@@ -264,7 +247,8 @@
 
   <script>
     (function() {
-      const fullMessage = "چەژنت پیرۆز کەس و کارم ماڵەکەم رەیان جیان هیوادارم رۆژێک دابێت جەژن لەگەڵ من بەڕێبکەی و بەیانی کە لەخەو هەستام ماچی نیوچەوانت بکەم و پێت بلێم جەژن پیرۆز هاوسەرەکەم من نازانم قسەی نەستەلەق بکەم ئەمەوێت ئەوەی لە دڵمە ئەوانت پێ بڵێم داوا کارم لە خوای گەورەو میهرەبان ئە جەژنەت لۆ بکاتە هەزار جەژن بتگەینتە هەرچی خۆزگە و هیوای لە دڵتە پیكمان شاد بکات";
+      // نامە ڕاستەقینەکەت
+      const fullMessage = "چەژنت پیرۆز  ئاوات جیان یارەبی خوای گەورە لۆمنت سەلامەت بکات پشت پەنام هەموو دەمێ لە پشتم بووی خۆشی و ناخۆشی منت بەرێ کردن ئەمنت پێ گەیاند هەتا ئیستا وەک مامۆستا سەیری کەسم نەکردیە بەڵام یەکەم مامۆستای ژیانم ئەتوو بووی فێرە زۆر شتت کردم رەبی خوای گەورە ئاواتی دڵت بینتە دی کەسەکی باشیشت بە نسیب بی فەرۆ هەموو دەمێ لۆتو هەیە قەت قەت لۆ هیچ شتەک دەستبەردارت نابی چەژنت پیرۆز بی هەموو ساڵت جەژن بی کەسەکی گەورەی وەکی توو دەبی فەرشی سۆرم لۆ راخستبا لەوانیە ئەو ژیانە زۆر دەرفەتی نەدابمێ زۆر شت هەیە بکەم لۆت بەڵام بە خوای گەورە کەسەکی لەناو دڵی من چەقیوی پشت پەنام جەژنت پیرۆز جەرگ و دڵی فەرزادی";
       
       const textContainer = document.getElementById('textContainer');
       const cursorSpan = document.getElementById('cursorSpan');
@@ -272,249 +256,150 @@
       const replayBtn = document.getElementById('replayBtn');
       const musicToggle = document.getElementById('musicToggle');
       const volumeSlider = document.getElementById('volumeSlider');
-      const loadingIndicator = document.getElementById('loadingIndicator');
 
       let typingInterval = null;
       let currentIndex = 0;
       let animationActive = false;
 
-      // =============== سیستەمی موزیکی خۆکار ===============
-      let audioContext = null;
-      let musicGainNode = null;
-      let isMusicPlaying = true; // بە شێوەی خۆکارانە چالاکە
-      let musicOscillators = [];
-      let musicInterval = null;
-      let musicStarted = false;
-
-      // فەنکشنی دروستکردنی دەنگی پیانۆی نەرمتر و ڕۆمانتیکتر
-      function createRomanticPianoNote(frequency, startTime, duration, gainNode) {
-        if (!audioContext) return null;
+      // =============== سیستەمی گۆرانی یوتیوب ===============
+      let youtubePlayer = null;
+      let isPlayerReady = false;
+      let playerPlayInterval = null;
+      
+      // ئەم فەنکشنە یوتیوب ئەی پی ئای بار دەکات
+      function loadYouTubeAPI() {
+        // ئەگەر پێشتر بارکرابوو
+        if (window.YT && window.YT.Player) {
+          createYouTubePlayer();
+          return;
+        }
         
-        // ئۆسیلاتۆری سەرەکی بۆ دەنگی پیانۆ
-        const osc1 = audioContext.createOscillator();
-        const osc2 = audioContext.createOscillator();
-        const osc3 = audioContext.createOscillator();
+        // بارکردنی سکریپتی یوتیوب
+        const tag = document.createElement('script');
+        tag.src = 'https://www.youtube.com/iframe_api';
+        const firstScriptTag = document.getElementsByTagName('script')[0];
+        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
         
-        const noteGain = audioContext.createGain();
-        const filter = audioContext.createBiquadFilter();
-        
-        // ڕێکخستنی فیلتەر بۆ دەنگی گەرمتر
-        filter.type = 'lowpass';
-        filter.frequency.value = 800;
-        filter.Q.value = 0.5;
-        
-        // ئۆسیلاتۆری یەکەم - دەنگی سەرەکی
-        osc1.type = 'sine';
-        osc1.frequency.value = frequency;
-        
-        // ئۆسیلاتۆری دووەم - بۆ هارمۆنی
-        osc2.type = 'sine';
-        osc2.frequency.value = frequency * 2;
-        
-        // ئۆسیلاتۆری سێیەم - بۆ قوڵی
-        osc3.type = 'triangle';
-        osc3.frequency.value = frequency * 0.5;
-        
-        // ڕێکخستنی ڤۆڵیومی نۆتەکە بە شێوەی پیانۆ
-        const now = audioContext.currentTime + startTime;
-        noteGain.gain.setValueAtTime(0, now);
-        noteGain.gain.linearRampToValueAtTime(0.15, now + 0.02); // هێرشی خێرا
-        noteGain.gain.linearRampToValueAtTime(0.08, now + 0.1); // دابەزینی سەرەتایی
-        noteGain.gain.setValueAtTime(0.08, now + 0.1);
-        noteGain.gain.linearRampToValueAtTime(0.03, now + duration * 0.7); // بەردەوامی
-        noteGain.gain.linearRampToValueAtTime(0, now + duration); // کۆتایی
-        
-        // پەیوەندیکردنەکان
-        osc1.connect(noteGain);
-        osc2.connect(noteGain);
-        osc3.connect(noteGain);
-        noteGain.connect(filter);
-        filter.connect(gainNode);
-        
-        // دەستپێکردن و ڕاگرتن
-        osc1.start(now);
-        osc2.start(now);
-        osc3.start(now);
-        osc1.stop(now + duration + 0.1);
-        osc2.stop(now + duration + 0.1);
-        osc3.stop(now + duration + 0.1);
-        
-        return [osc1, osc2, osc3];
+        // فەنکشنی گشتی کە یوتیوب بانگی دەکات
+        window.onYouTubeIframeAPIReady = function() {
+          createYouTubePlayer();
+        };
       }
 
-      function createSoftMusic() {
-        if (!audioContext || audioContext.state === 'closed') {
-          audioContext = new (window.AudioContext || window.webkitAudioContext)();
-          musicGainNode = audioContext.createGain();
-          musicGainNode.connect(audioContext.destination);
-          musicGainNode.gain.value = volumeSlider.value / 100 * 0.25;
-        }
+      function createYouTubePlayer() {
+        if (youtubePlayer) return;
         
-        if (audioContext.state === 'suspended') {
-          audioContext.resume().then(() => {
-            console.log('AudioContext resumed automatically');
-          });
-        }
-
-        // پیانۆی ڕۆمانتیک بە نۆتە کوردییەکان
-        const romanticMelody = [
-          // ڕیزبەندی نۆتەکان بە شێوازی کوردی و ڕۆمانتیک
-          261.63, 329.63, 349.23, 392.00, // Do Mi Fa Sol
-          349.23, 329.63, 293.66, 261.63, // Fa Mi Re Do
-          329.63, 349.23, 392.00, 440.00, // Mi Fa Sol La
-          392.00, 349.23, 329.63, 293.66, // Sol Fa Mi Re
-          349.23, 392.00, 440.00, 493.88, // Fa Sol La Si
-          440.00, 392.00, 349.23, 329.63, // La Sol Fa Mi
-          293.66, 329.63, 349.23, 392.00, // Re Mi Fa Sol
-          349.23, 329.63, 293.66, 261.63  // Fa Mi Re Do
-        ];
-
-        // هارمۆنی بۆ قوڵکردنی دەنگ
-        const harmonyNotes = [
-          130.81, 164.81, 174.61, 196.00,
-          174.61, 164.81, 146.83, 130.81,
-          164.81, 174.61, 196.00, 220.00,
-          196.00, 174.61, 164.81, 146.83,
-          174.61, 196.00, 220.00, 246.94,
-          220.00, 196.00, 174.61, 164.81,
-          146.83, 164.81, 174.61, 196.00,
-          174.61, 164.81, 146.83, 130.81
-        ];
-        
-        let noteIndex = 0;
-        
-        function playNextNote() {
-          if (!isMusicPlaying || !audioContext || audioContext.state === 'closed') return;
-          
-          // پاککردنەوەی ئۆسیلاتۆرە کۆنەکان
-          musicOscillators = musicOscillators.filter(osc => {
-            try { 
-              return osc && osc.context && osc.context.state !== 'closed'; 
-            } catch(e) { 
-              return false; 
+        try {
+          youtubePlayer = new YT.Player('youtube-player', {
+            videoId: 'RPKTPGuij-Q', // ئای دی ڤیدیۆکەت
+            playerVars: {
+              autoplay: 1,        // خۆکارانە دەستپێبکات
+              controls: 0,        // کۆنترۆڵەکان شاراوە بن
+              loop: 1,            // لووپ بکات
+              playlist: 'RPKTPGuij-Q', // بۆ لووپ پێویستە
+              modestbranding: 1,
+              showinfo: 0,
+              rel: 0,
+              fs: 0,
+              playsinline: 1,
+              mute: 0             // بێ دەنگ نەبێت
+            },
+            events: {
+              onReady: onPlayerReady,
+              onStateChange: onPlayerStateChange,
+              onError: onPlayerError
             }
           });
-          
-          const melodyNote = romanticMelody[noteIndex % romanticMelody.length];
-          const harmonyNote = harmonyNotes[noteIndex % harmonyNotes.length];
-          
-          // دروستکردنی نۆتی سەرەکی
-          const melodyOscs = createRomanticPianoNote(melodyNote, 0, 1.8, musicGainNode);
-          if (melodyOscs) musicOscillators.push(...melodyOscs);
-          
-          // زیادکردنی هارمۆنی بە دەنگی نزمتر
-          if (noteIndex % 2 === 0) { // هەموو دوو نۆتێک جارێک
-            const harmonyOscs = createRomanticPianoNote(harmonyNote, 0.1, 2.0, musicGainNode);
-            if (harmonyOscs) musicOscillators.push(...harmonyOscs);
-          }
-          
-          noteIndex++;
+        } catch(e) {
+          console.log('یوتیوب پلەیەر دروست نەبوو:', e);
+          // هەوڵدانەوە دوای 2 چرکە
+          setTimeout(loadYouTubeAPI, 2000);
         }
-
-        // دەستپێکردنی موزیک بە شێوەیەکی ڕێک
-        playNextNote(); // یەکەم نۆت
-        musicInterval = setInterval(playNextNote, 1400); // هەر 1.4 چرکە
       }
 
-      function stopMusic() {
-        if (musicInterval) {
-          clearInterval(musicInterval);
-          musicInterval = null;
-        }
-        musicOscillators.forEach(osc => {
-          try { osc.stop(); } catch(e) {}
-        });
-        musicOscillators = [];
-        isMusicPlaying = false;
-        musicToggle.textContent = '🎵';
-      }
-
-      function startMusic() {
-        if (!audioContext || audioContext.state === 'closed') {
-          audioContext = new (window.AudioContext || window.webkitAudioContext)();
-          musicGainNode = audioContext.createGain();
-          musicGainNode.connect(audioContext.destination);
-          musicGainNode.gain.value = volumeSlider.value / 100 * 0.25;
+      function onPlayerReady(event) {
+        console.log('✅ یوتیوب پلەیەر ئامادەیە');
+        isPlayerReady = true;
+        
+        // ڕێکخستنی ڤۆڵیوم
+        event.target.setVolume(volumeSlider.value);
+        
+        // دڵنیابوون لەوەی گۆرانییەکە دەستی پێکردووە
+        if (event.target.getPlayerState() !== 1) {
+          event.target.playVideo();
         }
         
-        // چارەسەری خۆکارانە بۆ AudioContext
-        if (audioContext.state === 'suspended') {
-          audioContext.resume().then(() => {
-            console.log('AudioContext resumed');
-            continueStartMusic();
-          }).catch(err => {
-            console.log('AudioContext resume failed, trying alternative...');
-            // هەوڵدانەوە بە شێوازێکی تر
-            setTimeout(() => {
-              if (audioContext.state === 'suspended') {
-                audioContext.resume().then(() => continueStartMusic());
+        // چاودێریکردنی پلەیەر بۆ ئەوەی هەر کات ڕاوەستا، دووبارە دەستی پێبکات
+        if (playerPlayInterval) clearInterval(playerPlayInterval);
+        playerPlayInterval = setInterval(() => {
+          try {
+            if (youtubePlayer && isPlayerReady && youtubePlayer.getPlayerState) {
+              const state = youtubePlayer.getPlayerState();
+              // ئەگەر ڕاوەستا (-1, 0, 2, 3, 5) جگە لە 1 (پلەی)
+              if (state !== 1 && state !== 3) { // 3 = بەفەری
+                youtubePlayer.playVideo();
               }
-            }, 100);
-          });
+            }
+          } catch(e) {}
+        }, 3000);
+      }
+
+      function onPlayerStateChange(event) {
+        // ئەگەر گۆرانییەکە تەواو بوو (0) یان ڕاوەستا (2)
+        if (event.data === 0 || event.data === 2) {
+          setTimeout(() => {
+            if (youtubePlayer && isPlayerReady) {
+              youtubePlayer.playVideo();
+            }
+          }, 500);
+        }
+        
+        // نوێکردنەوەی ئایکۆنی دوگمە
+        if (event.data === 1) { // پلەی
+          musicToggle.textContent = '🔊';
         } else {
-          continueStartMusic();
+          musicToggle.textContent = '🎵';
         }
       }
-      
-      function continueStartMusic() {
-        stopMusic();
-        isMusicPlaying = true;
-        musicStarted = true;
-        musicToggle.textContent = '🔊';
-        createSoftMusic();
-        // شاردنەوەی ئیندیکەیتەری بارکردن
-        if (loadingIndicator) {
-          loadingIndicator.style.display = 'none';
-        }
+
+      function onPlayerError(event) {
+        console.log('❌ هەڵەی یوتیوب:', event.data);
+        // هەوڵدانەوە
+        setTimeout(() => {
+          if (youtubePlayer) {
+            youtubePlayer.playVideo();
+          }
+        }, 3000);
       }
 
       function toggleMusic() {
-        if (isMusicPlaying) {
-          stopMusic();
-        } else {
-          startMusic();
+        if (!youtubePlayer || !isPlayerReady) {
+          // ئەگەر هێشتا پلەیەر ئامادە نییە، هەوڵی دروستکردنی بدە
+          loadYouTubeAPI();
+          return;
         }
-      }
-
-      // دەستپێکردنی خۆکارانەی موزیک
-      function autoStartMusic() {
-        console.log('Attempting auto-start music...');
         
-        // دروستکردنی AudioContext بە شێوەی خۆکار
         try {
-          audioContext = new (window.AudioContext || window.webkitAudioContext)();
-          musicGainNode = audioContext.createGain();
-          musicGainNode.connect(audioContext.destination);
-          musicGainNode.gain.value = volumeSlider.value / 100 * 0.25;
-          
-          // چالاککردنی AudioContext
-          if (audioContext.state === 'suspended') {
-            audioContext.resume().then(() => {
-              console.log('AudioContext auto-resumed');
-              continueStartMusic();
-            }).catch(() => {
-              // ئەگەر خۆکارانە نەبوو، بە کلیک چالاک دەبێت
-              console.log('Waiting for user interaction...');
-              document.addEventListener('click', function autoStartOnClick() {
-                if (!musicStarted && audioContext.state === 'suspended') {
-                  audioContext.resume().then(() => continueStartMusic());
-                }
-                document.removeEventListener('click', autoStartOnClick);
-              }, { once: true });
-            });
+          const state = youtubePlayer.getPlayerState();
+          if (state === 1) { // ئەگەر لە پلەیە
+            youtubePlayer.pauseVideo();
+            musicToggle.textContent = '🎵';
           } else {
-            continueStartMusic();
+            youtubePlayer.playVideo();
+            musicToggle.textContent = '🔊';
           }
-        } catch (e) {
-          console.log('Audio not supported:', e);
+        } catch(e) {
+          console.log('نەتوانرا گۆرانی کۆنترۆڵ بکرێت');
         }
       }
 
       // کۆنترۆڵی ڤۆڵیوم
       volumeSlider.addEventListener('input', (e) => {
-        const volume = e.target.value / 100;
-        if (musicGainNode) {
-          musicGainNode.gain.value = volume * 0.25;
+        const volume = e.target.value;
+        if (youtubePlayer && isPlayerReady) {
+          try {
+            youtubePlayer.setVolume(volume);
+          } catch(e) {}
         }
       });
 
@@ -524,7 +409,7 @@
       function createHearts() {
         const container = document.getElementById('heartsContainer');
         container.innerHTML = '';
-        const symbols = ['❤️', '🌸', '✨', '💖', '🌙', '🕊️', '💕', '🌹', '💝', '🎀'];
+        const symbols = ['❤️', '🌸', '✨', '💖', '🌙', '🕊️', '💕', '🌹', '💝', '🎀', '🫶', '💗'];
         for (let i = 0; i < 35; i++) {
           const heart = document.createElement('span');
           heart.className = 'heart';
@@ -553,7 +438,7 @@
         animationActive = true;
         cursorSpan.style.display = 'inline-block';
         
-        typingInterval = setInterval(typeNextCharacter, 55);
+        typingInterval = setInterval(typeNextCharacter, 45); // کەمێک خێراتر بۆ نامە درێژەکە
       }
 
       function typeNextCharacter() {
@@ -572,8 +457,14 @@
       replayBtn.addEventListener('click', () => {
         stopTyping();
         resetAndStart();
-        if (!isMusicPlaying) {
-          startMusic();
+        // دڵنیابوون لەوەی گۆرانییەکە بەردەوامە
+        if (youtubePlayer && isPlayerReady) {
+          try {
+            const state = youtubePlayer.getPlayerState();
+            if (state !== 1) {
+              youtubePlayer.playVideo();
+            }
+          } catch(e) {}
         }
       });
 
@@ -581,31 +472,24 @@
       createHearts();
       resetAndStart();
       
-      // دەستپێکردنی خۆکارانەی موزیک دوای 0.5 چرکە
+      // دەستپێکردنی خۆکارانەی یوتیوب پلەیەر
       setTimeout(() => {
-        autoStartMusic();
-      }, 500);
-
-      // زیادکردنی listener بۆ ئەوەی ئەگەر AudioContext هێشتا ڕاگرتبوو
-      document.addEventListener('visibilitychange', () => {
-        if (!document.hidden && audioContext && audioContext.state === 'suspended' && !musicStarted) {
-          audioContext.resume().then(() => {
-            if (!musicStarted) continueStartMusic();
-          });
-        }
-      });
+        loadYouTubeAPI();
+      }, 800);
 
       // پاککردنەوە
       window.addEventListener('beforeunload', () => {
         stopTyping();
-        stopMusic();
-        if (audioContext) {
-          audioContext.close();
+        if (playerPlayInterval) clearInterval(playerPlayInterval);
+        if (youtubePlayer) {
+          try {
+            youtubePlayer.destroy();
+          } catch(e) {}
         }
       });
 
-      console.log('🎵 موزیک بە شێوەی خۆکارانە دەستپێدەکات...');
-      console.log('💖 جەژنت پیرۆز بێت!');
+      console.log('💖 جەژنت پیرۆز بێت ئاواتی جیان!');
+      console.log('🎵 گۆرانی Ahmet Kaya - Karar Vermek Zor بە خۆکاری لێدەدرێت...');
 
     })();
   </script>
