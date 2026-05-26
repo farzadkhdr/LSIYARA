@@ -1,26 +1,613 @@
 <!DOCTYPE html>
-<html lang="ku" dir="rtl">
+<html lang="ckb" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>جەژنی قوربان پیرۆز - ئاوات</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>جەژنت پیرۆز 💖 رەیان</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: linear-gradient(145deg, #1a0b0b 0%, #2d1a1a 40%, #4a2323 100%);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: 'Segoe UI', 'Nizar', 'Rabar', 'Tahoma', sans-serif;
+      padding: 20px;
+      margin: 0;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    .hearts-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .heart {
+      position: absolute;
+      color: rgba(255, 180, 180, 0.25);
+      font-size: 28px;
+      user-select: none;
+      animation: floatUp 7s infinite ease-in;
+      opacity: 0;
+    }
+
+    @keyframes floatUp {
+      0% {
+        transform: translateY(100vh) rotate(0deg) scale(0.8);
+        opacity: 0.7;
+      }
+      50% {
+        opacity: 0.9;
+      }
+      100% {
+        transform: translateY(-10vh) rotate(30deg) scale(1.4);
+        opacity: 0;
+      }
+    }
+
+    .card {
+      position: relative;
+      z-index: 10;
+      background: rgba(20, 8, 8, 0.75);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border: 1px solid rgba(220, 160, 140, 0.45);
+      border-radius: 48px;
+      padding: 35px 30px 45px;
+      max-width: 700px;
+      width: 100%;
+      box-shadow: 0 35px 70px rgba(0, 0, 0, 0.7), 0 0 50px rgba(210, 120, 100, 0.4);
+      text-align: center;
+      color: #fbe9e7;
+      transition: all 0.4s ease;
+    }
+
+    .music-control {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      z-index: 20;
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .music-btn {
+      background: rgba(255, 180, 160, 0.25);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(220, 160, 140, 0.6);
+      color: #ffe0d5;
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+      font-size: 1.3rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    }
+
+    .music-btn:hover {
+      background: rgba(200, 110, 90, 0.5);
+      transform: scale(1.1);
+      box-shadow: 0 0 25px rgba(210, 100, 80, 0.6);
+    }
+
+    .volume-slider {
+      width: 80px;
+      accent-color: #e07b6b;
+      background: rgba(255,255,255,0.1);
+      border-radius: 10px;
+      cursor: pointer;
+    }
+
+    .message-area {
+      font-size: 1.7rem;
+      line-height: 2.4rem;
+      min-height: 180px;
+      white-space: pre-wrap;
+      word-break: break-word;
+      color: #ffd9cc;
+      text-shadow: 0 0 12px #b34b3a;
+      font-weight: 400;
+      letter-spacing: 0.5px;
+      margin-bottom: 30px;
+      border-bottom: 1px dashed #c97b6b;
+      padding-bottom: 25px;
+      transition: all 0.2s;
+      margin-top: 20px;
+    }
+
+    .special-dedication {
+      font-size: 2.6rem;
+      font-weight: 700;
+      margin-top: 25px;
+      color: #ffb7a7;
+      text-shadow: 0 0 20px #e65c4b, 0 0 40px #b52e1b;
+      background: linear-gradient(to right, #ffd6cc, #ffaa8c);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: glowPulse 2.2s infinite alternate;
+      letter-spacing: 1px;
+      line-height: 3.4rem;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 1.2s ease, transform 1s ease;
+    }
+
+    .special-dedication.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @keyframes glowPulse {
+      0% {
+        text-shadow: 0 0 15px #c0452f, 0 0 35px #a1301f;
+      }
+      100% {
+        text-shadow: 0 0 30px #ff7b5c, 0 0 65px #e6391e;
+      }
+    }
+
+    .cursor {
+      display: inline-block;
+      width: 3px;
+      background: #ffb09c;
+      margin-right: 4px;
+      animation: blink 1s step-end infinite;
+      vertical-align: middle;
+      height: 1.5em;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+
+    .reset-btn {
+      background: rgba(255, 230, 220, 0.2);
+      border: 1px solid #d69b8b;
+      color: #ffeae3;
+      padding: 12px 28px;
+      border-radius: 40px;
+      font-size: 1.2rem;
+      margin-top: 20px;
+      cursor: pointer;
+      backdrop-filter: blur(10px);
+      transition: 0.3s;
+      font-family: inherit;
+      font-weight: 500;
+      letter-spacing: 0.5px;
+    }
+
+    .reset-btn:hover {
+      background: rgba(190, 100, 80, 0.5);
+      border-color: #fca18d;
+      box-shadow: 0 0 25px #d94e3b;
+      color: white;
+    }
+
+    .loading-indicator {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 100;
+      color: #ffb7a7;
+      font-size: 1.4rem;
+      background: rgba(0,0,0,0.7);
+      padding: 15px 25px;
+      border-radius: 30px;
+      backdrop-filter: blur(10px);
+      animation: fadeInOut 2s ease-in-out;
+    }
+
+    @keyframes fadeInOut {
+      0% { opacity: 0; }
+      20% { opacity: 1; }
+      80% { opacity: 1; }
+      100% { opacity: 0; }
+    }
+
+    @media (max-width: 500px) {
+      .message-area {
+        font-size: 1.3rem;
+        line-height: 2rem;
+      }
+      .special-dedication {
+        font-size: 1.9rem;
+      }
+      .music-control {
+        top: 10px;
+        left: 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="hearts-container" id="heartsContainer"></div>
+  
+  <!-- ئیندیکەیتەری بارکردن -->
+  <div class="loading-indicator" id="loadingIndicator">🎵 ئامادەکردنی موزیک...</div>
+
+  <div class="card">
+    <div class="music-control">
+      <button class="music-btn" id="musicToggle" title="ڕاگرتن/دەستپێکردنی موزیک">🔊</button>
+      <input type="range" class="volume-slider" id="volumeSlider" min="0" max="100" value="40" title="ڕێکخستنی دەنگ">
+    </div>
+
+    <div class="message-area" id="typedMessage">
+      <span id="textContainer"></span><span class="cursor" id="cursorSpan"></span>
+    </div>
+
+    <div class="special-dedication" id="specialText">
+      رەیانم شەکرە سێوەکەم مەرگ جوانی من
+    </div>
+
+    <button class="reset-btn" id="replayBtn">🔄 دووبارە بینینەوەی نامەکە</button>
+  </div>
+
+  <script>
+    (function() {
+      const fullMessage = "چەژنت پیرۆز کەس و کارم ماڵەکەم رەیان جیان هیوادارم رۆژێک دابێت جەژن لەگەڵ من بەڕێبکەی و بەیانی کە لەخەو هەستام ماچی نیوچەوانت بکەم و پێت بلێم جەژن پیرۆز هاوسەرەکەم من نازانم قسەی نەستەلەق بکەم ئەمەوێت ئەوەی لە دڵمە ئەوانت پێ بڵێم داوا کارم لە خوای گەورەو میهرەبان ئە جەژنەت لۆ بکاتە هەزار جەژن بتگەینتە هەرچی خۆزگە و هیوای لە دڵتە پیكمان شاد بکات";
+      
+      const textContainer = document.getElementById('textContainer');
+      const cursorSpan = document.getElementById('cursorSpan');
+      const specialElement = document.getElementById('specialText');
+      const replayBtn = document.getElementById('replayBtn');
+      const musicToggle = document.getElementById('musicToggle');
+      const volumeSlider = document.getElementById('volumeSlider');
+      const loadingIndicator = document.getElementById('loadingIndicator');
+
+      let typingInterval = null;
+      let currentIndex = 0;
+      let animationActive = false;
+
+      // =============== سیستەمی موزیکی خۆکار ===============
+      let audioContext = null;
+      let musicGainNode = null;
+      let isMusicPlaying = true; // بە شێوەی خۆکارانە چالاکە
+      let musicOscillators = [];
+      let musicInterval = null;
+      let musicStarted = false;
+
+      // فەنکشنی دروستکردنی دەنگی پیانۆی نەرمتر و ڕۆمانتیکتر
+      function createRomanticPianoNote(frequency, startTime, duration, gainNode) {
+        if (!audioContext) return null;
+        
+        // ئۆسیلاتۆری سەرەکی بۆ دەنگی پیانۆ
+        const osc1 = audioContext.createOscillator();
+        const osc2 = audioContext.createOscillator();
+        const osc3 = audioContext.createOscillator();
+        
+        const noteGain = audioContext.createGain();
+        const filter = audioContext.createBiquadFilter();
+        
+        // ڕێکخستنی فیلتەر بۆ دەنگی گەرمتر
+        filter.type = 'lowpass';
+        filter.frequency.value = 800;
+        filter.Q.value = 0.5;
+        
+        // ئۆسیلاتۆری یەکەم - دەنگی سەرەکی
+        osc1.type = 'sine';
+        osc1.frequency.value = frequency;
+        
+        // ئۆسیلاتۆری دووەم - بۆ هارمۆنی
+        osc2.type = 'sine';
+        osc2.frequency.value = frequency * 2;
+        
+        // ئۆسیلاتۆری سێیەم - بۆ قوڵی
+        osc3.type = 'triangle';
+        osc3.frequency.value = frequency * 0.5;
+        
+        // ڕێکخستنی ڤۆڵیومی نۆتەکە بە شێوەی پیانۆ
+        const now = audioContext.currentTime + startTime;
+        noteGain.gain.setValueAtTime(0, now);
+        noteGain.gain.linearRampToValueAtTime(0.15, now + 0.02); // هێرشی خێرا
+        noteGain.gain.linearRampToValueAtTime(0.08, now + 0.1); // دابەزینی سەرەتایی
+        noteGain.gain.setValueAtTime(0.08, now + 0.1);
+        noteGain.gain.linearRampToValueAtTime(0.03, now + duration * 0.7); // بەردەوامی
+        noteGain.gain.linearRampToValueAtTime(0, now + duration); // کۆتایی
+        
+        // پەیوەندیکردنەکان
+        osc1.connect(noteGain);
+        osc2.connect(noteGain);
+        osc3.connect(noteGain);
+        noteGain.connect(filter);
+        filter.connect(gainNode);
+        
+        // دەستپێکردن و ڕاگرتن
+        osc1.start(now);
+        osc2.start(now);
+        osc3.start(now);
+        osc1.stop(now + duration + 0.1);
+        osc2.stop(now + duration + 0.1);
+        osc3.stop(now + duration + 0.1);
+        
+        return [osc1, osc2, osc3];
+      }
+
+      function createSoftMusic() {
+        if (!audioContext || audioContext.state === 'closed') {
+          audioContext = new (window.AudioContext || window.webkitAudioContext)();
+          musicGainNode = audioContext.createGain();
+          musicGainNode.connect(audioContext.destination);
+          musicGainNode.gain.value = volumeSlider.value / 100 * 0.25;
         }
         
-        body {
-            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-family: 'Arial', sans-serif;
-            overflow: hidden;
-            cursor: pointer;
+        if (audioContext.state === 'suspended') {
+          audioContext.resume().then(() => {
+            console.log('AudioContext resumed automatically');
+          });
+        }
+
+        // پیانۆی ڕۆمانتیک بە نۆتە کوردییەکان
+        const romanticMelody = [
+          // ڕیزبەندی نۆتەکان بە شێوازی کوردی و ڕۆمانتیک
+          261.63, 329.63, 349.23, 392.00, // Do Mi Fa Sol
+          349.23, 329.63, 293.66, 261.63, // Fa Mi Re Do
+          329.63, 349.23, 392.00, 440.00, // Mi Fa Sol La
+          392.00, 349.23, 329.63, 293.66, // Sol Fa Mi Re
+          349.23, 392.00, 440.00, 493.88, // Fa Sol La Si
+          440.00, 392.00, 349.23, 329.63, // La Sol Fa Mi
+          293.66, 329.63, 349.23, 392.00, // Re Mi Fa Sol
+          349.23, 329.63, 293.66, 261.63  // Fa Mi Re Do
+        ];
+
+        // هارمۆنی بۆ قوڵکردنی دەنگ
+        const harmonyNotes = [
+          130.81, 164.81, 174.61, 196.00,
+          174.61, 164.81, 146.83, 130.81,
+          164.81, 174.61, 196.00, 220.00,
+          196.00, 174.61, 164.81, 146.83,
+          174.61, 196.00, 220.00, 246.94,
+          220.00, 196.00, 174.61, 164.81,
+          146.83, 164.81, 174.61, 196.00,
+          174.61, 164.81, 146.83, 130.81
+        ];
+        
+        let noteIndex = 0;
+        
+        function playNextNote() {
+          if (!isMusicPlaying || !audioContext || audioContext.state === 'closed') return;
+          
+          // پاککردنەوەی ئۆسیلاتۆرە کۆنەکان
+          musicOscillators = musicOscillators.filter(osc => {
+            try { 
+              return osc && osc.context && osc.context.state !== 'closed'; 
+            } catch(e) { 
+              return false; 
+            }
+          });
+          
+          const melodyNote = romanticMelody[noteIndex % romanticMelody.length];
+          const harmonyNote = harmonyNotes[noteIndex % harmonyNotes.length];
+          
+          // دروستکردنی نۆتی سەرەکی
+          const melodyOscs = createRomanticPianoNote(melodyNote, 0, 1.8, musicGainNode);
+          if (melodyOscs) musicOscillators.push(...melodyOscs);
+          
+          // زیادکردنی هارمۆنی بە دەنگی نزمتر
+          if (noteIndex % 2 === 0) { // هەموو دوو نۆتێک جارێک
+            const harmonyOscs = createRomanticPianoNote(harmonyNote, 0.1, 2.0, musicGainNode);
+            if (harmonyOscs) musicOscillators.push(...harmonyOscs);
+          }
+          
+          noteIndex++;
+        }
+
+        // دەستپێکردنی موزیک بە شێوەیەکی ڕێک
+        playNextNote(); // یەکەم نۆت
+        musicInterval = setInterval(playNextNote, 1400); // هەر 1.4 چرکە
+      }
+
+      function stopMusic() {
+        if (musicInterval) {
+          clearInterval(musicInterval);
+          musicInterval = null;
+        }
+        musicOscillators.forEach(osc => {
+          try { osc.stop(); } catch(e) {}
+        });
+        musicOscillators = [];
+        isMusicPlaying = false;
+        musicToggle.textContent = '🎵';
+      }
+
+      function startMusic() {
+        if (!audioContext || audioContext.state === 'closed') {
+          audioContext = new (window.AudioContext || window.webkitAudioContext)();
+          musicGainNode = audioContext.createGain();
+          musicGainNode.connect(audioContext.destination);
+          musicGainNode.gain.value = volumeSlider.value / 100 * 0.25;
         }
         
-        /* ئەنیمەیشنی پەڕەی گوڵ */
-        .
+        // چارەسەری خۆکارانە بۆ AudioContext
+        if (audioContext.state === 'suspended') {
+          audioContext.resume().then(() => {
+            console.log('AudioContext resumed');
+            continueStartMusic();
+          }).catch(err => {
+            console.log('AudioContext resume failed, trying alternative...');
+            // هەوڵدانەوە بە شێوازێکی تر
+            setTimeout(() => {
+              if (audioContext.state === 'suspended') {
+                audioContext.resume().then(() => continueStartMusic());
+              }
+            }, 100);
+          });
+        } else {
+          continueStartMusic();
+        }
+      }
+      
+      function continueStartMusic() {
+        stopMusic();
+        isMusicPlaying = true;
+        musicStarted = true;
+        musicToggle.textContent = '🔊';
+        createSoftMusic();
+        // شاردنەوەی ئیندیکەیتەری بارکردن
+        if (loadingIndicator) {
+          loadingIndicator.style.display = 'none';
+        }
+      }
+
+      function toggleMusic() {
+        if (isMusicPlaying) {
+          stopMusic();
+        } else {
+          startMusic();
+        }
+      }
+
+      // دەستپێکردنی خۆکارانەی موزیک
+      function autoStartMusic() {
+        console.log('Attempting auto-start music...');
+        
+        // دروستکردنی AudioContext بە شێوەی خۆکار
+        try {
+          audioContext = new (window.AudioContext || window.webkitAudioContext)();
+          musicGainNode = audioContext.createGain();
+          musicGainNode.connect(audioContext.destination);
+          musicGainNode.gain.value = volumeSlider.value / 100 * 0.25;
+          
+          // چالاککردنی AudioContext
+          if (audioContext.state === 'suspended') {
+            audioContext.resume().then(() => {
+              console.log('AudioContext auto-resumed');
+              continueStartMusic();
+            }).catch(() => {
+              // ئەگەر خۆکارانە نەبوو، بە کلیک چالاک دەبێت
+              console.log('Waiting for user interaction...');
+              document.addEventListener('click', function autoStartOnClick() {
+                if (!musicStarted && audioContext.state === 'suspended') {
+                  audioContext.resume().then(() => continueStartMusic());
+                }
+                document.removeEventListener('click', autoStartOnClick);
+              }, { once: true });
+            });
+          } else {
+            continueStartMusic();
+          }
+        } catch (e) {
+          console.log('Audio not supported:', e);
+        }
+      }
+
+      // کۆنترۆڵی ڤۆڵیوم
+      volumeSlider.addEventListener('input', (e) => {
+        const volume = e.target.value / 100;
+        if (musicGainNode) {
+          musicGainNode.gain.value = volume * 0.25;
+        }
+      });
+
+      musicToggle.addEventListener('click', toggleMusic);
+
+      // =============== سیستەمی دڵەکان ===============
+      function createHearts() {
+        const container = document.getElementById('heartsContainer');
+        container.innerHTML = '';
+        const symbols = ['❤️', '🌸', '✨', '💖', '🌙', '🕊️', '💕', '🌹', '💝', '🎀'];
+        for (let i = 0; i < 35; i++) {
+          const heart = document.createElement('span');
+          heart.className = 'heart';
+          heart.innerHTML = symbols[Math.floor(Math.random() * symbols.length)];
+          heart.style.left = Math.random() * 100 + '%';
+          heart.style.animationDelay = Math.random() * 8 + 's';
+          heart.style.fontSize = (18 + Math.floor(Math.random() * 30)) + 'px';
+          heart.style.animationDuration = (5 + Math.random() * 10) + 's';
+          container.appendChild(heart);
+        }
+      }
+
+      // =============== سیستەمی تایپینگ ===============
+      function stopTyping() {
+        if (typingInterval) {
+          clearInterval(typingInterval);
+          typingInterval = null;
+        }
+      }
+
+      function resetAndStart() {
+        stopTyping();
+        specialElement.classList.remove('show');
+        textContainer.textContent = '';
+        currentIndex = 0;
+        animationActive = true;
+        cursorSpan.style.display = 'inline-block';
+        
+        typingInterval = setInterval(typeNextCharacter, 55);
+      }
+
+      function typeNextCharacter() {
+        if (currentIndex < fullMessage.length) {
+          textContainer.textContent += fullMessage.charAt(currentIndex);
+          currentIndex++;
+        } else {
+          stopTyping();
+          animationActive = false;
+          cursorSpan.style.display = 'none';
+          specialElement.classList.add('show');
+        }
+      }
+
+      // =============== ئیڤێنتەکان ===============
+      replayBtn.addEventListener('click', () => {
+        stopTyping();
+        resetAndStart();
+        if (!isMusicPlaying) {
+          startMusic();
+        }
+      });
+
+      // =============== دەستپێکردنی سەرەتایی ===============
+      createHearts();
+      resetAndStart();
+      
+      // دەستپێکردنی خۆکارانەی موزیک دوای 0.5 چرکە
+      setTimeout(() => {
+        autoStartMusic();
+      }, 500);
+
+      // زیادکردنی listener بۆ ئەوەی ئەگەر AudioContext هێشتا ڕاگرتبوو
+      document.addEventListener('visibilitychange', () => {
+        if (!document.hidden && audioContext && audioContext.state === 'suspended' && !musicStarted) {
+          audioContext.resume().then(() => {
+            if (!musicStarted) continueStartMusic();
+          });
+        }
+      });
+
+      // پاککردنەوە
+      window.addEventListener('beforeunload', () => {
+        stopTyping();
+        stopMusic();
+        if (audioContext) {
+          audioContext.close();
+        }
+      });
+
+      console.log('🎵 موزیک بە شێوەی خۆکارانە دەستپێدەکات...');
+      console.log('💖 جەژنت پیرۆز بێت!');
+
+    })();
+  </script>
+</body>
+</html>
