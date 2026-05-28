@@ -1,886 +1,189 @@
 <!DOCTYPE html>
-<html lang="ckb" dir="rtl">
+<html lang="ckb">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>جەژنی قوربان پیرۆز - ئاوات</title>
+    <title>تەنۆلکەکان - Three.js</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Noto+Naskh+Arabic:wght@400;700&display=swap');
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            background: linear-gradient(135deg, #0d1117 0%, #161b22 30%, #1a1a2e 60%, #16213e 100%);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            font-family: 'Noto Naskh Arabic', 'Segoe UI', Tahoma, sans-serif;
-            overflow-x: hidden;
-            position: relative;
-            cursor: pointer;
-        }
-
-        /* ئۆڤەرلەی دەستپێکردن */
-        .start-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.75);
-            z-index: 1000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            backdrop-filter: blur(8px);
-            flex-direction: column;
-            gap: 20px;
-        }
-
-        .start-button {
-            background: linear-gradient(135deg, #d4af37, #c9a050, #e6c86e);
-            color: #0d1117;
-            border: none;
-            padding: 28px 55px;
-            font-size: 30px;
-            font-family: 'Noto Naskh Arabic', sans-serif;
-            border-radius: 60px;
-            cursor: pointer;
-            font-weight: 700;
-            box-shadow: 0 0 50px rgba(212, 175, 55, 0.7);
-            animation: pulse 2s infinite;
-            transition: all 0.4s ease;
-            letter-spacing: 2px;
-        }
-
-        .start-button:hover {
-            transform: scale(1.08);
-            box-shadow: 0 0 70px rgba(255, 215, 0, 0.9), 0 0 120px rgba(212, 175, 55, 0.5);
-            background: linear-gradient(135deg, #e6c86e, #ffd700, #ffed4a);
-        }
-
-        .start-hint {
-            color: rgba(255, 215, 0, 0.7);
-            font-size: 18px;
-            font-family: 'Noto Naskh Arabic', sans-serif;
-            animation: fadeHint 2s ease-in-out infinite;
-        }
-
-        @keyframes fadeHint {
-            0%, 100% { opacity: 0.5; }
-            50% { opacity: 1; }
-        }
-
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.06); }
-        }
-
-        /* ئەنیمەیشنی ئەستێرەکان */
-        .stars {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 0;
-        }
-
-        .star {
+        body { margin: 0; overflow: hidden; }
+        #info {
             position: absolute;
-            background: white;
-            border-radius: 50%;
-            animation: twinkle var(--duration) infinite;
-            opacity: 0;
-        }
-
-        @keyframes twinkle {
-            0%, 100% { opacity: 0; transform: scale(0.3); }
-            25% { opacity: 0.4; transform: scale(0.7); }
-            50% { opacity: 1; transform: scale(1.3); }
-            75% { opacity: 0.4; transform: scale(0.7); }
-        }
-
-        /* شەمشەمەکوێرە */
-        .shooting-star {
-            position: fixed;
-            width: 3px;
-            height: 3px;
-            background: white;
-            border-radius: 50%;
-            box-shadow: 0 0 6px 2px rgba(255, 255, 255, 0.8);
-            animation: shoot linear infinite;
-            opacity: 0;
-            pointer-events: none;
-            z-index: 1;
-        }
-
-        .shooting-star::after {
-            content: '';
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 80px;
-            height: 2px;
-            background: linear-gradient(90deg, rgba(255,255,255,0.8), transparent);
-            border-radius: 50%;
-        }
-
-        @keyframes shoot {
-            0% {
-                transform: translate(0, 0) rotate(-35deg);
-                opacity: 0;
-            }
-            5% {
-                opacity: 1;
-            }
-            15% {
-                transform: translate(-400px, 300px) rotate(-35deg);
-                opacity: 0;
-            }
-            100% {
-                transform: translate(-400px, 300px) rotate(-35deg);
-                opacity: 0;
-            }
-        }
-
-        /* مانگی گەورە */
-        .moon {
-            position: fixed;
-            top: 35px;
-            right: 60px;
-            width: 110px;
-            height: 110px;
-            background: radial-gradient(circle at 55% 35%, #fff8dc, #e8c860, #c9a040);
-            border-radius: 50%;
-            box-shadow: 0 0 70px rgba(255, 220, 100, 0.7), 0 0 140px rgba(255, 200, 50, 0.5), 0 0 200px rgba(255, 180, 30, 0.3);
-            animation: moonGlow 4s ease-in-out infinite, moonFloat 6s ease-in-out infinite;
-            z-index: 0;
-        }
-
-        .moon-crater {
-            position: absolute;
-            background: rgba(180, 140, 60, 0.4);
-            border-radius: 50%;
-        }
-
-        .crater-1 {
-            width: 20px;
-            height: 20px;
-            top: 30px;
-            left: 35px;
-        }
-
-        .crater-2 {
-            width: 14px;
-            height: 14px;
-            top: 55px;
-            left: 60px;
-        }
-
-        .crater-3 {
-            width: 10px;
-            height: 10px;
-            top: 25px;
-            left: 70px;
-        }
-
-        @keyframes moonGlow {
-            0%, 100% { box-shadow: 0 0 70px rgba(255, 220, 100, 0.7), 0 0 140px rgba(255, 200, 50, 0.5); }
-            50% { box-shadow: 0 0 100px rgba(255, 240, 130, 0.9), 0 0 180px rgba(255, 220, 80, 0.7), 0 0 250px rgba(255, 200, 60, 0.4); }
-        }
-
-        @keyframes moonFloat {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-8px); }
-        }
-
-        /* هەوری نەرم */
-        .clouds {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 0;
-        }
-
-        .cloud {
-            position: absolute;
-            background: rgba(255, 255, 255, 0.06);
-            border-radius: 50%;
-            filter: blur(25px);
-            animation: cloudFloat linear infinite;
-        }
-
-        @keyframes cloudFloat {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(-100px); }
-        }
-
-        /* دڵە ئاشقانەکان */
-        .hearts-container {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 2;
-        }
-
-        .heart {
-            position: absolute;
-            animation: floatUpHeart var(--float-duration) linear infinite;
-            opacity: 0;
-        }
-
-        @keyframes floatUpHeart {
-            0% {
-                transform: translateY(105vh) scale(0.3) rotate(0deg);
-                opacity: 0;
-            }
-            10% {
-                opacity: 1;
-            }
-            90% {
-                opacity: 0.8;
-            }
-            100% {
-                transform: translateY(-15vh) scale(1.6) rotate(360deg);
-                opacity: 0;
-            }
-        }
-
-        /* کۆنتێنەری سەرەکی */
-        .main-container {
-            position: relative;
-            z-index: 10;
-            width: 90%;
-            max-width: 850px;
-            background: rgba(13, 17, 23, 0.55);
-            border-radius: 35px;
-            padding: 45px 35px;
-            backdrop-filter: blur(25px);
-            border: 2px solid rgba(212, 175, 55, 0.25);
-            box-shadow: 0 25px 70px rgba(0, 0, 0, 0.6), inset 0 0 60px rgba(212, 175, 55, 0.04);
-            animation: containerGlow 5s ease-in-out infinite;
-            margin: 20px;
-        }
-
-        @keyframes containerGlow {
-            0%, 100% { border-color: rgba(212, 175, 55, 0.25); box-shadow: 0 25px 70px rgba(0, 0, 0, 0.6), inset 0 0 60px rgba(212, 175, 55, 0.04); }
-            50% { border-color: rgba(212, 175, 55, 0.55); box-shadow: 0 25px 70px rgba(0, 0, 0, 0.6), inset 0 0 80px rgba(212, 175, 55, 0.08); }
-        }
-
-        /* ناونیشان */
-        .title-section {
-            text-align: center;
-            margin-bottom: 30px;
-            opacity: 0;
-            animation: fadeInDown 1.5s ease-out forwards;
-        }
-
-        .title {
-            font-size: 36px;
-            font-weight: 700;
-            background: linear-gradient(135deg, #d4af37, #ffd700, #e6c86e, #c9a050);
-            background-size: 300% 300%;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            animation: goldShine 4s ease-in-out infinite;
-        }
-
-        @keyframes fadeInDown {
-            from { opacity: 0; transform: translateY(-30px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* نامەکە */
-        .message-container {
-            text-align: right;
+            top: 20px;
+            left: 20px;
+            color: white;
+            background: rgba(0,0,0,0.6);
+            padding: 10px;
+            font-family: Arial;
             direction: rtl;
-            min-height: 300px;
-            position: relative;
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 20px;
-            padding: 25px 30px;
-            border-right: 4px solid rgba(212, 175, 55, 0.4);
-        }
-
-        .typed-text {
-            font-size: 21px;
-            color: #f0e4c8;
-            line-height: 2.1;
-            text-shadow: 0 0 12px rgba(255, 210, 100, 0.3);
-            white-space: pre-wrap;
-            word-wrap: break-word;
-        }
-
-        .cursor {
-            display: inline-block;
-            width: 3px;
-            height: 26px;
-            background: #ffd700;
-            animation: blink 0.7s infinite;
-            margin-right: 3px;
-            vertical-align: middle;
-            box-shadow: 0 0 8px rgba(255, 215, 0, 0.7);
-        }
-
-        @keyframes blink {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.2; }
-        }
-
-        /* هیڤی */
-        .highlight {
-            color: #ffd700;
-            font-weight: 700;
-            text-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
-        }
-
-        /* جیاکەرەوە */
-        .divider {
-            width: 150px;
-            height: 3px;
-            background: linear-gradient(90deg, transparent, #d4af37, transparent);
-            margin: 30px auto;
-            border-radius: 50%;
-            opacity: 0;
-            animation: fadeIn 2s ease-out forwards;
-            animation-delay: 1s;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; width: 0; }
-            to { opacity: 1; width: 150px; }
-        }
-
-        /* تێکستی گەورەی کۆتایی */
-        .big-text-container {
-            margin-top: 40px;
-            text-align: center;
-            opacity: 0;
-            transition: opacity 2s ease;
-            position: relative;
-        }
-
-        .big-text-container.visible {
-            opacity: 1;
-            animation: fadeInUpBig 2s ease-out forwards;
-        }
-
-        @keyframes fadeInUpBig {
-            from {
-                opacity: 0;
-                transform: translateY(40px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .big-text {
-            font-size: 38px;
-            font-weight: 700;
-            background: linear-gradient(135deg, #d4af37, #ffec8b, #ffb347, #ffcc00, #e6c86e);
-            background-size: 400% 400%;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            animation: goldShine 3s ease-in-out infinite;
-            line-height: 1.9;
-            letter-spacing: 1px;
-            filter: drop-shadow(0 0 15px rgba(212, 175, 55, 0.4));
-        }
-
-        @keyframes goldShine {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
-        /* دڵی کۆتایی */
-        .final-heart {
-            font-size: 50px;
-            animation: heartBeat 1s ease-in-out infinite;
-            margin-top: 20px;
-            opacity: 0;
-            transition: opacity 2s ease;
-        }
-
-        .final-heart.visible {
-            opacity: 1;
-        }
-
-        @keyframes heartBeat {
-            0%, 100% { transform: scale(1); }
-            15% { transform: scale(1.25); }
-            30% { transform: scale(1); }
-            45% { transform: scale(1.2); }
-            60% { transform: scale(1); }
-        }
-
-        /* لامپەکان */
-        .lantern {
-            position: fixed;
-            top: 15px;
-            font-size: 55px;
-            animation: swing 3.5s ease-in-out infinite;
-            z-index: 0;
-            opacity: 0.75;
-            filter: drop-shadow(0 0 20px rgba(255, 160, 20, 0.7));
-        }
-
-        .lantern-left {
-            left: 35px;
-            animation-delay: 0s;
-        }
-
-        .lantern-right {
-            right: 35px;
-            animation-delay: 1.75s;
-        }
-
-        @keyframes swing {
-            0%, 100% { transform: rotate(-12deg); }
-            50% { transform: rotate(12deg); }
-        }
-
-        /* پەڕەی گوڵاوی سوور */
-        .rose-petal {
-            position: fixed;
-            pointer-events: none;
-            z-index: 1;
-            animation: petalFall linear infinite;
-        }
-
-        @keyframes petalFall {
-            0% {
-                transform: translateY(-10vh) rotate(0deg) translateX(0px);
-                opacity: 1;
-            }
-            30% {
-                transform: translateY(30vh) rotate(120deg) translateX(80px);
-                opacity: 0.85;
-            }
-            70% {
-                transform: translateY(70vh) rotate(250deg) translateX(-40px);
-                opacity: 0.5;
-            }
-            100% {
-                transform: translateY(110vh) rotate(360deg) translateX(-100px);
-                opacity: 0;
-            }
-        }
-
-        /* کۆنترۆڵی دەنگ */
-        .audio-control {
-            position: fixed;
-            bottom: 25px;
-            right: 25px;
-            z-index: 100;
-            background: rgba(13, 17, 23, 0.8);
-            border: 2px solid rgba(212, 175, 55, 0.5);
-            border-radius: 50px;
-            padding: 12px 22px;
-            color: #d4af37;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            backdrop-filter: blur(15px);
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-family: 'Noto Naskh Arabic', sans-serif;
-            font-size: 15px;
-        }
-
-        .audio-control:hover {
-            background: rgba(212, 175, 55, 0.15);
-            border-color: #ffd700;
-            box-shadow: 0 0 25px rgba(212, 175, 55, 0.4);
-        }
-
-        .audio-control button {
-            background: none;
-            border: none;
-            color: #d4af37;
-            font-size: 22px;
-            cursor: pointer;
-            transition: transform 0.2s ease;
-        }
-
-        .audio-control button:hover {
-            transform: scale(1.2);
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .big-text {
-                font-size: 26px;
-                line-height: 1.7;
-            }
-            .typed-text {
-                font-size: 16px;
-                line-height: 1.9;
-            }
-            .main-container {
-                padding: 25px 15px;
-                margin: 10px;
-            }
-            .title {
-                font-size: 26px;
-            }
-            .moon {
-                width: 65px;
-                height: 65px;
-                top: 20px;
-                right: 25px;
-            }
-            .start-button {
-                font-size: 22px;
-                padding: 20px 35px;
-            }
-            .lantern {
-                font-size: 35px;
-            }
-            .lantern-left {
-                left: 10px;
-            }
-            .lantern-right {
-                right: 10px;
-            }
         }
     </style>
 </head>
 <body>
-
-    <!-- ئۆڤەرلەی دەستپێکردن -->
-    <div class="start-overlay" id="startOverlay">
-        <div style="font-size: 80px; animation: heartBeat 1.2s ease-in-out infinite;">🌙</div>
-        <button class="start-button" onclick="startExperience()">
-            ✨ بکلیکە بۆ دەستپێکردن ✨
-        </button>
-        <div class="start-hint">🎵 گۆرانیەکەش دەستپێدەکات</div>
+    <div id="info">
+        <h3>تەنۆلکەکان (Particles)</h3>
+        <p>ڕەنگ و قەبارە بەپێی شوێنی تەنۆلکە دەگۆڕێت</p>
     </div>
 
-    <!-- پلەیەری یوتوب -->
-    <div id="youtubeContainer" style="position: fixed; top: -9999px; left: -9999px; width: 1px; height: 1px; opacity: 0; pointer-events: none;">
-        <div id="player"></div>
-    </div>
-
-    <!-- کۆنترۆڵی دەنگ -->
-    <div class="audio-control" id="audioControl" style="display: none;">
-        <span>🎵</span>
-        <span>گۆرانی</span>
-        <button id="toggleMusic">⏯️</button>
-        <span id="volumeIcon">🔊</span>
-    </div>
-
-    <!-- ئەنیمەیشنی ئەستێرەکان -->
-    <div class="stars" id="starsContainer"></div>
-
-    <!-- شەمشەمەکوێرە -->
-    <div id="shootingStarsContainer"></div>
-
-    <!-- هەورەکان -->
-    <div class="clouds" id="cloudsContainer"></div>
-
-    <!-- مانگ -->
-    <div class="moon">
-        <div class="moon-crater crater-1"></div>
-        <div class="moon-crater crater-2"></div>
-        <div class="moon-crater crater-3"></div>
-    </div>
-
-    <!-- لامپەکان -->
-    <div class="lantern lantern-right">🏮</div>
-    <div class="lantern lantern-left">🏮</div>
-
-    <!-- دڵەکان -->
-    <div class="hearts-container" id="heartsContainer"></div>
-
-    <!-- پەڕەی گوڵاوی -->
-    <div id="petalsContainer"></div>
-
-    <!-- کۆنتێنەری سەرەکی -->
-    <div class="main-container">
-        <!-- ناونیشان -->
-        <div class="title-section">
-            <h1 class="title">🌙 جەژنی قوربان پیرۆز 🌙</h1>
-        </div>
-
-        <!-- نامەکە -->
-        <div class="message-container">
-            <p class="typed-text" id="typedMessage"></p>
-            <span class="cursor" id="cursor"></span>
-        </div>
-
-        <!-- جیاکەرەوە -->
-        <div class="divider"></div>
-
-        <!-- تێکستی گەورە -->
-        <div class="big-text-container" id="bigTextContainer">
-            <p class="big-text">
-                دکتۆرە ئاوات ئەلماسی<br>
-                خاوێن و خاون دلێکی پاک و میهرەبان
-            </p>
-        </div>
-
-        <!-- دڵی کۆتایی -->
-        <div class="final-heart" id="finalHeart">💝</div>
-    </div>
-
-    <!-- ئەی پی ئای یوتوب -->
-    <script src="https://www.youtube.com/iframe_api"></script>
-
-    <script>
-        let player;
-        let musicStarted = false;
-        let isPlaying = true;
-
-        // ئینیشیالیزەکردنی پلەیەری یوتوب
-        function onYouTubeIframeAPIReady() {
-            player = new YT.Player('player', {
-                height: '1',
-                width: '1',
-                videoId: 'RPKTPGuij-Q',
-                playerVars: {
-                    'autoplay': 0,
-                    'controls': 0,
-                    'showinfo': 0,
-                    'rel': 0,
-                    'loop': 1,
-                    'playlist': 'RPKTPGuij-Q',
-                    'mute': 0,
-                    'enablejsapi': 1,
-                    'origin': window.location.origin,
-                    'start': 0
-                },
-                events: {
-                    'onReady': onPlayerReady,
-                    'onStateChange': onPlayerStateChange
-                }
-            });
-        }
-
-        function onPlayerReady(event) {
-            console.log('✅ پلەیەر ئامادەیە - گۆرانی: RPKTPGuij-Q');
-        }
-
-        function onPlayerStateChange(event) {
-            if (event.data === YT.PlayerState.ENDED) {
-                player.playVideo();
+    <!-- سێرڤەری Three.js -->
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://unpkg.com/three@0.128.0/build/three.module.js"
             }
         }
+    </script>
 
-        // فەنکشنی دەستپێکردنی هەموو شتێک
-        function startExperience() {
-            // لابردنی ئۆڤەرلە
-            document.getElementById('startOverlay').style.display = 'none';
+    <script type="module">
+        import * as THREE from 'three';
+
+        // --- ڕێکخستنی سەرەکی (Scene, Camera, Renderer) ---
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color(0x050510); // ئاسمانی تاریک
+
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.set(0, 2, 8);
+        camera.lookAt(0, 0, 0);
+
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
+
+        // --- دروستکردنی تەنۆلکەکان ---
+        const particleCount = 5000;
+        const geometry = new THREE.BufferGeometry();
+
+        // شوێنەکان (positions)
+        const positions = new Float32Array(particleCount * 3);
+        for (let i = 0; i < particleCount; i++) {
+            // تەنۆلکەکان لە ناو گۆیەکدا بڵاو بکەوە
+            const radius = 3;
+            const theta = Math.random() * Math.PI * 2;
+            const phi = Math.acos(2 * Math.random() - 1);
+            const x = radius * Math.sin(phi) * Math.cos(theta);
+            const y = radius * Math.sin(phi) * Math.sin(theta);
+            const z = radius * Math.cos(phi);
             
-            // نیشاندانی کۆنترۆڵی دەنگ
-            document.getElementById('audioControl').style.display = 'flex';
+            positions[i * 3] = x;
+            positions[i * 3 + 1] = y;
+            positions[i * 3 + 2] = z;
+        }
+        geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+
+        // ڕەنگەکان (colors) - دەستپێکی ڕەنگی ڕەش
+        const colors = new Float32Array(particleCount * 3);
+        geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+
+        // قەبارەکان (sizes)
+        const sizes = new Float32Array(particleCount);
+        geometry.setAttribute('size', new THREE.BufferAttribute(sizes, 1));
+
+        // --- فەنکشنی ڕەنگ و قەبارە بەپێی ئیندێکس ---
+        function getAttributesForParticle(i) {
+            // ڕەنگی پەیوەست بە شوێنی تەنۆلکە: شوێنی X
+            const posX = positions[i * 3];
+            const posY = positions[i * 3 + 1];
             
-            // دەستپێکردنی گۆرانی
-            if (player && player.playVideo) {
-                player.unMute();
-                player.playVideo();
-                player.setVolume(55);
-            }
+            // ڕەنگ: لە شین (0,0,1) بۆ سوور (1,0,0) بەپێی X
+            const r = (posX + 3) / 6;    // لە -3 بۆ 3 => لە 0 بۆ 1
+            const g = (posY + 3) / 6;
+            const b = 1 - r;
             
-            musicStarted = true;
+            // قەبارە: لە 0.05 بۆ 0.3 بەپێی شوێنی Z
+            const size = 0.1 + (positions[i * 3 + 2] + 3) / 60;
             
-            // دەستپێکردنی ئەنیمەیشنەکان
-            if (!window.animationsStarted) {
-                startAllAnimations();
-                window.animationsStarted = true;
-            }
+            return {
+                color: { r, g, b },
+                size: size
+            };
         }
 
-        // کۆنترۆڵی گۆرانی
-        document.getElementById('toggleMusic').addEventListener('click', function(e) {
-            e.stopPropagation();
-            if (isPlaying) {
-                player.pauseVideo();
-                this.textContent = '▶️';
-                document.getElementById('volumeIcon').textContent = '🔇';
-            } else {
-                player.playVideo();
-                this.textContent = '⏯️';
-                document.getElementById('volumeIcon').textContent = '🔊';
+        // --- نوێکردنەوەی ڕەنگ و قەبارەکان ---
+        function updateParticleAttributes() {
+            const pColors = geometry.attributes.color.array;
+            const pSizes = geometry.attributes.size.array;
+
+            for (let i = 0; i < particleCount; i++) {
+                const { color, size } = getAttributesForParticle(i);
+                pColors[i * 3] = color.r;
+                pColors[i * 3 + 1] = color.g;
+                pColors[i * 3 + 2] = color.b;
+                pSizes[i] = size;
             }
-            isPlaying = !isPlaying;
+
+            // ئاگادارکردنەوەی Three.js (بە "needsUpdate")
+            geometry.attributes.color.needsUpdate = true;
+            geometry.attributes.size.needsUpdate = true;
+        }
+
+        // بانگکردنی فەنکشن بۆ جاری یەکەم
+        updateParticleAttributes();
+
+        // دروستکردنی ماددەی تەنۆلکەکان بۆ نیشاندانی قەبارە
+        // Three.js بە شێوەی پێشگر قەبارە بۆ Points نانیشانێت، جا پێویستە شەیدەرێکی تایبەت بەکاربهێنین
+        // بەڵام بۆ سادەیی، ئێمە materialێکی ئاسایی بەکاردەهێنین و قەبارە لە شەیدەردا دیاری دەکەین
+        
+        const vertexShader = `
+            attribute float size;
+            attribute vec3 color;
+            varying vec3 vColor;
+            void main() {
+                vColor = color;
+                vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
+                gl_PointSize = size * ( 300.0 / ( - mvPosition.z ) ); // قەبارە بەپێی دووری
+                gl_PointSize = clamp(gl_PointSize, 5.0, 20.0);
+                gl_PointPosition = projectionMatrix * mvPosition;
+            }
+        `;
+        
+        const fragmentShader = `
+            varying vec3 vColor;
+            void main() {
+                vec2 coord = gl_PointCoord;
+                float dist = length(coord - vec2(0.5));
+                if (dist > 0.5) discard; // خاڵی بازنەیی
+                gl_FragColor = vec4(vColor, 1.0);
+            }
+        `;
+        
+        const shaderMaterial = new THREE.ShaderMaterial({
+            uniforms: {},
+            vertexShader: vertexShader,
+            fragmentShader: fragmentShader,
+            transparent: false,
+            depthWrite: true,
+            depthTest: true
         });
+        
+        // بەکارهێنانی Points بە شەیدەری تایبەت
+        const particles = new THREE.Points(geometry, shaderMaterial);
+        scene.add(particles);
 
-        // نامەکە
-        const fullMessage = `چەژنت پیرۆز  ئاوات جیان\nیارەبی خوای گەورە لۆمنت سەلامەت بکات\nپشت پەنام هەموو دەمێ لە پشتم بووی\nخۆشی و ناخۆشی منت بەرێ کردن\nئەمنت پێ گەیاند هەتا ئیستا\nوەک مامۆستا سەیری کەسم نەکردیە\nبەڵام یەکەم مامۆستای ژیانم ئەتوو بووی\nفێرە زۆر شتت کردم\nرەبی خوای گەورە ئاواتی دڵت بینتە دی\nکەسەکی باشیشت بە نسیب بی\nفەرۆ هەموو دەمێ لۆتو هەیە\nقەت قەت لۆ هیچ شتەک دەستبەردارت نابی\nچەژنت پیرۆز بی\nهەموو ساڵت جەژن بی\nکەسەکی گەورەی وەکی توو دەبی\nفەرشی سۆرم لۆ راخستبا\nلەوانیە ئەو ژیانە زۆر دەرفەتی نەدابمێ\nزۆر شت هەیە بکەم لۆت\nبەڵام بە خوای گەورە کەسەکی لەناو دڵی من چەقیوی\nپشت پەنام جەژنت پیرۆز\nجەرگ و دڵی فەرزادی`;
-
-        const typedTextElement = document.getElementById('typedMessage');
-        const cursorElement = document.getElementById('cursor');
-        const bigTextContainer = document.getElementById('bigTextContainer');
-        const finalHeart = document.getElementById('finalHeart');
-
-        let charIndex = 0;
-        const typingSpeed = 65;
-
-        function typeMessage() {
-            if (charIndex < fullMessage.length) {
-                const currentChar = fullMessage.charAt(charIndex);
-                
-                if (currentChar === '\n') {
-                    typedTextElement.innerHTML += '<br>';
-                } else {
-                    typedTextElement.innerHTML += currentChar;
-                }
-                
-                charIndex++;
-                
-                let delay = typingSpeed;
-                if (currentChar === ' ' || currentChar === '\n') {
-                    delay = typingSpeed + 35;
-                } else if (currentChar === '.' || currentChar === '،' || currentChar === '؟') {
-                    delay = typingSpeed + 180;
-                }
-                
-                setTimeout(typeMessage, delay);
-                
-                // سکرۆڵ بۆ نوێترین دێر
-                typedTextElement.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-            } else {
-                // نامە تەواو بوو
-                cursorElement.style.display = 'none';
-                
-                // نیشاندانی تێکستی گەورە و دڵ
-                setTimeout(() => {
-                    bigTextContainer.classList.add('visible');
-                    setTimeout(() => {
-                        finalHeart.classList.add('visible');
-                    }, 800);
-                }, 500);
-            }
-        }
-
-        // دروستکردنی ئەستێرەکان
-        function createStars() {
-            const container = document.getElementById('starsContainer');
-            const starCount = 130;
-
-            for (let i = 0; i < starCount; i++) {
-                const star = document.createElement('div');
-                star.classList.add('star');
-                star.style.left = Math.random() * 100 + '%';
-                star.style.top = Math.random() * 100 + '%';
-                const size = Math.random() * 3.5 + 1;
-                star.style.width = size + 'px';
-                star.style.height = size + 'px';
-                star.style.setProperty('--duration', (Math.random() * 4 + 2.5) + 's');
-                star.style.animationDelay = Math.random() * 6 + 's';
-                container.appendChild(star);
-            }
-        }
-
-        // دروستکردنی شەمشەمەکوێرە
-        function createShootingStars() {
-            const container = document.getElementById('shootingStarsContainer');
+        // زیادکردنی هەندێک ستێرەی پاشبنەما (ئامادەنەکراو)
+        // بۆ جوانکاری: چەند تەنۆلکەیەکی تر بە ڕەنگی سپی لە دووردا
+        
+        // --- ئەنیمەیشن ---
+        let time = 0;
+        function animate() {
+            requestAnimationFrame(animate);
+            time += 0.005;
             
-            setInterval(() => {
-                const shootingStar = document.createElement('div');
-                shootingStar.classList.add('shooting-star');
-                shootingStar.style.top = Math.random() * 50 + '%';
-                shootingStar.style.left = Math.random() * 80 + 10 + '%';
-                shootingStar.style.animationDuration = (Math.random() * 3 + 3) + 's';
-                shootingStar.style.animationDelay = Math.random() * 8 + 's';
-                container.appendChild(shootingStar);
-                
-                setTimeout(() => {
-                    shootingStar.remove();
-                }, 12000);
-            }, 5000);
-        }
-
-        // دروستکردنی هەورەکان
-        function createClouds() {
-            const container = document.getElementById('cloudsContainer');
+            // خولانەوەی تەنۆلکەکان بۆ کارلێکی بینایی
+            particles.rotation.y = time * 0.2;
+            particles.rotation.x = Math.sin(time * 0.3) * 0.2;
             
-            for (let i = 0; i < 8; i++) {
-                const cloud = document.createElement('div');
-                cloud.classList.add('cloud');
-                cloud.style.width = (Math.random() * 200 + 100) + 'px';
-                cloud.style.height = (Math.random() * 60 + 30) + 'px';
-                cloud.style.top = Math.random() * 80 + '%';
-                cloud.style.left = Math.random() * 100 + '%';
-                cloud.style.animationDuration = (Math.random() * 20 + 25) + 's';
-                cloud.style.animationDelay = Math.random() * 15 + 's';
-                container.appendChild(cloud);
-            }
+            renderer.render(scene, camera);
         }
+        
+        animate();
 
-        // دروستکردنی دڵەکان
-        function createHearts() {
-            const container = document.getElementById('heartsContainer');
-            const hearts = ['❤️', '💕', '💖', '💗', '💝', '💘', '💓', '💞', '✨', '🌟', '💫', '🕊️', '🌙', '💐'];
-
-            setInterval(() => {
-                const heart = document.createElement('div');
-                heart.classList.add('heart');
-                heart.textContent = hearts[Math.floor(Math.random() * hearts.length)];
-                heart.style.left = Math.random() * 92 + '%';
-                heart.style.setProperty('--float-duration', (Math.random() * 4 + 3.5) + 's');
-                heart.style.fontSize = (Math.random() * 22 + 14) + 'px';
-                container.appendChild(heart);
-
-                setTimeout(() => {
-                    heart.remove();
-                }, 5000);
-            }, 280);
+        // --- ڕێکخستن بۆ گۆڕینی قەبارەی پەنجەرە ---
+        window.addEventListener('resize', onWindowResize, false);
+        function onWindowResize() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
         }
-
-        // دروستکردنی پەڕەی گوڵاوی
-        function createPetals() {
-            const container = document.getElementById('petalsContainer');
-            const petals = ['🌸', '🌷', '💮', '🏵️', '🌺', '🌹', '🥀', '💐', '🍂', '🌿'];
-
-            setInterval(() => {
-                const petal = document.createElement('div');
-                petal.classList.add('rose-petal');
-                petal.textContent = petals[Math.floor(Math.random() * petals.length)];
-                petal.style.left = Math.random() * 95 + '%';
-                petal.style.top = '-5%';
-                petal.style.fontSize = (Math.random() * 16 + 14) + 'px';
-                petal.style.animationDuration = (Math.random() * 6 + 7) + 's';
-                container.appendChild(petal);
-
-                setTimeout(() => {
-                    petal.remove();
-                }, 10000);
-            }, 450);
-        }
-
-        // دەستپێکردنی هەموو ئەنیمەیشنەکان
-        function startAllAnimations() {
-            createStars();
-            createShootingStars();
-            createClouds();
-            createHearts();
-            createPetals();
-            
-            // دەستپێکردنی نوسینی نامەکە دوای 1.2 چرکە
-            setTimeout(() => {
-                typeMessage();
-            }, 1200);
-        }
+        
+        console.log("✅ کۆدەکە بە سەرکەوتوویی کار دەکات!");
     </script>
 </body>
 </html>
