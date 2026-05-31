@@ -479,7 +479,7 @@
     <div class="start-overlay" id="startOverlay">
         <div style="font-size: 80px; animation: heartBeat 1.2s ease-in-out infinite;">🎂</div>
         <button class="start-button" id="startButton">✨ بکلیکە بۆ دەستپێکردن ✨</button>
-        <div class="start-hint">🎵 گۆرانی ئاوات - لە سەرەتاوە دەستپێدەکات</div>
+        <div class="start-hint">🎵 کلیک بکە و گۆرانیەکە دەستپێدەکات</div>
     </div>
 
     <div id="youtubePlayer" style="position: fixed; top: -9999px; left: -9999px; width: 1px; height: 1px; opacity: 0; pointer-events: none;"></div>
@@ -527,9 +527,8 @@
     </div>
 
     <script>
-        // گۆرانی ئاوات - RPKTPGuij-Q - لە سەرەتاوە
         const youtubeVideoId = "RPKTPGuij-Q";
-        const startTime = 0; // سەرەتای گۆرانی
+        const startTime = 0;
         let isPlaying = true;
 
         function createYouTubePlayer() {
@@ -541,12 +540,11 @@
             iframe.setAttribute('frameborder', '0');
             iframe.setAttribute('allow', 'autoplay; encrypted-media');
             iframe.setAttribute('allowfullscreen', '');
-            // لینکی ڕاستەوخۆی یوتوب
             const src = `https://www.youtube.com/embed/${youtubeVideoId}?autoplay=0&controls=0&showinfo=0&rel=0&loop=1&playlist=${youtubeVideoId}&mute=0&enablejsapi=1&origin=${window.location.origin}&start=${startTime}`;
             iframe.setAttribute('src', src);
             container.appendChild(iframe);
             iframe.addEventListener('load', function() {
-                console.log('✅ پلەیەر ئامادەیە - گۆرانی: RPKTPGuij-Q');
+                console.log('✅ پلەیەر ئامادەیە');
             });
             return iframe;
         }
