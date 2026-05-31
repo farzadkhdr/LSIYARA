@@ -486,7 +486,7 @@
 
     <div class="audio-control" id="audioControl" style="display: none;">
         <span>🎵</span>
-        <span>گۆرانی ئاوات</span>
+        <span>گۆرانی</span>
         <button id="toggleMusic">⏯️</button>
         <span id="volumeIcon">🔊</span>
     </div>
@@ -527,9 +527,9 @@
     </div>
 
     <script>
-        // هەمان گۆرانی ئاوات - RPKTPGuij-Q - لە سەرەتاوە (start=0)
+        // گۆرانی ئاوات - RPKTPGuij-Q - لە سەرەتاوە
         const youtubeVideoId = "RPKTPGuij-Q";
-        const startTime = 0; // لە سەرەتاوە دەستپێدەکات
+        const startTime = 0; // سەرەتای گۆرانی
         let isPlaying = true;
 
         function createYouTubePlayer() {
@@ -541,11 +541,12 @@
             iframe.setAttribute('frameborder', '0');
             iframe.setAttribute('allow', 'autoplay; encrypted-media');
             iframe.setAttribute('allowfullscreen', '');
+            // لینکی ڕاستەوخۆی یوتوب
             const src = `https://www.youtube.com/embed/${youtubeVideoId}?autoplay=0&controls=0&showinfo=0&rel=0&loop=1&playlist=${youtubeVideoId}&mute=0&enablejsapi=1&origin=${window.location.origin}&start=${startTime}`;
             iframe.setAttribute('src', src);
             container.appendChild(iframe);
             iframe.addEventListener('load', function() {
-                console.log('✅ پلەیەری یوتوب ئامادەیە - گۆرانی: RPKTPGuij-Q (ئاوات)');
+                console.log('✅ پلەیەر ئامادەیە - گۆرانی: RPKTPGuij-Q');
             });
             return iframe;
         }
@@ -557,7 +558,7 @@
                 setTimeout(() => {
                     iframe.contentWindow.postMessage('{"event":"command","func":"setVolume","args":[60]}', '*');
                 }, 1000);
-                console.log('🎵 گۆرانی ئاوات دەستپێدەکات لە سەرەتاوە...');
+                console.log('🎵 گۆرانی دەستپێدەکات...');
             }
         }
 
