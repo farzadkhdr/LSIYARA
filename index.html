@@ -1,238 +1,266 @@
 <!DOCTYPE html>
-<html lang="ku" dir="rtl">
+<html lang="ckb" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>بانگهێشتنامەی هاوسەرگیری - فەرزاد و رەیان</title>
-    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <title>بانگێشتنامەی هاوسەگیرانی فەرزاد و رەیان</title>
     <style>
         * {
-            box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Vazirmatn', sans-serif;
+            box-sizing: border-box;
+            font-family: 'Tahoma', sans-serif;
         }
-        body {
+
+        body, html {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
             background-color: #000;
-            color: #333;
-            overflow-x: hidden;
+        }
+
+        /* Screen 1: The Gate & Animation */
+        #gate-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 10;
+            overflow: hidden;
+            background: url('https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=1000&auto=format&fit=crop') no-repeat center center/cover;
+            transition: opacity 1.5s ease;
+        }
+
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.4);
+        }
+
+        /* Container for zooming effect */
+        .zoom-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 100vh;
+            transform: scale(1);
+            transition: transform 4s cubic-bezier(0.25, 1, 0.5, 1);
         }
 
-        /* چوارچێوەی موبایل */
-        .invitation-wrapper {
-            width: 100%;
-            max-width: 430px;
-            height: 100vh;
-            background: #fff;
+        .zoom-container.zoomed {
+            transform: scale(2.5);
+        }
+
+        /* Gate Image / Structure */
+        .gates-wrapper {
             position: relative;
-            overflow: hidden;
-            box-shadow: 0 0 25px rgba(0,0,0,0.5);
-        }
-
-        /* شاشەی سەرەتا: دەرگای زێڕین و ڕێڕەوی گوڵ وەک ڤیدیۆکە */
-        #gateway-screen {
-            position: absolute;
-            top: 0;
-            left: 0;
             width: 100%;
             height: 100%;
-            /* وێنەی ڕاستەقینەی ڕێڕەوی هۆڵ و دەرگای زێڕین */
-            background: url('https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=1000&q=80') no-repeat center center/cover;
-            z-index: 100;
             display: flex;
-            flex-direction: column;
-            justify-content: space-between;
+            justify-content: center;
             align-items: center;
-            padding: 40px 20px;
-            transition: transform 1.2s cubic-bezier(0.77, 0, 0.175, 1), opacity 1.2s ease;
         }
 
-        .gateway-overlay {
+        .gate-bg-image {
             position: absolute;
-            top: 0;
-            left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(to bottom, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.2) 50%, rgba(0,0,0,0.7) 100%);
-            z-index: 1;
-        }
-
-        .gateway-header {
-            position: relative;
-            z-index: 2;
-            text-align: center;
-            color: white;
-            margin-top: 20px;
-        }
-
-        .gateway-header h3 {
-            font-size: 1.1rem;
-            letter-spacing: 1.5px;
-            margin-bottom: 8px;
-            color: #f3e5ab;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
-        }
-
-        .gateway-header h1 {
-            font-size: 2.2rem;
-            font-weight: 700;
-            color: #ffffff;
-            text-shadow: 0 2px 6px rgba(0,0,0,0.6);
-        }
-
-        .gateway-footer {
-            position: relative;
-            z-index: 2;
-            text-align: center;
-            width: 100%;
-            margin-bottom: 30px;
-        }
-
-        .open-btn {
-            background: linear-gradient(135deg, #d4af37 0%, #aa8c2c 100%);
-            color: white;
-            border: none;
-            padding: 14px 45px;
-            font-size: 1.1rem;
-            font-weight: 600;
-            border-radius: 30px;
-            cursor: pointer;
-            box-shadow: 0 5px 20px rgba(212, 175, 55, 0.6);
-            transition: transform 0.3s ease;
-        }
-
-        .open-btn:hover {
-            transform: scale(1.05);
-        }
-
-        /* کلاس بۆ ئەنیمەیشنی چوونە ناو دەرگاکە (Zoom In) */
-        .zoom-effect {
-            transform: scale(2.8);
-            opacity: 0;
-        }
-
-        /* ناوەڕۆکی ناوەوەی هۆڵەکە پاش کردنەوەی دەرگا */
-        .main-content {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            overflow-y: auto;
-            background: #fcfbfa;
-            opacity: 0;
-            transition: opacity 0.8s ease 0.4s;
-        }
-
-        .hero-banner {
-            position: relative;
-            text-align: center;
-            color: white;
-        }
-
-        .hero-banner img {
-            width: 100%;
-            height: 420px;
             object-fit: cover;
         }
 
-        .hero-banner .text-overlay {
+        /* Opening Doors Animation */
+        .door {
             position: absolute;
-            bottom: 0;
+            width: 50%;
+            height: 100%;
+            top: 0;
+            background: linear-gradient(135deg, #d4af37, #aa7c11, #d4af37);
+            border: 5px solid #fff;
+            transition: transform 2.5s ease-in-out;
+            z-index: 3;
+        }
+
+        .door.left {
+            left: 0;
+            transform-origin: left;
+        }
+
+        .door.right {
+            right: 0;
+            transform-origin: right;
+        }
+
+        .zoom-container.open .door.left {
+            transform: perspective(1200px) rotateY(-110deg);
+        }
+
+        .zoom-container.open .door.right {
+            transform: perspective(1200px) rotateY(110deg);
+        }
+
+        /* White Light Flash */
+        #flash-light {
+            position: fixed;
+            top: 0;
             left: 0;
             width: 100%;
-            background: linear-gradient(transparent, rgba(0,0,0,0.8));
-            padding: 20px;
+            height: 100%;
+            background: #ffffff;
+            z-index: 20;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 1s ease;
         }
 
-        .content-body {
+        #flash-light.active {
+            opacity: 1;
+        }
+
+        /* Screen 2: Invitation Content */
+        #invitation-screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #fffdf9;
+            overflow-y: auto;
+            display: none;
+            opacity: 0;
+            transition: opacity 1s ease;
+            z-index: 5;
             padding: 20px;
             text-align: center;
+            color: #333;
         }
 
-        .card-box {
+        .invitation-card {
+            max-width: 600px;
+            margin: 40px auto;
             background: #fff;
-            border: 1px solid #e6dcbe;
-            border-radius: 12px;
-            padding: 20px;
-            margin: 20px 0;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.03);
-            text-align: right;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(212, 175, 55, 0.2);
+            border: 2px solid #d4af37;
         }
 
-        .card-box h4 {
-            color: #d4af37;
-            margin-bottom: 12px;
-            font-size: 1.05rem;
-            text-align: center;
+        .names {
+            font-size: 28px;
+            color: #b8860b;
+            margin: 20px 0;
+            font-weight: bold;
+        }
+
+        .quran-verse {
+            font-size: 16px;
+            color: #555;
+            margin: 20px 0;
+            line-height: 1.8;
+            font-style: italic;
+        }
+
+        .details {
+            margin: 20px 0;
+            font-size: 15px;
+            line-height: 1.6;
+        }
+
+        /* Click to Open Prompt */
+        .start-prompt {
+            position: absolute;
+            bottom: 50px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(212, 175, 55, 0.9);
+            color: #fff;
+            padding: 12px 30px;
+            border-radius: 30px;
+            font-size: 18px;
+            cursor: pointer;
+            z-index: 15;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: translateX(-50%) scale(1); }
+            50% { transform: translateX(-50%) scale(1.05); }
+            100% { transform: translateX(-50%) scale(1); }
         }
     </style>
 </head>
 <body>
 
-    <div class="invitation-wrapper">
-        
-        <div id="gateway-screen">
-            <div class="gateway-overlay"></div>
+    <div id="gate-screen">
+        <div class="overlay"></div>
+        <div class="zoom-container" id="zoomContainer">
+            <img src="https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=1000&auto=format&fit=crop" class="gate-bg-image" alt="Wedding Hall">
             
-            <div class="gateway-header">
-                <h3>بۆ کردنەوە کلیک بکە</h3>
-                <h1>فەرزاد و رەیان</h1>
-            </div>
-
-            <div class="gateway-footer">
-                <button class="open-btn" onclick="openDoorAnimation()">کردنەوەی دەرگا</button>
-            </div>
+            <div class="door left"></div>
+            <div class="door right"></div>
         </div>
 
-        <div class="main-content" id="mainContent">
-            <div class="hero-banner">
-                <img src="https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&w=800&q=80" alt="Hall Interior">
-                <div class="text-overlay">
-                    <h2 style="color: #f3e5ab; font-size: 1.7rem;">فەرزاد و رەیان</h2>
-                    <p style="font-size: 0.9rem;">چیرۆکێکی خۆشەویستی دەست پێدەکات</p>
-                </div>
-            </div>
+        <div class="start-prompt" id="startBtn">بۆ کردنەوە کلیک بکە</div>
+    </div>
 
-            <div class="content-body">
-                <p style="font-size: 0.95rem; line-height: 1.8; color: #444; margin-bottom: 20px;">
-                    بە دلێکی پر لە خۆشی و شادیەوە، شەرەفمەندین بە بانگهێشتکردنتان بۆ بەشداریکردن لە جوانترین ساتەکانی ژیانمان لە ئاهەنگی هاوسەرگیریماندا.
-                </p>
+    <div id="flash-light"></div>
 
-                <div class="card-box">
-                    <h4>زانیاری ئاهەنگ</h4>
-                    <p style="margin: 8px 0;"><strong>📅 ڕۆژ:</strong> پێنجشەممە</p>
-                    <p style="margin: 8px 0;"><strong>📍 هۆڵ:</strong> هۆڵی شازادە - هەولێر</p>
-                    <p style="margin: 8px 0;"><strong>⏰ کات:</strong> کاتژمێر 8:00ـی شەو</p>
-                </div>
+    <div id="invitation-screen">
+        <div class="invitation-card">
+            <h2 style="color: #d4af37;">بانگێشتنامە</h2>
+            <div class="names">فەرزاد & رەیان</div>
+            
+            <p class="quran-verse">
+                «وَمِنْ آيَاتِهِ أَنْ خَلَقَ لَكُم مِّن أنفُسِكُمْ أَزْوَاجًا لِّتَسْكُنُوا إِلَيْهَا وَجَعَلَ بَيْنَكُم مَّدَّةً وَرَحْمَةً»
+            </p>
 
-                <p style="margin-top: 35px; font-size: 0.85rem; color: #777; font-weight: bold;">
-                    چاوەڕوانی ئامادەبوونتانین <br>
-                    <span style="color: #d4af37; font-size: 1rem;">#فەرزاد_و_رەیان</span>
-                </p>
+            <div class="details">
+                <p>بە خۆشحاڵییەوە بانگێشتتان دەکەین بۆ ئاهەنگی هاوسەرگیرمان</p>
+                <br>
+                <p><strong>رۆژ:</strong> پێنجشەممە</p>
+                <p><strong>بەڕێوەچوون:</strong> هۆڵی شاهانە - هەولێر</p>
             </div>
         </div>
-
     </div>
 
     <script>
-        function openDoorAnimation() {
-            const gateway = document.getElementById('gateway-screen');
-            const mainContent = document.getElementById('mainContent');
+        const startBtn = document.getElementById('startBtn');
+        const zoomContainer = document.getElementById('zoomContainer');
+        const flashLight = document.getElementById('flash-light');
+        const gateScreen = document.getElementById('gate-screen');
+        const invitationScreen = document.getElementById('invitation-screen');
 
-            // چالاککردنی ئەنیمەیشنی گەورەبوون و چوونە ناو دەرگاکە
-            gateway.classList.add('zoom-effect');
+        startBtn.addEventListener('click', () => {
+            // شاردنەوەی دوگمەکە
+            startBtn.style.display = 'none';
 
-            // نیشاندانی ناوی هۆڵ و بانگهێشتنامەکە دوای تەواوبوونی ئەنیمەیشنەکە
+            // ١. چوونە پێشەوەی هێواش (Zoom in) بەرەو دەرگا
+            zoomContainer.classList.add('zoomed');
+
+            // ٢. کردنەوەی دەرگاکە دوای ٣ چرکە
             setTimeout(() => {
-                gateway.style.display = 'none';
-                mainContent.style.opacity = '1';
-            }, 1000);
-        }
+                zoomContainer.classList.add('open');
+            }, 2500);
+
+            // ٣. دەرکەوتنی ڕوومای سپی (Flash light) بۆ گواستنەوە بۆ ناو بانگێشتنامە
+            setTimeout(() => {
+                flashLight.classList.add('active');
+            }, 4500);
+
+            // ٤. نیشاندانی بانگێشتنامەی فەرزاد و رەیان
+            setTimeout(() => {
+                gateScreen.style.display = 'none';
+                flashLight.classList.remove('active');
+                invitationScreen.style.display = 'block';
+                invitationScreen.style.opacity = '1';
+            }, 5500);
+        });
     </script>
 </body>
 </html>
