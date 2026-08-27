@@ -22,7 +22,7 @@
             min-height: 100vh;
         }
 
-        /* سەکۆی سەرەکی موبایل */
+        /* چوارچێوەی موبایل */
         .invitation-wrapper {
             width: 100%;
             max-width: 430px;
@@ -33,21 +33,22 @@
             box-shadow: 0 0 25px rgba(0,0,0,0.5);
         }
 
-        /* بەشی هاتنە ژوورەوە و دەرگاکە کە ئەنیمەیشنی هەیە */
+        /* شاشەی سەرەتا: دەرگای زێڕین و ڕێڕەوی گوڵ وەک ڤیدیۆکە */
         #gateway-screen {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: url('https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=800&q=80') no-repeat center center/cover;
+            /* وێنەی ڕاستەقینەی ڕێڕەوی هۆڵ و دەرگای زێڕین */
+            background: url('https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=1000&q=80') no-repeat center center/cover;
             z-index: 100;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
             align-items: center;
             padding: 40px 20px;
-            transition: transform 1.5s cubic-bezier(0.77, 0, 0.175, 1), opacity 1.5s ease;
+            transition: transform 1.2s cubic-bezier(0.77, 0, 0.175, 1), opacity 1.2s ease;
         }
 
         .gateway-overlay {
@@ -56,52 +57,65 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.4);
+            background: linear-gradient(to bottom, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.2) 50%, rgba(0,0,0,0.7) 100%);
             z-index: 1;
         }
 
-        .gateway-content {
+        .gateway-header {
             position: relative;
             z-index: 2;
             text-align: center;
             color: white;
-            width: 100%;
+            margin-top: 20px;
         }
 
-        .gateway-content h3 {
+        .gateway-header h3 {
             font-size: 1.1rem;
-            letter-spacing: 1px;
-            margin-bottom: 10px;
+            letter-spacing: 1.5px;
+            margin-bottom: 8px;
             color: #f3e5ab;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
         }
 
-        .gateway-content h1 {
-            font-size: 2rem;
+        .gateway-header h1 {
+            font-size: 2.2rem;
             font-weight: 700;
-            margin-bottom: 20px;
+            color: #ffffff;
+            text-shadow: 0 2px 6px rgba(0,0,0,0.6);
         }
 
-        /* دوگمەی کردنەوە کە ڕاستەوخۆ دەرگاکە بەرەو پێش دەنێرێت و دەیکاتەوە */
-        .enter-btn {
+        .gateway-footer {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            width: 100%;
+            margin-bottom: 30px;
+        }
+
+        .open-btn {
             background: linear-gradient(135deg, #d4af37 0%, #aa8c2c 100%);
             color: white;
             border: none;
-            padding: 14px 40px;
+            padding: 14px 45px;
             font-size: 1.1rem;
             font-weight: 600;
             border-radius: 30px;
             cursor: pointer;
-            box-shadow: 0 5px 20px rgba(212, 175, 55, 0.5);
-            transition: all 0.3s ease;
-            position: relative;
-            z-index: 2;
+            box-shadow: 0 5px 20px rgba(212, 175, 55, 0.6);
+            transition: transform 0.3s ease;
         }
 
-        .enter-btn:hover {
+        .open-btn:hover {
             transform: scale(1.05);
         }
 
-        /* ناوەڕۆکی سەرەکی بانگهێشتنامە کە لەپاش دەرگاکەیە */
+        /* کلاس بۆ ئەنیمەیشنی چوونە ناو دەرگاکە (Zoom In) */
+        .zoom-effect {
+            transform: scale(2.8);
+            opacity: 0;
+        }
+
+        /* ناوەڕۆکی ناوەوەی هۆڵەکە پاش کردنەوەی دەرگا */
         .main-content {
             position: absolute;
             top: 0;
@@ -111,7 +125,7 @@
             overflow-y: auto;
             background: #fcfbfa;
             opacity: 0;
-            transition: opacity 1s ease 0.5s;
+            transition: opacity 0.8s ease 0.4s;
         }
 
         .hero-banner {
@@ -122,7 +136,7 @@
 
         .hero-banner img {
             width: 100%;
-            height: 400px;
+            height: 420px;
             object-fit: cover;
         }
 
@@ -135,7 +149,7 @@
             padding: 20px;
         }
 
-        .details-section {
+        .content-body {
             padding: 20px;
             text-align: center;
         }
@@ -145,22 +159,16 @@
             border: 1px solid #e6dcbe;
             border-radius: 12px;
             padding: 20px;
-            margin: 15px 0;
+            margin: 20px 0;
             box-shadow: 0 4px 10px rgba(0,0,0,0.03);
             text-align: right;
         }
 
         .card-box h4 {
             color: #d4af37;
-            margin-bottom: 10px;
-            font-size: 1rem;
+            margin-bottom: 12px;
+            font-size: 1.05rem;
             text-align: center;
-        }
-
-        /* کلاسێک بۆ ئەنیمەیشنی چوونە پێشەوەی دەرگاکە */
-        .zoom-door {
-            transform: scale(2.5);
-            opacity: 0;
         }
     </style>
 </head>
@@ -168,46 +176,43 @@
 
     <div class="invitation-wrapper">
         
-        <!-- دیمەنی دەرگا و پێش دەرگای هۆڵەکە -->
         <div id="gateway-screen">
             <div class="gateway-overlay"></div>
             
-            <div class="gateway-content" style="margin-top: 30px;">
-                <h3>بانگهێشتنامەی هاوسەرگیری</h3>
+            <div class="gateway-header">
+                <h3>بۆ کردنەوە کلیک بکە</h3>
                 <h1>فەرزاد و رەیان</h1>
             </div>
 
-            <div class="gateway-content" style="margin-bottom: 40px;">
-                <p style="margin-bottom: 15px; font-size: 0.95rem; color: #eee;">بۆ کردنەوە و چوونە ژوورەوە کلیک بکە</p>
-                <button class="enter-btn" onclick="startAnimation()">کردنەوەی دەرگا</button>
+            <div class="gateway-footer">
+                <button class="open-btn" onclick="openDoorAnimation()">کردنەوەی دەرگا</button>
             </div>
         </div>
 
-        <!-- ناوەڕۆکی تەواوی بانگهێشتنامەکە کە دوای ئەنیمەیشنەکە دەردەکەوێت -->
         <div class="main-content" id="mainContent">
             <div class="hero-banner">
-                <img src="https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&w=800&q=80" alt="Wedding Hall">
+                <img src="https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&w=800&q=80" alt="Hall Interior">
                 <div class="text-overlay">
-                    <h2 style="color: #f3e5ab; font-size: 1.6rem;">فەرزاد و رەیان</h2>
+                    <h2 style="color: #f3e5ab; font-size: 1.7rem;">فەرزاد و رەیان</h2>
                     <p style="font-size: 0.9rem;">چیرۆکێکی خۆشەویستی دەست پێدەکات</p>
                 </div>
             </div>
 
-            <div class="details-section">
-                <p style="font-size: 0.9rem; line-height: 1.7; color: #555; margin-bottom: 20px;">
-                    بە دلێکی پر لە خۆشی و شادیەوە، شەرەفمەندین بە بانگهێشتکردنتان بۆ بەشداریکردن لە جوانترین ساتەکانی ژیانمان.
+            <div class="content-body">
+                <p style="font-size: 0.95rem; line-height: 1.8; color: #444; margin-bottom: 20px;">
+                    بە دلێکی پر لە خۆشی و شادیەوە، شەرەفمەندین بە بانگهێشتکردنتان بۆ بەشداریکردن لە جوانترین ساتەکانی ژیانمان لە ئاهەنگی هاوسەرگیریماندا.
                 </p>
 
                 <div class="card-box">
-                    <h4>کات و شوێنی ئاهەنگ</h4>
-                    <p><strong>📅 ڕۆژ:</strong> پێنجشەممە</p>
-                    <p><strong>📍 هۆڵ:</strong> هۆڵی شازادە - هەولێر</p>
-                    <p><strong>⏰ کات:</strong> کاتژمێر 8:00ـی شەو</p>
+                    <h4>زانیاری ئاهەنگ</h4>
+                    <p style="margin: 8px 0;"><strong>📅 ڕۆژ:</strong> پێنجشەممە</p>
+                    <p style="margin: 8px 0;"><strong>📍 هۆڵ:</strong> هۆڵی شازادە - هەولێر</p>
+                    <p style="margin: 8px 0;"><strong>⏰ کات:</strong> کاتژمێر 8:00ـی شەو</p>
                 </div>
 
-                <p style="margin-top: 30px; font-size: 0.85rem; color: #888; font-weight: bold;">
+                <p style="margin-top: 35px; font-size: 0.85rem; color: #777; font-weight: bold;">
                     چاوەڕوانی ئامادەبوونتانین <br>
-                    <span style="color: #d4af37;">#فەرزاد_و_رەیان</span>
+                    <span style="color: #d4af37; font-size: 1rem;">#فەرزاد_و_رەیان</span>
                 </p>
             </div>
         </div>
@@ -215,14 +220,14 @@
     </div>
 
     <script>
-        function startAnimation() {
+        function openDoorAnimation() {
             const gateway = document.getElementById('gateway-screen');
             const mainContent = document.getElementById('mainContent');
 
-            // ئەنیمەیشنی چوونەپێشەوەی دەرگاکە (Zoom In و ونبوون) وەک ڤیدیۆکە
-            gateway.classList.add('zoom-door');
+            // چالاککردنی ئەنیمەیشنی گەورەبوون و چوونە ناو دەرگاکە
+            gateway.classList.add('zoom-effect');
 
-            // نیشاندانی ناوەڕۆکی ناوەوەی هۆڵەکە لە پاش تەواوبوونی ئەنیمەیشنەکە
+            // نیشاندانی ناوی هۆڵ و بانگهێشتنامەکە دوای تەواوبوونی ئەنیمەیشنەکە
             setTimeout(() => {
                 gateway.style.display = 'none';
                 mainContent.style.opacity = '1';
