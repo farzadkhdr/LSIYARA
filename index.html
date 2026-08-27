@@ -1,336 +1,188 @@
 <!DOCTYPE html>
-<html lang="ckb" dir="rtl">
+<html lang="ku" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>بانگهێشتنامەی هاوسەرگیری - فەرزاد و رەیان</title>
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&display=swap');
-
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Amiri', serif;
+            font-family: 'Vazirmatn', sans-serif;
         }
-
         body {
-            background-color: #0b0b0b;
-            color: #d4af37;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            overflow: hidden;
-        }
-
-        .phone-frame {
-            width: 100%;
-            max-width: 414px;
-            height: 100vh;
-            background: #111;
-            position: relative;
-            box-shadow: 0 0 40px rgba(0,0,0,0.9);
-            overflow: hidden;
-        }
-
-        /* بەشی دەروازەی سەرەکی و ڤیدیۆکە */
-        #intro-screen {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: url('https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=800&q=80') no-repeat center center/cover;
-            z-index: 100;
+            background-color: #fcfbfa;
+            color: #333;
+            overflow-x: hidden;
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
             align-items: center;
-            padding: 25px 15px;
+        }
+        /* دەرگای سەرەتا */
+        #intro-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: url('https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=1200&q=80') no-repeat center center/cover;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
             transition: opacity 1s ease;
         }
-
-        .top-banner {
-            background: rgba(0, 0, 0, 0.65);
-            border: 1px solid rgba(212, 175, 55, 0.4);
-            padding: 8px 12px;
-            border-radius: 8px;
-            text-align: center;
-            width: 100%;
-            color: #fff;
-            font-size: 13px;
-            line-height: 1.5;
-        }
-
-        .hallway-container {
-            position: relative;
-            width: 100%;
-            height: 55vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            perspective: 1200px;
-        }
-
-        /* پاشبنەمای ناو هۆڵەکە لە پشت دەرگاوە */
-        .hall-background {
-            position: absolute;
-            width: 80%;
-            height: 90%;
-            background: url('https://images.unsplash.com/photo-1511285560929-80b456fea0bc?auto=format&fit=crop&w=600&q=80') no-repeat center center/cover;
-            border-radius: 10px;
-            z-index: 1;
-        }
-
-        /* دەرگا زێڕینە دووانەکەی ناو ڤیدیۆکە */
-        .golden-door {
-            position: absolute;
-            width: 38%;
-            height: 88%;
-            background: linear-gradient(135deg, #f5d77f 0%, #d4af37 40%, #aa771c 100%);
-            border: 3px solid #fff;
-            box-shadow: inset 0 0 15px rgba(0,0,0,0.5), 0 0 20px rgba(212,175,55,0.7);
-            z-index: 3;
-            transition: transform 2.5s cubic-bezier(0.4, 0, 0.2, 1);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .golden-door.left {
-            left: 12%;
-            transform-origin: left;
-            border-left: 5px solid #fff;
-        }
-
-        .golden-door.right {
-            right: 12%;
-            transform-origin: right;
-            border-right: 5px solid #fff;
-        }
-
-        /* کلیل یان دەسکی دەرگاکە */
-        .door-handle {
-            width: 12px;
-            height: 50px;
-            background: #fff;
-            border-radius: 6px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.5);
-            position: absolute;
-        }
-
-        .golden-door.left .door-handle { right: 8px; }
-        .golden-door.right .door-handle { left: 8px; }
-
-        /* شێوازی کرانەوەی دەرگاکە کاتێک کلیک دەکرێت */
-        .open-portal .golden-door.left {
-            transform: rotateY(-110deg);
-        }
-
-        .open-portal .golden-door.right {
-            transform: rotateY(110deg);
-        }
-
-        /* ڕووناکییە تیژەکەی ناوەڕاست کاتێک دەرگا دەکرێتەوە */
-        .bright-light {
-            position: absolute;
-            width: 60%;
-            height: 80%;
-            background: radial-gradient(circle, #ffffff 0%, rgba(255,215,0,0.8) 40%, transparent 80%);
-            opacity: 0;
-            transition: opacity 1.5s ease;
-            z-index: 2;
-        }
-
-        .open-portal .bright-light {
-            opacity: 1;
-        }
-
-        .click-btn {
-            background: #d4af37;
-            color: #000;
-            border: none;
-            padding: 12px 35px;
-            font-size: 16px;
-            font-weight: bold;
-            border-radius: 25px;
-            cursor: pointer;
-            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.5);
-            z-index: 10;
-            transition: 0.3s;
-        }
-
-        .click-btn:active {
-            transform: scale(0.95);
-        }
-
-        /* ناوەڕۆکی فەرمی بانگهێشتنامەکە کە دوای دەرگا دەردەکەوێت */
-        #main-invitation {
+        .overlay {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: #111;
-            overflow-y: auto;
-            padding: 25px 20px;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
             text-align: center;
-            display: none;
-            opacity: 0;
-            transition: opacity 1s ease;
+            padding: 20px;
+        }
+        .open-btn {
+            background: #d4af37;
+            color: white;
+            border: none;
+            padding: 12px 35px;
+            font-size: 1.1rem;
+            border-radius: 30px;
+            cursor: pointer;
+            margin-top: 20px;
+            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.4);
+            transition: transform 0.3s;
+        }
+        .open-btn:hover {
+            transform: scale(1.05);
         }
 
-        .quran-text {
-            font-size: 13px;
-            color: #ccc;
-            margin-bottom: 20px;
+        /* ناوەڕۆکی سەرەکی */
+        .main-container {
+            width: 100%;
+            max-width: 480px;
+            background: #fff;
+            min-height: 100vh;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            position: relative;
+        }
+        .hero-section {
+            position: relative;
+            text-align: center;
+            color: white;
+        }
+        .hero-section img {
+            width: 100%;
+            height: 450px;
+            object-fit: cover;
+        }
+        .hero-text {
+            position: absolute;
+            bottom: 20px;
+            width: 100%;
+            background: linear-gradient(transparent, rgba(0,0,0,0.7));
+            padding: 20px;
+        }
+        .hero-text h1 {
+            font-size: 1.8rem;
+            color: #f3e5ab;
+            margin-bottom: 5px;
+        }
+        .content-body {
+            padding: 20px;
+            text-align: center;
+        }
+        .quran-verse {
+            font-size: 0.95rem;
+            color: #555;
+            margin: 20px 0;
             line-height: 1.8;
+            border-top: 1px solid #eee;
+            border-bottom: 1px solid #eee;
+            padding: 15px 0;
         }
-
-        .couple-names {
-            font-size: 28px;
+        .section-title {
+            font-size: 1.2rem;
             color: #d4af37;
-            margin: 15px 0;
-            font-weight: bold;
+            margin: 20px 0 10px;
+            font-weight: 700;
         }
-
-        .info-card {
-            background: rgba(255, 255, 255, 0.04);
-            border: 1px solid rgba(212, 175, 55, 0.3);
-            border-radius: 12px;
+        .details-box {
+            background: #fdfcf7;
+            border: 1px solid #e6dcbe;
+            border-radius: 10px;
             padding: 15px;
-            margin-bottom: 15px;
+            margin-top: 15px;
             text-align: right;
         }
-
-        .info-card h3 {
-            color: #d4af37;
-            font-size: 15px;
-            margin-bottom: 8px;
-            border-bottom: 1px solid rgba(212, 175, 55, 0.2);
-            padding-bottom: 4px;
+        .details-box p {
+            margin: 8px 0;
+            font-size: 0.9rem;
         }
-
-        .info-card p {
-            font-size: 13px;
-            color: #ddd;
-            line-height: 1.6;
-        }
-
-        .gallery-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
-            margin-top: 15px;
-        }
-
-        .gallery-grid img {
-            width: 100%;
-            height: 105px;
-            object-fit: cover;
-            border-radius: 8px;
-            border: 1px solid #d4af37;
-        }
-
-        .brand-footer {
-            margin-top: 25px;
-            font-size: 11px;
-            color: #666;
-            letter-spacing: 1px;
+        .footer-credit {
+            margin: 30px 0 20px;
+            font-size: 0.8rem;
+            color: #888;
         }
     </style>
 </head>
 <body>
 
-    <div class="phone-frame">
-        <div id="intro-screen">
-            <div class="top-banner">
-                دەتهەوێت بانگهێشت نامەیەک هەبێت: POV<br>هەمووان باسی بکن دوایی ئاهەنگەکەت
-            </div>
+    <div id="intro-screen">
+        <div class="overlay">
+            <h2 style="font-size: 1.5rem; margin-bottom: 10px; color: #f3e5ab;">بانگهێشتنامەی هاوسەرگیری</h2>
+            <h1 style="font-size: 2.2rem; margin-bottom: 20px;">فەرزاد و رەیان</h1>
+            <p style="margin-bottom: 15px; font-size: 0.9rem;">بۆ کردنەوە کلیک بکە</p>
+            <button class="open-btn" onclick="openInvitation()">کردنەوەی بانگهێشتنامە</button>
+        </div>
+    </div>
 
-            <div class="hallway-container" id="hallContainer">
-                <div class="hall-background"></div>
-                <div class="bright-light" id="brightLight"></div>
-                
-                <div class="golden-door left">
-                    <div class="door-handle"></div>
-                </div>
-                <div class="golden-door right">
-                    <div class="door-handle"></div>
-                </div>
+    <div class="main-container">
+        <div class="hero-section">
+            <img src="https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&w=800&q=80" alt="Wedding Hall">
+            <div class="hero-text">
+                <h1>فەرزاد و رەیان</h1>
+                <p>چیرۆکێکی خۆشەویستی دەست پێدەکات</p>
             </div>
-
-            <button class="click-btn" onclick="openDoorEffect()">بۆ کردنەوە کلیک بکە</button>
         </div>
 
-        <div id="main-invitation">
-            <div class="quran-text">
+        <div class="content-body">
+            <div class="quran-verse">
                 «رَبَّنَا هَبْ لَنَا مِنْ أَزْوَاجِنَا وَذُرِّيَّاتِنَا قُرَّةَ أَعْيُنٍ وَاجْعَلْنَا لِلْمُتَّقِينَ إِمَامًا»
             </div>
 
-            <p style="font-size: 12px; color: #aaa;">بانگهێشتنامە</p>
-            <h1 class="couple-names">فەرزاد و رەیان</h1>
-            
-            <p style="font-size: 13px; color: #ccc; margin-bottom: 20px; line-height: 1.7;">
-                بە خۆشحاڵی و خۆشەویستییەوە، شەرەفمەندین بە بانگهێشتکردنتان بۆ بەشداریکردن لە دوایین ساتەکانی ژیانمان لە ئاهەنگی هاوسەرگیرماندا.
+            <p style="font-size: 0.9rem; line-height: 1.6; color: #444;">
+                بە دلێکی پر لە خۆشی و شادیەوە، شەرەفمەندین بە بانگهێشتکردنتان بۆ بەشداریکردن لە جوانترین ساتەکانی ژیانمان لە ئاهەنگی هاوسەرگیریمان.
             </p>
 
-            <div class="info-card">
-                <h3>📅 کاتی بەڕێوەچوون</h3>
-                <p><strong>ڕۆژی پێنجشەممە:</strong> ٢٣ تشرینی دووەمی ٢٠٢٦</p>
-                <p><strong>کاتژمێر:</strong> ٧:٠٠ی ئێوارە</p>
+            <div class="details-box">
+                <p><strong>📅 ڕۆژ:</strong> پێنجشەممە</p>
+                <p><strong>📍 هۆڵ:</strong> هۆڵی شازادە - هەولێر</p>
+                <p><strong>⏰ کات:</strong> کاتژمێر 8:00ـی شەو</p>
             </div>
 
-            <div class="info-card">
-                <h3>📍 ناونیشان</h3>
-                <p>هۆڵی شارازاد - هەولێر</p>
-            </div>
-
-            <div class="info-card">
-                <h3>⚠️ تێبینییەکان</h3>
-                <p>
-                    * تکایە بێ کارتی پێشوازی کات دیاری کرا ئامادەبن.<br>
-                    * شەرەفمەندین بە ئامادەبوونتان لە دواین ڕۆژی شاگوڵەمدا.<br>
-                    * منداڵتەکەتان گوڵی مالەوەیە.
-                </p>
-            </div>
-
-            <div class="info-card">
-                <h3>📸 یادگارییەکان</h3>
-                <div class="gallery-grid">
-                    <img src="https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?auto=format&fit=crop&w=400&q=80" alt="یادگاری">
-                    <img src="https://images.unsplash.com/photo-1583939003579-730e3918a45a?auto=format&fit=crop&w=400&q=80" alt="یادگاری">
-                    <img src="https://images.unsplash.com/photo-1511285560929-80b456fea0bc?auto=format&fit=crop&w=400&q=80" alt="یادگاری">
-                    <img src="https://images.unsplash.com/photo-1520854221256-17451cc331bf?auto=format&fit=crop&w=400&q=80" alt="یادگاری">
-                </div>
-            </div>
-
-            <div class="brand-footer">
-                FAIRY NOVA-INVITATION WORKERS.DEV
+            <div class="footer-credit">
+                <p>چاوەڕوانی ئامادەبوونتانین</p>
+                <p style="margin-top: 5px; font-weight: bold; color: #d4af37;">#فەرزاد_و_رەیان</p>
             </div>
         </div>
     </div>
 
     <script>
-        function openDoorEffect() {
-            const container = document.getElementById('hallContainer');
+        function openInvitation() {
             const intro = document.getElementById('intro-screen');
-            const mainInv = document.getElementById('main-invitation');
-            
-            container.classList.add('open-portal');
-            
-            // کاتێک دەرگاکە دەکرێتەوە و ڕووناکی دەردەکەوێت، دەگوازینەوە بۆ ناوەڕۆکەکە
+            intro.style.opacity = '0';
             setTimeout(() => {
-                intro.style.opacity = '0';
-                setTimeout(() => {
-                    intro.style.display = 'none';
-                    mainInv.style.display = 'block';
-                    setTimeout(() => {
-                        mainInv.style.opacity = '1';
-                    }, 50);
-                }, 1000);
-            }, 1800);
+                intro.style.display = 'none';
+            }, 1000);
         }
     </script>
 </body>
