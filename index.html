@@ -32,7 +32,7 @@
             position: relative;
         }
         
-        /* دیمەنی جووڵاوی چوونەژوورەوە (Intro Animation) */
+        /* پەردەی سەرەکی و هۆڵی ئاهەنگ */
         .intro-screen {
             position: absolute;
             top: 0;
@@ -44,12 +44,12 @@
             overflow: hidden;
             display: flex;
             flex-direction: column;
-            justify-content: center;
+            justify-content: flex-end;
             align-items: center;
-            transition: opacity 1s ease;
+            transition: opacity 0.8s ease;
         }
 
-        /* وێنەی هۆڵەکە کە بەردەوام گەورە دەبێت (Zoom in) وەک ڤیدیۆکە */
+        /* وێنەی هۆڵەکە کە لە کاتی کلیک کردن دەست بە زوومی پێشەوە دەکات */
         .hall-bg {
             position: absolute;
             top: 0;
@@ -57,58 +57,84 @@
             width: 100%;
             height: 100%;
             background: url('https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&q=80&w=800') center/cover;
-            animation: zoomInHall 4s forwards ease-in-out;
-            filter: brightness(0.8);
+            transform: scale(1);
+            transform-origin: center 55%; /* خاڵی نزیکبوونەوە لە بەر دەرگاکە */
+            transition: transform 3.5s cubic-bezier(0.25, 1, 0.5, 1);
+            filter: brightness(0.85);
         }
 
-        @keyframes zoomInHall {
-            0% {
-                transform: scale(1);
-            }
-            100% {
-                transform: scale(1.6);
-            }
+        /* کاتێک ئەنیمەیشنەکە کارا دەبێت، وێنەکە گەورە دەبێت (بەرەو دەرگا دەڕوات) */
+        .intro-screen.zooming .hall-bg {
+            transform: scale(3.2); 
         }
 
-        /* تیشکی ناوەڕاستی دەرگاکە کاتێک دەکرێتەوە */
-        .light-beam {
+        /* تیشکی نور کە لە دەرگاوە دەردەچێت لە کۆتایی زوومەکەدا */
+        .door-light {
             position: absolute;
+            top: 0;
+            left: 0;
             width: 100%;
             height: 100%;
-            background: radial-gradient(circle, rgba(255,255,255,0.9) 0%, rgba(255,223,128,0.3) 40%, transparent 70%);
+            background: radial-gradient(circle, rgba(255,255,255,1) 0%, rgba(255,223,128,0.6) 40%, transparent 80%);
             opacity: 0;
-            animation: lightReveal 4s forwards ease-in-out;
+            transition: opacity 1s ease-in-out;
             z-index: 101;
+            pointer-events: none;
+        }
+        .intro-screen.zooming .door-light {
+            opacity: 1;
+            transition-delay: 2.5s; /* لە کۆتایی جووڵەکەدا تیشکەکە دەردەکەوێت */
         }
 
-        @keyframes lightReveal {
-            0% { opacity: 0; transform: scale(0.5); }
-            70% { opacity: 0.5; }
-            100% { opacity: 1; transform: scale(1.5); }
-        }
-
-        /* دوگمەی دەستپێکردن بۆ بینینی ڤیدیۆییەکە */
-        .start-prompt {
+        /* תיبةتی پێشوازی و دوگمەی کردنەوە */
+        .invitation-card-preview {
             position: relative;
             z-index: 102;
-            text-align: center;
-            color: white;
-            background: rgba(0, 0, 0, 0.6);
-            padding: 20px 30px;
+            width: 85%;
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(8px);
+            padding: 25px 20px;
             border-radius: 15px;
-            backdrop-filter: blur(5px);
-            border: 1px solid rgba(212, 175, 55, 0.4);
+            text-align: center;
+            margin-bottom: 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            border: 1px solid #d4af37;
+            transition: transform 0.8s ease, opacity 0.8s ease;
+        }
+        
+        .intro-screen.zooming .invitation-card-preview {
+            opacity: 0;
+            transform: scale(0.8);
+        }
+
+        .invitation-card-preview h3 {
+            font-size: 0.85rem;
+            letter-spacing: 2px;
+            color: #8c7365;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+        }
+
+        .invitation-card-preview h1 {
+            font-size: 2rem;
+            color: #d4af37;
+            margin-bottom: 15px;
+        }
+
+        .open-btn {
+            background: #d4af37;
+            color: #fff;
+            border: none;
+            padding: 12px 30px;
+            font-size: 0.95rem;
+            border-radius: 30px;
             cursor: pointer;
+            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.4);
+            font-weight: 600;
             transition: 0.3s;
         }
-        .start-prompt h1 {
-            font-size: 1.5rem;
-            color: #d4af37;
-            margin-bottom: 10px;
-        }
-        .start-prompt p {
-            font-size: 0.9rem;
-            color: #ddd;
+        .open-btn:hover {
+            background: #b3922e;
         }
 
         /* ناوەڕۆکی سەرەکی بانگهێشتنامە */
@@ -204,12 +230,14 @@
 <body>
 
 <div class="container" id="mainContainer">
-    <div class="intro-screen" id="introScreen" onclick="playIntro()">
-        <div class="hall-bg" id="hallBg"></div>
-        <div class="light-beam" id="lightBeam"></div>
-        <div class="start-prompt" id="startPrompt">
+    <div class="intro-screen" id="introScreen">
+        <div class="hall-bg"></div>
+        <div class="door-light"></div>
+        
+        <div class="invitation-card-preview">
+            <h3>WEDDING INVITATION</h3>
             <h1>ئارام و شنیار</h1>
-            <p>بۆ کردنەوە کلیک بکە</p>
+            <button class="open-btn" onclick="startJourney()">بۆ کردنەوە کلیک بکە</button>
         </div>
     </div>
 
@@ -261,23 +289,20 @@
 </div>
 
 <script>
-    // فەنکشنی دەستپێکردنی ئەنیمەیشنی چوونە ژوورەوە بۆ ناو هۆڵەکە
-    function playIntro() {
-        const hallBg = document.getElementById('hallBg');
-        const startPrompt = document.getElementById('startPrompt');
+    // فەنکشنی جووڵە و چوونە پێشەوەی هۆڵەکە لە کاتی کلیک کردن لەسەر دوگمەکە
+    function startJourney() {
         const introScreen = document.getElementById('introScreen');
+        
+        // زیادکردنی کڵاسی زووم بۆ دەستپێکردنی ئەنیمەیشنی چوونەژوورەوە
+        introScreen.classList.add('zooming');
 
-        // خێراکردنی زوومەکە کاتێک کلیک دەکرێت
-        hallBg.style.animation = "zoomInHall 1.5s forwards ease-in";
-        startPrompt.style.opacity = "0";
-
-        // لابردنی پرۆفایلی سەرەکی و نیشاندانی بانگهێشتنامەکە
+        // کاتێک ئەنیمەیشنی نزیکبوونەوە و تیشکەکە تەواو دەبێت، پەردەکە بە تەواوی لادەچێت
         setTimeout(() => {
-            introScreen.style.opacity = "0";
+            introScreen.style.opacity = '0';
             setTimeout(() => {
-                introScreen.style.display = "none";
-            }, 1000);
-        }, 1200);
+                introScreen.style.display = 'none';
+            }, 800);
+        }, 3200);
     }
 
     // کۆدی کاتژمێری ژماردنی پێچەوانە (Countdown)
